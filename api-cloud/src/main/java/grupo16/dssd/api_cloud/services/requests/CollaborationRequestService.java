@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CollaborationRequestService {
@@ -32,5 +34,12 @@ public class CollaborationRequestService {
                 .build();
         proyecto.getPedidosColaboracion().add(pedidoColaboracion);
         return this.collaborationRequestRepository.save(pedidoColaboracion);
+    }
+
+    @Transactional
+    public List<PedidoColaboracionDTO> getCollaborationRequestByOrganizer(String usernameOrganizador){
+        List<PedidoColaboracionDTO> pedidoColaboracionDTO = null;
+
+        return pedidoColaboracionDTO;
     }
 }
