@@ -11,15 +11,11 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class ProjectDTO {
+public class UserDTO {
 
-    private String name;
-
-    private Long caseId;
-
-    private String description;
-
-    private String ubicacion;
-
+    private String username;
+    private String nombreOng;
+    private String apiKey;
     private List<PedidoColaboracionDTO> pedidosColaboracion;
+    private List<CompromisoColaboracionDTO> compromisoColaboracion;
 }

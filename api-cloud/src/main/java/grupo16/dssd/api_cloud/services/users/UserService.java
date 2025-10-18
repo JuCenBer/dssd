@@ -40,4 +40,16 @@ public class UserService {
 
         return user;
     }
+
+    @Transactional
+    public User getUserByUsername(String username) throws Exception {
+        User user = null;
+        try {
+            user = this.userRepository.findByUsername(username).get();
+        }
+        catch (Exception e){
+            throw new Exception("Username does not exist");
+        }
+        return user;
+    }
 }

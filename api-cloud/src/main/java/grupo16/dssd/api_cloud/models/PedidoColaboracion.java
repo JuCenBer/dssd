@@ -1,6 +1,5 @@
 package grupo16.dssd.api_cloud.models;
 
-import grupo16.dssd.api_cloud.dtos.CollaborationRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 

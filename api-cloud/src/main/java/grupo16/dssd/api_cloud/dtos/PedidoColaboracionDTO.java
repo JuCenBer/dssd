@@ -1,6 +1,5 @@
 package grupo16.dssd.api_cloud.dtos;
 
-import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.Recurso;
 import grupo16.dssd.api_cloud.models.User;
 import lombok.Getter;
@@ -10,10 +9,9 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class CollaborationRequestDTO {
+public class PedidoColaboracionDTO {
 
-    //esto hay que acomodarlo para que sean DTO
-    private User userPedido;
+    private UserDTO userPedido;
     private Long proyectoId;
     private String nombre;
     private LocalDate fechaInicio;
