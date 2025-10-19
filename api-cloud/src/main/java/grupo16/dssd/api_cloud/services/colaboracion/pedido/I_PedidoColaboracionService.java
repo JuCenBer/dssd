@@ -1,0 +1,16 @@
+package grupo16.dssd.api_cloud.services.colaboracion.pedido;
+
+import grupo16.dssd.api_cloud.dtos.PedidoColaboracionDTO;
+import grupo16.dssd.api_cloud.models.PedidoColaboracion;
+import grupo16.dssd.api_cloud.models.Proyecto;
+import grupo16.dssd.api_cloud.models.User;
+
+import java.util.List;
+
+public interface I_PedidoColaboracionService {
+
+    PedidoColaboracion crearPedidoColaboracion(PedidoColaboracionDTO pedido, User userPedido, Proyecto proyecto);
+
+    List<PedidoColaboracionDTO> getPedidoColaboracionByUsuarioOrganizador(User usernameOrganizador);
+
+}

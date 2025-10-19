@@ -11,7 +11,9 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class ProjectDTO {
+public class ProyectoDTO {
+
+    private Long id;
 
     private String name;
 
@@ -22,4 +24,6 @@ public class ProjectDTO {
     private String ubicacion;
 
     private List<PedidoColaboracionDTO> pedidosColaboracion;
+
+    private UserDTO cargadoPor;
 }

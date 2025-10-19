@@ -15,7 +15,6 @@ public class UserDTO {
 
     private String username;
     private String nombreOng;
-    private String apiKey;
     private List<PedidoColaboracionDTO> pedidosColaboracion;
     private List<CompromisoColaboracionDTO> compromisoColaboracion;
 }

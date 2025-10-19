@@ -6,11 +6,8 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-@Builder
+@NoArgsConstructor @AllArgsConstructor
+@Getter @Setter @Builder
 public class Proyecto {
 
     @Id
@@ -24,6 +21,10 @@ public class Proyecto {
     private String description;
 
     private String ubicacion;
+
+    @ManyToOne
+    @JoinColumn(name = "cargado_por_id", nullable = false)
+    private User cargadoPor;
 
     @OneToMany(mappedBy = "proyectoPedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoColaboracion> pedidosColaboracion;

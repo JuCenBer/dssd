@@ -10,7 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CompromisoColaboracionDTO {
 
+    private Long id;
     private UserDTO userCompromiso;
     private String descripcion;
     private PedidoColaboracionDTO pedidoColaboracion;
+    private Boolean cumplido = false;
 }
