@@ -1,0 +1,26 @@
+meta {
+  name: register
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  
+  {
+    "username": "usuario_ong1",
+    "nombreOng": "ONG 1",
+    "apiKey": "apikey"
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

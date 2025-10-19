@@ -1,0 +1,20 @@
+meta {
+  name: getByOng
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}{{apiUrl}}/pedido?ong="ONG 2"
+  body: none
+  auth: inherit
+}
+
+params:query {
+  ong: "ONG 2"
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

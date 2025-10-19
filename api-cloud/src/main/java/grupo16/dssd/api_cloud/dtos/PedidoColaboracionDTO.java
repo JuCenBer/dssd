@@ -1,7 +1,9 @@
 package grupo16.dssd.api_cloud.dtos;
 
+import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.Recurso;
 import grupo16.dssd.api_cloud.models.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 public class PedidoColaboracionDTO {
 
     private Long id;
@@ -21,4 +24,25 @@ public class PedidoColaboracionDTO {
     private Recurso recurso;
     private Boolean completado;
     private List<CompromisoColaboracionDTO> compromisosColaboracion;
+
+    public static PedidoColaboracionDTO fromEntity(PedidoColaboracion pedido) {
+        return PedidoColaboracionDTO.builder()
+                .id(pedido.getId())
+                .nombre(pedido.getNombre())
+                .proyectoPedido(ProyectoDTO.fromEntity(pedido.getProyectoPedido()))
+                .fechaInicio(pedido.getFechaInicio())
+                .fechaFin(pedido.getFechaFin())
+                .completado(pedido.getCompletado())
+                .recurso(pedido.getRecurso())
+                .userPedido(UserDTO.fromEntity(pedido.getUserPedido()))
+                .compromisosColaboracion(CompromisoColaboracionDTO.fromEntity(pedido.getCompromisosColaboracion()))
+                .build();
+    }
+
+    public static List<PedidoColaboracionDTO> fromEntity(List<PedidoColaboracion> pedidos) {
+        return pedidos.stream()
+                .map(PedidoColaboracionDTO::fromEntity)
+                .toList();
+    }
+
 }

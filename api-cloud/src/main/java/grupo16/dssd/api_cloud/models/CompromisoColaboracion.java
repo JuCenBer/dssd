@@ -23,6 +23,7 @@ public class CompromisoColaboracion {
     @JoinColumn(name = "pedido_id", nullable = false)
     private PedidoColaboracion pedidoColaboracion;
 
+    @Builder.Default
     private Boolean cumplido = false;
 
 }

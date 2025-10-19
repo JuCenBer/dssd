@@ -26,28 +26,37 @@ public class PedidoColaboracionServiceImpl implements I_PedidoColaboracionServic
 
     @Override
     @Transactional
-    public PedidoColaboracion crearPedidoColaboracion(PedidoColaboracionDTO pedidoDTO, User userPedido, Proyecto proyecto){
+    public PedidoColaboracionDTO crearPedidoColaboracion(PedidoColaboracionDTO pedidoDTO, User userPedido, Proyecto proyecto){
 
-        PedidoColaboracion pedidoColaboracion = PedidoColaboracion.builder()
-                .userPedido(userPedido)
-                .proyectoPedido(proyecto)
-                .nombre(pedidoDTO.getNombre())
-                .fechaInicio(pedidoDTO.getFechaInicio())
-                .fechaFin(pedidoDTO.getFechaFin())
-                .recurso(pedidoDTO.getRecurso())
-                .completado(Boolean.FALSE)
-                .compromisosColaboracion(new ArrayList<CompromisoColaboracion>())
-                .build();
-        proyecto.getPedidosColaboracion().add(pedidoColaboracion);
-        userPedido
+        PedidoColaboracion pedidoColaboracion = new PedidoColaboracion(
+                pedidoDTO.getNombre(),
+                pedidoDTO.getFechaInicio(),
+                pedidoDTO.getFechaFin(),
+                pedidoDTO.getRecurso(),
+                Boolean.FALSE,
+                userPedido,
+                proyecto);
 
-        return this.pedidoColaboracionRepository.save(pedidoColaboracion);
+        pedidoColaboracion = this.pedidoColaboracionRepository.save(pedidoColaboracion);
+
+        return PedidoColaboracionDTO.fromEntity(pedidoColaboracion);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PedidoColaboracionDTO> getPedidoColaboracionByUsuarioOrganizador(User userOrganizador) {
         return List.of();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PedidoColaboracionDTO> findAll() {
+        return PedidoColaboracionDTO.fromEntity(this.pedidoColaboracionRepository.findAll());
+    }
+
+    @Override
+    public List<PedidoColaboracionDTO> findByOng(String ong) {
+        return PedidoColaboracionDTO.fromEntity(this.pedidoColaboracionRepository.findByUserPedido_NombreOng(ong));
     }
 
 

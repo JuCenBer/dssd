@@ -10,5 +10,5 @@ public interface I_ProyectoService {
 
     Optional<Proyecto> findById(Long id);
 
-    Proyecto crearProyecto(ProyectoDTO proyectoDTO, User cargadoPor);
+    ProyectoDTO crearProyecto(ProyectoDTO proyectoDTO, User cargadoPor);
 }

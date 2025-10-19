@@ -9,8 +9,13 @@ import java.util.List;
 
 public interface I_PedidoColaboracionService {
 
-    PedidoColaboracion crearPedidoColaboracion(PedidoColaboracionDTO pedido, User userPedido, Proyecto proyecto);
+    PedidoColaboracionDTO crearPedidoColaboracion(PedidoColaboracionDTO pedido, User userPedido, Proyecto proyecto);
 
-    List<PedidoColaboracionDTO> getPedidoColaboracionByUsuarioOrganizador(User usernameOrganizador);
+    List<PedidoColaboracionDTO> getPedidoColaboracionByUsuarioOrganizador(User userOrghanizador);
+
+    List<PedidoColaboracionDTO> findAll();
+
+    List<PedidoColaboracionDTO> findByOng(String ong);
+
 
 }

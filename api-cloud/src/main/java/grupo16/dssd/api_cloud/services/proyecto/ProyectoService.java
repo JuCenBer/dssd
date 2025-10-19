@@ -25,16 +25,21 @@ public class ProyectoService implements I_ProyectoService {
 
     @Override
     @Transactional
-    public Proyecto crearProyecto(ProyectoDTO proyectoDTO, User cargadoPor) {
+    public ProyectoDTO crearProyecto(ProyectoDTO proyectoDTO, User cargadoPor) {
+
+
         Proyecto proyecto = Proyecto.builder()
                 .caseId(proyectoDTO.getCaseId())
-                .name(proyectoDTO.getName())
-                .description(proyectoDTO.getDescription())
+                .nombre(proyectoDTO.getNombre())
+                .descripcion(proyectoDTO.getDescripcion())
                 .ubicacion(proyectoDTO.getUbicacion())
                 .pedidosColaboracion(new ArrayList<PedidoColaboracion>())
                 .cargadoPor(cargadoPor)
                 .build();
-        return this.proyectoRepository.save(proyecto);
+
+        proyecto = this.proyectoRepository.save(proyecto);
+
+        return ProyectoDTO.fromEntity(proyecto);
     }
 
 

@@ -45,7 +45,8 @@ public class UserService {
     public User getUserByUsername(String username) throws Exception {
         User user = null;
         try {
-            user = this.userRepository.findByUsername(username).get();
+            user = this.userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("El usuario autenticado no fue encontrado"));
         }
         catch (Exception e){
             throw new Exception("Username does not exist");

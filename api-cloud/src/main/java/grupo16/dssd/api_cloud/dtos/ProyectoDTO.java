@@ -1,29 +1,38 @@
 package grupo16.dssd.api_cloud.dtos;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import grupo16.dssd.api_cloud.models.Proyecto;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
-@NoArgsConstructor
+@Builder
 public class ProyectoDTO {
 
     private Long id;
 
-    private String name;
+    private String nombre;
 
     private Long caseId;
 
-    private String description;
+    private String descripcion;
 
     private String ubicacion;
 
-    private List<PedidoColaboracionDTO> pedidosColaboracion;
+//    private List<PedidoColaboracionDTO> pedidosColaboracion;
 
-    private UserDTO cargadoPor;
+//    private UserDTO cargadoPor;
+
+    public static ProyectoDTO fromEntity(Proyecto proyecto) {
+        return ProyectoDTO.builder()
+                .id(proyecto.getId())
+                .nombre(proyecto.getNombre())
+                .caseId(proyecto.getCaseId())
+                .descripcion(proyecto.getDescripcion())
+                .ubicacion(proyecto.getUbicacion())
+//                .pedidosColaboracion()
+//                .cargadoPor(proyecto.getCargadoPor())
+                .build();
+    }
 }

@@ -8,6 +8,7 @@ import grupo16.dssd.api_cloud.services.colaboracion.pedido.I_PedidoColaboracionS
 import grupo16.dssd.api_cloud.services.proyecto.I_ProyectoService;
 import grupo16.dssd.api_cloud.services.users.UserService;
 import grupo16.dssd.api_cloud.utils.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,13 +28,20 @@ public class PedidoColaboracionControllerImpl implements I_PedidoColaboracionCon
 
 
     @Override
-    @PostMapping("/create")
-    public ResponseEntity<?> crearPedido(@RequestBody PedidoColaboracionDTO pedidoDTO, @RequestHeader(value = "Authorization") String authorizationHeader) {
-        PedidoColaboracion pedido = null;
-        try {
-            User user = this.userService.getUserByUsername(this.jwtUtils.extractUsername(authorizationHeader));
+    @PostMapping
+    public ResponseEntity<?> crearPedido(HttpServletRequest request, @RequestBody PedidoColaboracionDTO pedidoDTO) {
+        PedidoColaboracionDTO pedido = null;
 
-            Proyecto proyecto = this.proyectoService.findById(pedidoDTO.getId())
+        if (pedidoDTO.getProyectoPedido() == null || pedidoDTO.getProyectoPedido().getId() == null) {
+            return ResponseEntity.badRequest().body("Se debe especificar el ID del proyecto");
+        }
+
+        // MÁS VALIDACIONES (y/o poner restricciones en el mapeo del modelo) para que no acepte cosas en null
+
+        try {
+            User user = this.userService.getUserByUsername((String) request.getAttribute("username"));
+
+            Proyecto proyecto = this.proyectoService.findById(pedidoDTO.getProyectoPedido().getId())
                     .orElseThrow(() -> new Exception("El id de proyecto indicado no existe."));
 
             pedido = this.pedidoColaboracionService.crearPedidoColaboracion(pedidoDTO, user, proyecto);
@@ -45,18 +53,12 @@ public class PedidoColaboracionControllerImpl implements I_PedidoColaboracionCon
     }
 
     @Override
-    @PostMapping("/getByOrganizer")
-    public ResponseEntity<?> getByOrganizer(String usernameOrganizador, @RequestHeader(value = "Authorization") String authorizationHeader) {
-        User user = null;
-        List<PedidoColaboracionDTO> pedidosColaboracion = null;
-        try {
-            user = this.userService.getUserByUsername(this.jwtUtils.extractUsername(authorizationHeader));
-            User userOrganizador = this.userService.getUserByUsername(usernameOrganizador);
-            pedidosColaboracion = this.pedidoColaboracionService.getPedidoColaboracionByUsuarioOrganizador(userOrganizador);
+    @GetMapping
+    public ResponseEntity<?> getAll(HttpServletRequest request) {
 
-        }catch (Exception e){
-            return ResponseEntity.badRequest().body(":c Ha ocurrido un problema: " + e.getMessage());
-        }
-        return ResponseEntity.ok("Colaboracion creada. " + pedidosColaboracion.toString());
+        // ESTARÍA BUENO PAGINADO
+
+        return ResponseEntity.ok(this.pedidoColaboracionService.findAll());
     }
+
 }

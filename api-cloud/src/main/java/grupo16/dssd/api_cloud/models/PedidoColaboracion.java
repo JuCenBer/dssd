@@ -39,8 +39,7 @@ public class PedidoColaboracion {
     @OneToMany(mappedBy = "pedidoColaboracion", orphanRemoval = true)
     private List<CompromisoColaboracion> compromisosColaboracion;
 
-
-    public PedidoColaboracion(User userPedido, Proyecto proyectoPedido, Boolean completado, String nombre, LocalDate fechaInicio, LocalDate fechaFin, Recurso recurso) {
+    public PedidoColaboracion(String nombre, LocalDate fechaInicio, LocalDate fechaFin, Recurso recurso, Boolean completado, User userPedido, Proyecto proyectoPedido) {
 
         this.userPedido = userPedido;
         this.proyectoPedido = proyectoPedido;

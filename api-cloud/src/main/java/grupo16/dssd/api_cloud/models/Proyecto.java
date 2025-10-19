@@ -14,11 +14,11 @@ public class Proyecto {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
+    private String nombre;
 
     private Long caseId;
 
-    private String description;
+    private String descripcion;
 
     private String ubicacion;
 
