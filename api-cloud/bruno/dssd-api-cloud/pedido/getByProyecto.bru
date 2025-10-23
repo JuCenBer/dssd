@@ -1,17 +1,13 @@
 meta {
-  name: getByOng
+  name: getByProyecto
   type: http
   seq: 3
 }
 
 get {
-  url: {{baseUrl}}{{apiUrl}}/pedido?ong="ONG 2"
+  url: {{baseUrl}}{{apiUrl}}/pedido/2
   body: none
   auth: inherit
-}
-
-params:query {
-  ong: "ONG 2"
 }
 
 settings {

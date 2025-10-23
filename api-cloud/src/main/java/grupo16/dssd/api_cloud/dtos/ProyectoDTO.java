@@ -20,7 +20,7 @@ public class ProyectoDTO {
 
     private String ubicacion;
 
-    private List<PedidoColaboracionDTO> pedidosColaboracion;
+//    private List<PedidoColaboracionDTO> pedidosColaboracion;
 
 //    private UserDTO cargadoPor;
 

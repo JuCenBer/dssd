@@ -11,6 +11,8 @@ import grupo16.dssd.api_cloud.services.users.UserService;
 import grupo16.dssd.api_cloud.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,16 +57,27 @@ public class PedidoColaboracionControllerImpl implements I_PedidoColaboracionCon
     }
 
     @Override
-    @GetMapping
-    public ResponseEntity<?> getAll(HttpServletRequest request, long Id) {
+    @GetMapping("/{proyectoId}")
+    public ResponseEntity<?> getByProyecto(HttpServletRequest request, @PathVariable Long proyectoId) {
 
-        int page = Integer.parseInt(request.getParameter("page"));
-        if (page < 1){
-            return ResponseEntity.badRequest().body("La pagina debe ser un entero positivo");
+//        int page = Integer.parseInt(request.getParameter("page"));
+//        if (page < 1){
+//            return ResponseEntity.badRequest().body("La pagina debe ser un entero positivo");
+//        }
+//        int size = 10;
+        List<PedidoColaboracionDTO> pedidos = null;
+
+        try {
+            Proyecto proyecto = this.proyectoService.findById(proyectoId)
+                    .orElseThrow(() -> new EmptyResultDataAccessException(1));
+
+            pedidos = PedidoColaboracionDTO.fromEntity(proyecto.getPedidosColaboracion(), Boolean.FALSE);
+
+        } catch (EmptyResultDataAccessException e) {
+            return ResponseEntity.badRequest().body("No se encontró el proyecto.");
         }
-        int size = 10;
 
-        return ResponseEntity.ok(this.pedidoColaboracionService.findByProject(page, size, Id));
+        return ResponseEntity.ok(pedidos);
     }
 
 }

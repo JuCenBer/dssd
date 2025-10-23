@@ -1,5 +1,6 @@
 package grupo16.dssd.api_cloud.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.Recurso;
 import grupo16.dssd.api_cloud.models.User;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PedidoColaboracionDTO {
 
     private Long id;
@@ -25,11 +27,14 @@ public class PedidoColaboracionDTO {
     private Boolean completado;
     private List<CompromisoColaboracionDTO> compromisosColaboracion;
 
-    public static PedidoColaboracionDTO fromEntity(PedidoColaboracion pedido) {
-        return PedidoColaboracionDTO.builder()
+    public static PedidoColaboracionDTO fromEntity(PedidoColaboracion pedido, boolean withProyecto) {
+        PedidoColaboracionDTOBuilder builder = PedidoColaboracionDTO.builder();
+
+        if (withProyecto) builder.proyectoPedido(ProyectoDTO.fromEntity(pedido.getProyectoPedido()));
+
+        return builder
                 .id(pedido.getId())
                 .nombre(pedido.getNombre())
-                .proyectoPedido(ProyectoDTO.fromEntity(pedido.getProyectoPedido()))
                 .fechaInicio(pedido.getFechaInicio())
                 .fechaFin(pedido.getFechaFin())
                 .completado(pedido.getCompletado())
@@ -39,9 +44,9 @@ public class PedidoColaboracionDTO {
                 .build();
     }
 
-    public static List<PedidoColaboracionDTO> fromEntity(List<PedidoColaboracion> pedidos) {
+    public static List<PedidoColaboracionDTO> fromEntity(List<PedidoColaboracion> pedidos, Boolean withProyecto) {
         return pedidos.stream()
-                .map(PedidoColaboracionDTO::fromEntity)
+                .map((pedido) -> PedidoColaboracionDTO.fromEntity(pedido, withProyecto))
                 .toList();
     }
 

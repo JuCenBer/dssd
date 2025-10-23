@@ -16,8 +16,10 @@ public interface I_PedidoColaboracionService {
 
     List<PedidoColaboracionDTO> findAll();
 
-    List<PedidoColaboracionDTO> findByOng(String ong);
-
-    Page<PedidoColaboracionDTO> findByProject(int page, int size, long id);
+//    List<PedidoColaboracionDTO> findByOng(String ong);
+//
+//    Page<PedidoColaboracionDTO> findByProyecto(int page, int size, long id);
+//
+//    List<PedidoColaboracionDTO> findByProyecto(Proyecto proyecto);
 
 }

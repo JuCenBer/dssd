@@ -13,6 +13,6 @@ public interface I_PedidoColaboracionController {
 
     ResponseEntity<?> crearPedido(HttpServletRequest request, PedidoColaboracionDTO pedidoDTO);
 
-    ResponseEntity<?> getAll(HttpServletRequest request, long caseId);
+    ResponseEntity<?> getByProyecto(HttpServletRequest request, Long proyectoId);
 
 }

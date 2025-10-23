@@ -42,7 +42,7 @@ public class PedidoColaboracionServiceImpl implements I_PedidoColaboracionServic
 
         pedidoColaboracion = this.pedidoColaboracionRepository.save(pedidoColaboracion);
 
-        return PedidoColaboracionDTO.fromEntity(pedidoColaboracion);
+        return PedidoColaboracionDTO.fromEntity(pedidoColaboracion, Boolean.TRUE);
     }
 
     @Override
@@ -54,20 +54,10 @@ public class PedidoColaboracionServiceImpl implements I_PedidoColaboracionServic
     @Override
     @Transactional(readOnly = true)
     public List<PedidoColaboracionDTO> findAll() {
-        return PedidoColaboracionDTO.fromEntity(this.pedidoColaboracionRepository.findAll());
+        return PedidoColaboracionDTO.fromEntity(this.pedidoColaboracionRepository.findAll(), Boolean.TRUE);
     }
 
-    @Override
-    public List<PedidoColaboracionDTO> findByOng(String ong) {
-        return PedidoColaboracionDTO.fromEntity(this.pedidoColaboracionRepository.findByUserPedido_NombreOng(ong));
-    }
 
-    public Page<PedidoColaboracionDTO> findByProject(int page, int size, long Id){
-        Pageable pageable = PageRequest.of(page, size);
-        Page<PedidoColaboracion> pedidoColaboracionPage = pedidoColaboracionRepository.findByProyectoPedido_Id(Id, pageable);
-
-        return pedidoColaboracionPage.map(PedidoColaboracionDTO::fromEntity);
-    }
 
 
 }
