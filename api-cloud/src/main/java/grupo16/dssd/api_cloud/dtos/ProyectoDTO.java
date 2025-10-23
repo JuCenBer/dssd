@@ -22,7 +22,7 @@ public class ProyectoDTO {
 
 //    private List<PedidoColaboracionDTO> pedidosColaboracion;
 
-//    private UserDTO cargadoPor;
+    private UserDTO cargadoPor;
 
     public static ProyectoDTO fromEntity(Proyecto proyecto) {
         return ProyectoDTO.builder()
@@ -32,7 +32,13 @@ public class ProyectoDTO {
                 .descripcion(proyecto.getDescripcion())
                 .ubicacion(proyecto.getUbicacion())
 //                .pedidosColaboracion()
-//                .cargadoPor(proyecto.getCargadoPor())
+                .cargadoPor(UserDTO.fromEntity(proyecto.getCargadoPor()))
                 .build();
+    }
+
+    public static List<ProyectoDTO> fromEntity(List<Proyecto> proyectos) {
+        return proyectos.stream()
+                .map((proyecto) -> ProyectoDTO.fromEntity(proyecto))
+                .toList();
     }
 }

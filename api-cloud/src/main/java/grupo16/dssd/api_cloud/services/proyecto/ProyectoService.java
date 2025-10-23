@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,6 +41,12 @@ public class ProyectoService implements I_ProyectoService {
         proyecto = this.proyectoRepository.save(proyecto);
 
         return ProyectoDTO.fromEntity(proyecto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProyectoDTO> findAll() {
+        return ProyectoDTO.fromEntity(this.proyectoRepository.findAll());
     }
 
 }

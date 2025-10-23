@@ -1,23 +1,15 @@
-package grupo16.dssd.api_cloud.services.colaboracion.pedido;
+package grupo16.dssd.api_cloud.services.pedido;
 
 import grupo16.dssd.api_cloud.dtos.PedidoColaboracionDTO;
-import grupo16.dssd.api_cloud.models.CompromisoColaboracion;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
 import grupo16.dssd.api_cloud.repositories.PedidoColaboracionRepository;
 import grupo16.dssd.api_cloud.repositories.UserRepository;
-import grupo16.dssd.api_cloud.services.proyecto.I_ProyectoService;
-import grupo16.dssd.api_cloud.services.proyecto.ProyectoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

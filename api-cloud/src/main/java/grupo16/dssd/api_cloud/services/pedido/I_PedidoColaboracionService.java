@@ -1,4 +1,4 @@
-package grupo16.dssd.api_cloud.services.colaboracion.pedido;
+package grupo16.dssd.api_cloud.services.pedido;
 
 import grupo16.dssd.api_cloud.dtos.PedidoColaboracionDTO;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
