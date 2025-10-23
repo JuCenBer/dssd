@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +50,11 @@ public class PedidoColaboracionServiceImpl implements I_PedidoColaboracionServic
         return PedidoColaboracionDTO.fromEntity(this.pedidoColaboracionRepository.findAll(), Boolean.TRUE);
     }
 
-
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<PedidoColaboracion> findById(Long id) {
+        return this.pedidoColaboracionRepository.findById(id);
+    }
 
 
 }
