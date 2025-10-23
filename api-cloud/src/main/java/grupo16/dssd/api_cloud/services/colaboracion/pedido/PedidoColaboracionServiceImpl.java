@@ -10,6 +10,9 @@ import grupo16.dssd.api_cloud.repositories.UserRepository;
 import grupo16.dssd.api_cloud.services.proyecto.I_ProyectoService;
 import grupo16.dssd.api_cloud.services.proyecto.ProyectoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +60,13 @@ public class PedidoColaboracionServiceImpl implements I_PedidoColaboracionServic
     @Override
     public List<PedidoColaboracionDTO> findByOng(String ong) {
         return PedidoColaboracionDTO.fromEntity(this.pedidoColaboracionRepository.findByUserPedido_NombreOng(ong));
+    }
+
+    public Page<PedidoColaboracionDTO> findByProject(int page, int size, long Id){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<PedidoColaboracion> pedidoColaboracionPage = pedidoColaboracionRepository.findByProyectoPedido_Id(Id, pageable);
+
+        return pedidoColaboracionPage.map(PedidoColaboracionDTO::fromEntity);
     }
 
 

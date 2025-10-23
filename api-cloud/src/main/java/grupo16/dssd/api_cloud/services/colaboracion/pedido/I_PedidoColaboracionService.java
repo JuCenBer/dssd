@@ -4,6 +4,7 @@ import grupo16.dssd.api_cloud.dtos.PedidoColaboracionDTO;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -17,5 +18,6 @@ public interface I_PedidoColaboracionService {
 
     List<PedidoColaboracionDTO> findByOng(String ong);
 
+    Page<PedidoColaboracionDTO> findByProject(int page, int size, long id);
 
 }

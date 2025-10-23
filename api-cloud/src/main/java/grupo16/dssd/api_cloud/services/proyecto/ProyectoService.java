@@ -42,5 +42,4 @@ public class ProyectoService implements I_ProyectoService {
         return ProyectoDTO.fromEntity(proyecto);
     }
 
-
 }
