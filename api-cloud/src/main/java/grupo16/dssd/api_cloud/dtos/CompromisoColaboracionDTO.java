@@ -12,10 +12,14 @@ public class CompromisoColaboracionDTO {
     private Long id;
     private UserDTO userCompromiso;
     private String descripcion;
-//    private PedidoColaboracionDTO pedidoColaboracion;
+    private PedidoColaboracionDTO pedidoColaboracion;
     private Boolean cumplido;
 
-    public static CompromisoColaboracionDTO fromEntity(CompromisoColaboracion compromiso) {
+    public static CompromisoColaboracionDTO fromEntity(CompromisoColaboracion compromiso, Boolean withPedido) {
+        CompromisoColaboracionDTOBuilder builder = CompromisoColaboracionDTO.builder();
+
+        if(withPedido) builder.pedidoColaboracion(PedidoColaboracionDTO.fromEntity(compromiso.getPedidoColaboracion(), false));
+
         return CompromisoColaboracionDTO.builder()
                 .id(compromiso.getId())
                 .userCompromiso(UserDTO.fromEntity(compromiso.getUserCompromiso()))
@@ -24,8 +28,8 @@ public class CompromisoColaboracionDTO {
                 .build();
     }
 
-    public static List<CompromisoColaboracionDTO> fromEntity(List<CompromisoColaboracion> compromisos) {
-        return compromisos.stream().map(CompromisoColaboracionDTO::fromEntity)
+    public static List<CompromisoColaboracionDTO> fromEntity(List<CompromisoColaboracion> compromisos, Boolean withPedido) {
+        return compromisos.stream().map((compromiso) -> CompromisoColaboracionDTO.fromEntity(compromiso, withPedido))
                 .toList();
     }
 }

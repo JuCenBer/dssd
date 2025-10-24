@@ -1,6 +1,7 @@
 package grupo16.dssd.api_cloud.services.compromiso;
 
 import grupo16.dssd.api_cloud.dtos.CompromisoColaboracionDTO;
+import grupo16.dssd.api_cloud.models.CompromisoColaboracion;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.User;
 import grupo16.dssd.api_cloud.repositories.CompromisoColaboracionRepository;
@@ -16,6 +17,8 @@ public class CompromisoColaboracionService implements I_CompromisoColaboracionSe
 
     @Override
     public CompromisoColaboracionDTO crearCompromisoColaboracion(CompromisoColaboracionDTO compromisoDTO, User user, PedidoColaboracion pedido) {
-        return null;
+        CompromisoColaboracion compromiso = new CompromisoColaboracion(null, user, compromisoDTO.getDescripcion(), pedido, false);
+        compromiso = this.compromisoRepository.save(compromiso);
+        return CompromisoColaboracionDTO.fromEntity(compromiso, true);
     }
 }
