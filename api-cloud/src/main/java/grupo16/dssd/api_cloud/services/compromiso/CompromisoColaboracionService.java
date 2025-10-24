@@ -6,6 +6,7 @@ import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.User;
 import grupo16.dssd.api_cloud.repositories.CompromisoColaboracionRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.dialect.BooleanDecoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +43,6 @@ public class CompromisoColaboracionService implements I_CompromisoColaboracionSe
     @Override
     public CompromisoColaboracionDTO cumplirCompromiso(CompromisoColaboracion compromiso) {
         compromiso.setCumplido(Boolean.TRUE);
-        return CompromisoColaboracionDTO.fromEntity(this.compromisoRepository.save(compromiso), false);
+        return CompromisoColaboracionDTO.fromEntity(this.compromisoRepository.save(compromiso), Boolean.TRUE);
     }
 }
