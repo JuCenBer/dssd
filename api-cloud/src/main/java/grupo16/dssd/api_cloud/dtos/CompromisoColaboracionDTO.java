@@ -20,7 +20,7 @@ public class CompromisoColaboracionDTO {
 
         if(withPedido) builder.pedidoColaboracion(PedidoColaboracionDTO.fromEntity(compromiso.getPedidoColaboracion(), false));
 
-        return CompromisoColaboracionDTO.builder()
+        return builder
                 .id(compromiso.getId())
                 .userCompromiso(UserDTO.fromEntity(compromiso.getUserCompromiso()))
                 .descripcion(compromiso.getDescripcion())

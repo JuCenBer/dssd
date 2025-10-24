@@ -31,7 +31,7 @@ public class CompromisoColaboracionService implements I_CompromisoColaboracionSe
         pedido.getCompromisosColaboracion().add(compromiso);
 
         compromiso = this.compromisoRepository.save(compromiso);
-        return CompromisoColaboracionDTO.fromEntity(compromiso, Boolean.FALSE);
+        return CompromisoColaboracionDTO.fromEntity(compromiso, Boolean.TRUE);
     }
 
     @Override
