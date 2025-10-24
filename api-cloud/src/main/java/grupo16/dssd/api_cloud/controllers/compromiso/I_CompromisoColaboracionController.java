@@ -12,5 +12,7 @@ public interface I_CompromisoColaboracionController {
 
     ResponseEntity<?> get(Long idProyecto, Long idPedido, Long idCompromiso);
 
-    public ResponseEntity<?> cumplirCompromiso(HttpServletRequest request, @PathVariable Long idProyecto, @PathVariable Long idPedido, @PathVariable Long idCompromiso);
+    public ResponseEntity<?> cumplirCompromiso(HttpServletRequest request, Long idProyecto, Long idPedido, Long idCompromiso);
+
+    public ResponseEntity<?> getAll(Long idProyecto, Long idPedido);
 }

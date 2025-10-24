@@ -15,12 +15,14 @@ import grupo16.dssd.api_cloud.utils.JwtUtils;
 import io.swagger.v3.core.util.Json;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.text.spi.CollatorProvider;
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -80,6 +82,38 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
                         .path("/{id}")
                         .buildAndExpand(compromisoDTO.getId())
                         .toUri()).body(compromisoDTO);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getAll(@PathVariable Long idProyecto, @PathVariable Long idPedido){
+        if (idProyecto == null || idProyecto < 1) {
+            return ResponseEntity.badRequest().body("ID de proyecto inválido.");
+        }
+        if (idPedido == null || idPedido < 1) {
+            return ResponseEntity.badRequest().body("ID de pedido inválido.");
+        }
+
+        List<CompromisoColaboracionDTO> compromisos = null;
+
+        try {
+            Proyecto proyecto = this.proyectoService.findById(idProyecto)
+                    .orElseThrow(() -> new RuntimeException("No se encontró el proyecto indicado."));
+
+            PedidoColaboracion pedido = this.pedidoColaboracionService.findById(idPedido)
+                    .orElseThrow(() -> new RuntimeException("No se encontró el pedido indicado."));
+
+            if (!pedido.getProyectoPedido().getId().equals(proyecto.getId())) {
+                return ResponseEntity.badRequest().body("El pedido no pertenece al proyecto indicado.");
+            }
+
+            compromisos =  pedido.getCompromisosColaboracion().stream()
+                    .map(compromiso -> CompromisoColaboracionDTO.fromEntity(compromiso, false)).toList();
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().body(compromisos);
     }
 
     @Override
