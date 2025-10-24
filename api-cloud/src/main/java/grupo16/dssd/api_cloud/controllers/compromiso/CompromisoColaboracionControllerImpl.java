@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.text.spi.CollatorProvider;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api/v1/proyectos/{idProyecto}/pedidos/{idPedido}/compromisos")
@@ -116,5 +118,52 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
 
         return ResponseEntity
                 .ok().body(CompromisoColaboracionDTO.fromEntity(compromiso, Boolean.TRUE));
+    }
+
+    @Override
+    @PostMapping("/{idCompromiso}/cumplir")
+    public ResponseEntity<?> cumplirCompromiso(HttpServletRequest request, @PathVariable Long idProyecto, @PathVariable Long idPedido, @PathVariable Long idCompromiso) {
+
+        if (idProyecto == null || idProyecto < 1) {
+            return ResponseEntity.badRequest().body("ID de proyecto inválido.");
+        }
+        if (idPedido == null || idPedido < 1) {
+            return ResponseEntity.badRequest().body("ID de pedido inválido.");
+        }
+        if (idCompromiso == null || idCompromiso < 1) {
+            return ResponseEntity.badRequest().body("ID de compromiso inválido.");
+        }
+
+        CompromisoColaboracion compromiso = null;
+        CompromisoColaboracionDTO compromisoDTO = null;
+
+        try {
+            User user = this.userService.getUserByUsername((String) request.getAttribute("username"));
+
+            Proyecto proyecto = this.proyectoService.findById(idProyecto)
+                    .orElseThrow(() -> new RuntimeException("No se encontró el proyecto indicado."));
+
+            PedidoColaboracion pedido = this.pedidoColaboracionService.findById(idPedido)
+                    .orElseThrow(() -> new RuntimeException("No se encontró el pedido indicado."));
+
+            if (!pedido.getProyectoPedido().getId().equals(proyecto.getId())) {
+                return ResponseEntity.badRequest().body("El pedido no pertenece al proyecto indicado.");
+            }
+
+            compromiso = this.compromisoColaboracionService.findById(idCompromiso)
+                    .orElseThrow(() -> new RuntimeException("No se encontró el compromiso indicado."));
+
+            if (!proyecto.getCargadoPor().equals(user)) {
+                return ResponseEntity.badRequest().body("No puedes marcar como cumplido un compromiso de un proyecto que no es de tu ONG.");
+            }
+
+            compromisoDTO = this.compromisoColaboracionService.cumplirCompromiso(compromiso);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity
+                .ok().body(compromisoDTO);
     }
 }

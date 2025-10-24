@@ -13,4 +13,6 @@ public interface I_CompromisoColaboracionService {
 
     Optional<CompromisoColaboracion> findById(Long id);
 
+    CompromisoColaboracionDTO cumplirCompromiso(CompromisoColaboracion compromiso);
+
 }

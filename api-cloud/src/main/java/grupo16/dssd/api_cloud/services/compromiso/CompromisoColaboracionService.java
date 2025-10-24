@@ -37,4 +37,10 @@ public class CompromisoColaboracionService implements I_CompromisoColaboracionSe
     public Optional<CompromisoColaboracion> findById(Long id) {
         return this.compromisoRepository.findById(id);
     }
+
+    @Override
+    public CompromisoColaboracionDTO cumplirCompromiso(CompromisoColaboracion compromiso) {
+        compromiso.setCumplido(Boolean.TRUE);
+        return CompromisoColaboracionDTO.fromEntity(this.compromisoRepository.save(compromiso), false);
+    }
 }
