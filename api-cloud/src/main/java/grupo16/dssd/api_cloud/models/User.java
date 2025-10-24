@@ -31,5 +31,9 @@ public class User {
     @OneToMany(mappedBy = "userCompromiso")
     private List<CompromisoColaboracion> compromisosColaboracion;
 
+    @Override
+    public boolean equals(Object obj) {
+        return ((User) obj).getId() == this.id;
+    }
 
 }

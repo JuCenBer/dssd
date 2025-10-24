@@ -19,7 +19,7 @@ public class CompromisoColaboracion {
 
     private String descripcion;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "pedido_id", nullable = false)
     private PedidoColaboracion pedidoColaboracion;
 

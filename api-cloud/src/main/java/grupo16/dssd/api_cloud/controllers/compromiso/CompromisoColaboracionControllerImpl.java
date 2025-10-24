@@ -3,6 +3,7 @@ package grupo16.dssd.api_cloud.controllers.compromiso;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd.api_cloud.dtos.CompromisoColaboracionDTO;
 import grupo16.dssd.api_cloud.dtos.PedidoColaboracionDTO;
+import grupo16.dssd.api_cloud.models.CompromisoColaboracion;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
@@ -33,6 +34,7 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
 
 
     @Override
+    @PostMapping
     public ResponseEntity<?> crearCompromiso(HttpServletRequest request, @PathVariable Long idProyecto, @PathVariable Long idPedido, @RequestBody CompromisoColaboracionDTO compromisoDTO) {
 
         if(idProyecto == null || idProyecto < 1){
@@ -51,12 +53,20 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
             User user = this.userService.getUserByUsername((String) request.getAttribute("username"));
 
             Proyecto proyecto = this.proyectoService.findById(idProyecto)
-                    .orElseThrow(() -> new Exception("El id de proyecto indicado no existe."));
+                    .orElseThrow(() -> new Exception("El proyecto indicado no existe."));
 
             PedidoColaboracion pedido = this.pedidoColaboracionService.findById(idProyecto)
-                    .orElseThrow(() -> new Exception("El id de proyecto indicado no existe."));
+                    .orElseThrow(() -> new Exception("El pedido indicado no existe."));
 
-            compromisoDTO.setPedidoColaboracion(PedidoColaboracionDTO.fromEntity(pedido, true));
+            if (!pedido.getProyectoPedido().getId().equals(proyecto.getId())) {
+                return ResponseEntity.badRequest().body("El pedido no pertenece al proyecto indicado.");
+            }
+
+            if (proyecto.getCargadoPor().equals(user)) {
+                return ResponseEntity.badRequest().body("No puedes cargar un compromiso a un proyecto de tu misma ONG.");
+            }
+
+//            compromisoDTO.setPedidoColaboracion(PedidoColaboracionDTO.fromEntity(pedido, true));
 
             compromisoDTO = this.compromisoColaboracionService.crearCompromisoColaboracion(compromisoDTO, user, pedido);
 
@@ -68,5 +78,43 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
                         .path("/{id}")
                         .buildAndExpand(compromisoDTO.getId())
                         .toUri()).body(compromisoDTO);
+    }
+
+    @Override
+    @GetMapping("/{idCompromiso}")
+    public ResponseEntity<?> get(@PathVariable Long idProyecto, @PathVariable Long idPedido, @PathVariable Long idCompromiso) {
+
+        if (idProyecto == null || idProyecto < 1) {
+            return ResponseEntity.badRequest().body("ID de proyecto inválido.");
+        }
+        if (idPedido == null || idPedido < 1) {
+            return ResponseEntity.badRequest().body("ID de pedido inválido.");
+        }
+        if (idCompromiso == null || idCompromiso < 1) {
+            return ResponseEntity.badRequest().body("ID de compromiso inválido.");
+        }
+
+        CompromisoColaboracion compromiso = null;
+
+        try {
+            Proyecto proyecto = this.proyectoService.findById(idProyecto)
+                    .orElseThrow(() -> new RuntimeException("No se encontró el proyecto indicado."));
+
+            PedidoColaboracion pedido = this.pedidoColaboracionService.findById(idPedido)
+                    .orElseThrow(() -> new RuntimeException("No se encontró el pedido indicado."));
+
+            if (!pedido.getProyectoPedido().getId().equals(proyecto.getId())) {
+                return ResponseEntity.badRequest().body("El pedido no pertenece al proyecto indicado.");
+            }
+
+            compromiso = this.compromisoColaboracionService.findById(idCompromiso)
+                    .orElseThrow(() -> new RuntimeException("No se encontró el compromiso indicado."));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity
+                .ok().body(CompromisoColaboracionDTO.fromEntity(compromiso, Boolean.TRUE));
     }
 }

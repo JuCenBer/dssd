@@ -31,15 +31,21 @@ public class PedidoColaboracionControllerImpl implements I_PedidoColaboracionCon
     @PostMapping
     public ResponseEntity<?> crearPedido(HttpServletRequest request, @PathVariable Long idProyecto, @RequestBody PedidoColaboracionDTO pedidoDTO) {
 
-        PedidoColaboracionDTO pedido = null;
+        if (idProyecto == null || idProyecto < 1) {
+            return ResponseEntity.badRequest().body("ID de proyecto inválido.");
+        }
 
-        // MÁS VALIDACIONES (y/o poner restricciones en el mapeo del modelo) para que no acepte cosas en null
+        PedidoColaboracionDTO pedido = null;
 
         try {
             User user = this.userService.getUserByUsername((String) request.getAttribute("username"));
 
             Proyecto proyecto = this.proyectoService.findById(idProyecto)
                     .orElseThrow(() -> new Exception("El id de proyecto indicado no existe."));
+
+            if (!proyecto.getCargadoPor().equals(user)) {
+                return ResponseEntity.status(403).body("No tienes permisos para crear un pedido en este proyecto.");
+            }
 
             pedido = this.pedidoColaboracionService.crearPedidoColaboracion(pedidoDTO, user, proyecto);
 
@@ -56,6 +62,10 @@ public class PedidoColaboracionControllerImpl implements I_PedidoColaboracionCon
     @Override
     @GetMapping
     public ResponseEntity<?> getByProyecto(HttpServletRequest request, @PathVariable Long idProyecto) {
+
+        if (idProyecto == null || idProyecto < 1) {
+            return ResponseEntity.badRequest().body("ID de proyecto inválido.");
+        }
 
         List<PedidoColaboracionDTO> pedidos = null;
 

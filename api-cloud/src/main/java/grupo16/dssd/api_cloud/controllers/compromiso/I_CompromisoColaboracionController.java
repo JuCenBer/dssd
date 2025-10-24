@@ -8,4 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface I_CompromisoColaboracionController {
 
     ResponseEntity<?> crearCompromiso(HttpServletRequest request, Long idProyecto, Long idPedido, CompromisoColaboracionDTO compromisoDTO);
+
+    ResponseEntity<?> get(Long idProyecto, Long idPedido, Long idCompromiso);
 }

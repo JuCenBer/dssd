@@ -47,6 +47,10 @@ public class ProyectoControllerImpl implements I_ProyectoController {
     @GetMapping("/{idProyecto}")
     public ResponseEntity<?> get(HttpServletRequest request, @PathVariable Long idProyecto) {
 
+        if (idProyecto == null || idProyecto < 1) {
+            return ResponseEntity.badRequest().body("ID de proyecto inválido.");
+        }
+
         Proyecto proyecto;
         try {
             proyecto = this.proyectoService.findById(idProyecto)
