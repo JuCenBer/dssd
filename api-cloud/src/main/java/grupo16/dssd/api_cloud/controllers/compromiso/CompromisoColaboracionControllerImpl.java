@@ -13,6 +13,15 @@ import grupo16.dssd.api_cloud.services.proyecto.I_ProyectoService;
 import grupo16.dssd.api_cloud.services.users.UserService;
 import grupo16.dssd.api_cloud.utils.JwtUtils;
 import io.swagger.v3.core.util.Json;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -28,6 +37,8 @@ import java.util.List;
 @CrossOrigin("*")
 @RequestMapping("/api/v1/proyectos/{idProyecto}/pedidos/{idPedido}/compromisos")
 @RequiredArgsConstructor
+@Tag(name = "Compromisos de colaboración", description = "Operaciones sobre compromisos dentro de un pedido de colaboración")
+@SecurityRequirement(name = "bearerAuth")
 public class CompromisoColaboracionControllerImpl implements I_CompromisoColaboracionController {
 
     private final I_ProyectoService proyectoService;
@@ -39,6 +50,34 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
 
     @Override
     @PostMapping
+    @Operation(
+            summary = "Crear compromiso de colaboración",
+            description = "Crea un compromiso asociado a un pedido dentro de un proyecto. Requiere JWT. " +
+                    "El usuario autenticado no puede crear compromisos en su propio proyecto (ONG).",
+            parameters = {
+                    @Parameter(name = "idProyecto", description = "ID del proyecto", required = true, example = "42"),
+                    @Parameter(name = "idPedido", description = "ID del pedido dentro del proyecto", required = true, example = "7")
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    description = "Datos del compromiso a crear",
+                    content = @Content(
+                            schema = @Schema(implementation = CompromisoColaboracionDTO.class),
+                            examples = {
+                                    @ExampleObject(name = "Ejemplo crear compromiso", value = """
+                                            {
+                                              "descripcion":"Ayuda económica"
+                                            }
+                                            
+                        """)
+                            }
+                    )
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Compromiso creado correctamente", content = @Content(schema = @Schema(implementation = CompromisoColaboracionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos o recurso no encontrado"),
+            }
+    )
     public ResponseEntity<?> crearCompromiso(HttpServletRequest request, @PathVariable Long idProyecto, @PathVariable Long idPedido, @RequestBody CompromisoColaboracionDTO compromisoDTO) {
 
         if(idProyecto == null || idProyecto < 1){
@@ -70,7 +109,6 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
                 return ResponseEntity.badRequest().body("No puedes cargar un compromiso a un proyecto de tu misma ONG.");
             }
 
-//            compromisoDTO.setPedidoColaboracion(PedidoColaboracionDTO.fromEntity(pedido, true));
 
             compromisoDTO = this.compromisoColaboracionService.crearCompromisoColaboracion(compromisoDTO, user, pedido);
 
@@ -85,6 +123,18 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
     }
 
     @GetMapping
+    @Operation(
+            summary = "Listar compromisos de un pedido",
+            description = "Devuelve los compromisos asociados a un pedido dentro del proyecto indicado. Requiere JWT.",
+            parameters = {
+                    @Parameter(name = "idProyecto", description = "ID del proyecto", required = true, example = "42"),
+                    @Parameter(name = "idPedido", description = "ID del pedido", required = true, example = "7")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Lista de compromisos", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CompromisoColaboracionDTO.class)))),
+                    @ApiResponse(responseCode = "400", description = "ID inválido o recurso no encontrado"),
+            }
+    )
     public ResponseEntity<?> getAll(@PathVariable Long idProyecto, @PathVariable Long idPedido){
         if (idProyecto == null || idProyecto < 1) {
             return ResponseEntity.badRequest().body("ID de proyecto inválido.");
@@ -118,6 +168,19 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
 
     @Override
     @GetMapping("/{idCompromiso}")
+    @Operation(
+            summary = "Obtener un compromiso",
+            description = "Obtiene un compromiso por su id dentro del pedido y proyecto indicados. Requiere JWT.",
+            parameters = {
+                    @Parameter(name = "idProyecto", description = "ID del proyecto", required = true, example = "42"),
+                    @Parameter(name = "idPedido", description = "ID del pedido", required = true, example = "7"),
+                    @Parameter(name = "idCompromiso", description = "ID del compromiso", required = true, example = "100")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Compromiso encontrado", content = @Content(schema = @Schema(implementation = CompromisoColaboracionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "ID inválido o recurso no encontrado"),
+            }
+    )
     public ResponseEntity<?> get(@PathVariable Long idProyecto, @PathVariable Long idPedido, @PathVariable Long idCompromiso) {
 
         if (idProyecto == null || idProyecto < 1) {
@@ -156,6 +219,19 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
 
     @Override
     @PostMapping("/{idCompromiso}/cumplir")
+    @Operation(
+            summary = "Marcar compromiso como cumplido",
+            description = "Marca un compromiso como cumplido. Solo el propietario del proyecto (ONG) puede marcarlo como cumplido. Requiere JWT.",
+            parameters = {
+                    @Parameter(name = "idProyecto", description = "ID del proyecto", required = true, example = "42"),
+                    @Parameter(name = "idPedido", description = "ID del pedido", required = true, example = "7"),
+                    @Parameter(name = "idCompromiso", description = "ID del compromiso a cumplimentar", required = true, example = "100")
+            },
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Compromiso marcado como cumplido", content = @Content(schema = @Schema(implementation = CompromisoColaboracionDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "ID inválido o precondición no cumplida"),
+            }
+    )
     public ResponseEntity<?> cumplirCompromiso(HttpServletRequest request, @PathVariable Long idProyecto, @PathVariable Long idPedido, @PathVariable Long idCompromiso) {
 
         if (idProyecto == null || idProyecto < 1) {

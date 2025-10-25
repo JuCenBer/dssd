@@ -7,6 +7,15 @@ import grupo16.dssd.api_cloud.services.pedido.I_PedidoColaboracionService;
 import grupo16.dssd.api_cloud.services.proyecto.I_ProyectoService;
 import grupo16.dssd.api_cloud.services.users.UserService;
 import grupo16.dssd.api_cloud.utils.JwtUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +25,8 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @RequestMapping("/api/v1/proyectos")
 @RequiredArgsConstructor
+@Tag(name = "Proyectos", description = "Operaciones para crear y consultar proyectos")
+@SecurityRequirement(name = "bearerAuth")
 public class ProyectoControllerImpl implements I_ProyectoController {
 
     private final I_ProyectoService proyectoService;
@@ -23,6 +34,40 @@ public class ProyectoControllerImpl implements I_ProyectoController {
 
     @Override
     @PostMapping
+    @Operation(
+            summary = "Crear proyecto",
+            description = "Crea un nuevo proyecto. Requiere un token JWT válido en el header `Authorization: Bearer <token>`.",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    description = "Datos del nuevo proyecto",
+                    content = @Content(
+                            schema = @Schema(implementation = ProyectoDTO.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Ejemplo de creación",
+                                            value = """
+                                                    {
+                                                      "nombre": "Proyecto Techando",
+                                                      "caseId": "12345678",
+                                                      "descripcion": "Descripcion del proyecto",
+                                                      "ubicacion": "La Plata, Bs As, Argentina"
+                                                    }
+                        """
+                                    )
+                            }
+                    )
+            ),
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Proyecto creado correctamente",
+                            content = @Content(schema = @Schema(implementation = ProyectoDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+                    @ApiResponse(responseCode = "401", description = "No autorizado o token inválido"),
+                    @ApiResponse(responseCode = "500", description = "Error interno")
+            }
+    )
     public ResponseEntity<?> create(HttpServletRequest request, @RequestBody ProyectoDTO proyectoDTO){
 
         try {
@@ -38,6 +83,19 @@ public class ProyectoControllerImpl implements I_ProyectoController {
 
     @Override
     @GetMapping
+    @Operation(
+            summary = "Listar proyectos",
+            description = "Devuelve todos los proyectos visibles para el usuario autenticado.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Lista de proyectos",
+                            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProyectoDTO.class)))
+                    ),
+                    @ApiResponse(responseCode = "401", description = "No autorizado o token inválido"),
+                    @ApiResponse(responseCode = "500", description = "Error interno")
+            }
+    )
     public ResponseEntity<?> getAll(HttpServletRequest request) {
 
         return ResponseEntity.ok(this.proyectoService.findAll());
@@ -45,6 +103,23 @@ public class ProyectoControllerImpl implements I_ProyectoController {
 
     @Override
     @GetMapping("/{idProyecto}")
+    @Operation(
+            summary = "Obtener proyecto por ID",
+            description = "Obtiene un proyecto por su identificador. Requiere autenticación JWT.",
+            parameters = {
+                    @Parameter(name = "idProyecto", description = "ID del proyecto", example = "42", required = true)
+            },
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Proyecto encontrado",
+                            content = @Content(schema = @Schema(implementation = ProyectoDTO.class))
+                    ),
+                    @ApiResponse(responseCode = "400", description = "ID inválido o proyecto no encontrado"),
+                    @ApiResponse(responseCode = "401", description = "No autorizado o token inválido"),
+                    @ApiResponse(responseCode = "500", description = "Error interno")
+            }
+    )
     public ResponseEntity<?> get(HttpServletRequest request, @PathVariable Long idProyecto) {
 
         if (idProyecto == null || idProyecto < 1) {

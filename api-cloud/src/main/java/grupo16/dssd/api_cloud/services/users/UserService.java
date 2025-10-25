@@ -22,7 +22,7 @@ public class UserService {
     public User register(String username, String nombreOng, String password) throws Exception {
 
         if (userRepository.existsByUsername(username)) {
-            throw new Exception("Username is already registered");
+            throw new RuntimeException("Usuario ya registrado");
         }
 
         User user = User
