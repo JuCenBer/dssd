@@ -187,7 +187,7 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
             compromiso = this.compromisoColaboracionService.findById(idCompromiso)
                     .orElseThrow(() -> new RuntimeException("No se encontró el compromiso indicado."));
 
-            if (!proyecto.getCargadoPor().equals(user)) {
+            if (!proyecto.getCargadoPor().getNombreOng().equals(user.getNombreOng())) {
                 return ResponseEntity.badRequest().body("No puedes marcar como cumplido un compromiso de un proyecto que no es de tu ONG.");
             }
 
