@@ -3,6 +3,7 @@ package grupo16.dssd_backend.services;
 import grupo16.dssd_backend.dtos.BonitaSession;
 import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import grupo16.dssd_backend.helpers.NombresProcesos;
+import grupo16.dssd_backend.models.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -58,7 +59,8 @@ class BonitaService implements I_BonitaService{
                             "Login Bonita: faltan cookies JSESSIONID/X-Bonita-API-Token.");
                 }
 
-                return new BonitaSession(username, js, xt, System.currentTimeMillis());
+                BonitaSession bonitaSession = new BonitaSession(username, js, xt, System.currentTimeMillis(), null);
+                return new BonitaSession(username, js, xt, System.currentTimeMillis(), null);
             });
     }
 
@@ -109,6 +111,69 @@ class BonitaService implements I_BonitaService{
 
         return Long.parseLong(caseId);
     }
+
+    @Override
+    public BonitaSession getUserRole() {
+
+        Map<String, String> session = client.get()
+                .uri("/API/system/session/1")
+                .headers(this::withAuth)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
+
+        if (session == null || session.isEmpty()) {
+            throw new RuntimeException("No se pudo consultar la sesión del usuario");
+        }
+
+        String userId = session.get("user_id");
+
+        logger.debug("Sesión del usuario consultada, user_id: "+userId);
+
+
+        List<Map<String,String>> memberships = client.get()
+                .uri(builder -> builder
+                        .path("/API/identity/membership")
+                        .queryParam("f", "user_id=" + userId)
+                        .build())
+                .headers(this::withAuth)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
+
+        if (memberships == null || memberships.isEmpty()) {
+            throw new RuntimeException("No se pudo obtener membership del usuario");
+        }
+
+        String roleId = memberships.getFirst().get("role_id");
+
+        logger.debug("Membership consultado, role_id: "+roleId);
+
+        Map<String,String> role = client.get()
+                .uri("/API/identity/role/" + roleId)
+                .headers(this::withAuth)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
+
+        if (role == null || role.isEmpty()) {
+            throw new RuntimeException("No se pudo consultar el rol");
+        }
+
+        String roleName = role.get("name");
+
+        logger.debug("Role consultado, name: " + roleName);
+
+        Role roleEnum = Role.fromValue(roleName);
+
+        BonitaSession current = BonitaSessionHolder.getBonitaSession();
+
+        return new BonitaSession(
+                current.username(),
+                current.jsessionId(),
+                current.xBonitaToken(),
+                current.createdAtEpochMs(),
+                roleEnum
+        );
+    }
+
 
     private Optional<String> buscarProcesoPorNombre(String processName) {
         List<Map<String, Object>> procs = client.get()

@@ -10,6 +10,8 @@ public interface I_BonitaService {
 
     Long iniciarProcesoCreacionProyecto(String nombre);
 
+    BonitaSession getUserRole();
+
 //    Optional<String> getEnabledProcessIdByName(String processName);
 
 

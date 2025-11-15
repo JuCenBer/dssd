@@ -1,0 +1,20 @@
+meta {
+  name: sesion
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{bonita_url}}/API/system/session/1
+  body: none
+  auth: inherit
+}
+
+vars:post-response {
+  user_id: res.body.user_id
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,20 @@
+meta {
+  name: membership
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{bonita_url}}/API/identity/membership?f=user_id=23
+  body: none
+  auth: inherit
+}
+
+params:query {
+  f: user_id=23
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

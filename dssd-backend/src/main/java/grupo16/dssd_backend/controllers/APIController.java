@@ -7,7 +7,6 @@ import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import grupo16.dssd_backend.services.I_BonitaService;
 import grupo16.dssd_backend.services.I_ProyectoService;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
@@ -27,12 +26,18 @@ class APIControllerV1 implements I_API {
     @Override
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO req, HttpServletRequest httpReq) {
-        var cookies = this.bonitaService.loginAndReturnCookies(req.username(), req.password());
+
+        BonitaSession bonitaSession = this.bonitaService.loginAndReturnCookies(req.username(), req.password());
         // guardar en sesión
         var session = httpReq.getSession(true);
-        session.setAttribute("bonitaSession", new BonitaSession(
-                req.username(), cookies.jsessionId(), cookies.xBonitaToken(), System.currentTimeMillis()));
-        return ResponseEntity.ok().body(Map.of("message", "Sesion iniciada correctamente"));
+        session.setAttribute("bonitaSession", bonitaSession);
+
+        bonitaSession = this.bonitaService.getUserRole();
+
+        return ResponseEntity.ok().body(Map.of(
+                "username", bonitaSession.username(),
+                "role", bonitaSession.role(),
+                "message", "Sesión iniciada correctamente"));
     }
 
     @Override
