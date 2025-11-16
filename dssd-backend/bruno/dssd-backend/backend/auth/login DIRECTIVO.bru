@@ -1,0 +1,23 @@
+meta {
+  name: login DIRECTIVO
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{backend_url}}/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "thomas.wallis",
+    "password": "bpm"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

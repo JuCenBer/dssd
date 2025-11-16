@@ -1,11 +1,8 @@
-package grupo16.dssd_backend.controllers;
+package grupo16.dssd_backend.controllers.auth;
 
 import grupo16.dssd_backend.dtos.BonitaSession;
 import grupo16.dssd_backend.dtos.LoginDTO;
-import grupo16.dssd_backend.dtos.ProyectoDTO;
-import grupo16.dssd_backend.helpers.BonitaSessionHolder;
-import grupo16.dssd_backend.services.I_BonitaService;
-import grupo16.dssd_backend.services.I_ProyectoService;
+import grupo16.dssd_backend.services.bonita.I_BonitaService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +10,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/")
-class APIControllerV1 implements I_API {
+class AuthControllerV1 implements I_AuthController {
 
     private final I_BonitaService bonitaService;
-    private final I_ProyectoService proyectoService;
 
-    public APIControllerV1(I_BonitaService bonitaService, I_ProyectoService proyectoService) {
+    public AuthControllerV1(I_BonitaService bonitaService) {
         this.bonitaService = bonitaService;
-        this.proyectoService = proyectoService;
     }
 
     @Override
@@ -33,6 +28,7 @@ class APIControllerV1 implements I_API {
         session.setAttribute("bonitaSession", bonitaSession);
 
         bonitaSession = this.bonitaService.getUserRole();
+        session.setAttribute("bonitaSession", bonitaSession);
 
         return ResponseEntity.ok().body(Map.of(
                 "username", bonitaSession.username(),
@@ -40,29 +36,7 @@ class APIControllerV1 implements I_API {
                 "message", "Sesión iniciada correctamente"));
     }
 
-    @Override
-    @PostMapping("/crear-proyecto")
-    public ResponseEntity<?> crearProyecto(@RequestBody ProyectoDTO proyectoDTO) {
 
-        //if (BonitaSessionHolder.getBonitaSession() == null) {
-        //    return ResponseEntity.status(401).body("No autenticado");
- //       }
-   //     if(!proyectoDTO.validate()){
-     //       return ResponseEntity.status(500).body("Datos invalidos");
-       // }
-
-        //this.proyectoService.createProject(proyectoDTO);
-        //return ResponseEntity.ok().build();
-        if (BonitaSessionHolder.getBonitaSession() == null) {
-            return ResponseEntity.status(401).body(Map.of("error", "No autenticado"));
-        }
-        if(!proyectoDTO.validate()){
-            return ResponseEntity.status(400).body(Map.of("error", "Datos inválidos"));
-        }
-
-        this.proyectoService.createProject(proyectoDTO);
-        return ResponseEntity.ok(Map.of("message", "Proyecto creado exitosamente"));
-    }
 
     @Override
     @PostMapping("/logout")
@@ -76,5 +50,6 @@ class APIControllerV1 implements I_API {
         }
         return ResponseEntity.noContent().build();
     }
+
 }
 

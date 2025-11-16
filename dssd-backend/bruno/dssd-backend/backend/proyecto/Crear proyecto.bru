@@ -1,0 +1,16 @@
+meta {
+  name: Crear proyecto
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{backend_url}}/proyectos
+  body: json
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
