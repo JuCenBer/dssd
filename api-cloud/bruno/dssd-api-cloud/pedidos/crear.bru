@@ -1,0 +1,25 @@
+meta {
+  name: crear
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/proyectos/1/pedidos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nombre": "USD 2000",
+    "fechaInicio": "2025-10-20",
+    "fechaFin": "2025-10-22",
+    "recurso": "DINERO"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,23 @@
+meta {
+  name: crear
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/proyectos/{idProyecto}/pedidos/{idPedido}/compromisos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "descripcion":"Ayuda economica",
+    "cumplido":"false"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

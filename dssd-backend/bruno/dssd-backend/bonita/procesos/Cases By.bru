@@ -1,0 +1,22 @@
+meta {
+  name: Cases By
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{bonita_url}}/API/bpm/case?f=started_by=23&f=state=started&f=processDefinitionId=7157600881048660439
+  body: none
+  auth: inherit
+}
+
+params:query {
+  f: started_by=23
+  f: state=started
+  f: processDefinitionId=7157600881048660439
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

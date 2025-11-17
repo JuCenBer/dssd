@@ -1,0 +1,25 @@
+meta {
+  name: crear
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/proyectos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nombre": "Proyecto Techando",
+    "caseId": "12345678",
+    "descripcion": "Descripcion del proyecto",
+    "ubicacion": "La Plata, Bs As, Argentina"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

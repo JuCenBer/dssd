@@ -1,6 +1,5 @@
 package grupo16.dssd_backend.dtos;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public record ProyectoDTO(
@@ -11,7 +10,7 @@ public record ProyectoDTO(
         List<ActividadDTO> actividades
 ) {
 
-    public boolean validate(){
+    public boolean isValid(){
         if (nombre == null || nombre.isBlank()) {
             return false;
         }

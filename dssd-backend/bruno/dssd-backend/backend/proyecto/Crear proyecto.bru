@@ -1,0 +1,34 @@
+meta {
+  name: Crear proyecto
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{backend_url}}/proyectos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nombre": "Proyecto Techos",
+    "descripcion": "Techado en zonas vulnerables",
+    "ubicacion": "La Plata",
+    "actividades": [
+      {
+        "nombre": "$1000",
+        "fechaInicio": "2025-12-16",
+        "fechaFin": "2025-12-20",
+        "recurso": "DINERO",
+        "requiereColaboracion": "true"
+      }
+    ]
+    
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

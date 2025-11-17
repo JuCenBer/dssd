@@ -1,0 +1,27 @@
+meta {
+  name: login
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "usuario_ong",
+    "apiKey": "apikey"
+  }
+}
+
+vars:post-response {
+  token: res.body.token
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

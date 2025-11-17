@@ -1,0 +1,16 @@
+meta {
+  name: getId
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}{{apiUrl}}/proyectos/2
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

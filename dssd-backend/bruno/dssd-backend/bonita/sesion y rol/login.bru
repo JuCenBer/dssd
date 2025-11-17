@@ -1,0 +1,38 @@
+meta {
+  name: login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{bonita_url}}/loginservice
+  body: formUrlEncoded
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/x-www-form-urlencoded
+}
+
+body:json {
+  {
+    "username": "walter.bates",
+    "password": "bpm"
+  }
+}
+
+body:form-urlencoded {
+  username: walter.bates
+  password: bpm
+}
+
+body:multipart-form {
+  username: walter.bates
+  password: bpm
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

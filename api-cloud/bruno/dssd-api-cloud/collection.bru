@@ -1,0 +1,16 @@
+auth {
+  mode: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+vars:pre-request {
+  baseUrl: 127.0.0.1:8080
+  apiUrl: /api/v1/
+}
+
+vars:post-response {
+  : 
+}

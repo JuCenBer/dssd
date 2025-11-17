@@ -1,0 +1,23 @@
+meta {
+  name: login ONG_SOL
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{backend_url}}/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username": "walter.bates",
+    "password": "bpm"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
