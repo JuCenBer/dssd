@@ -18,21 +18,20 @@ const LockClosedIcon = ({ className = "w-6 h-6" }) => (
 
 
 const Login = () => {
-    const { isAuth, setAuth } = useAuth();
+    const { isAuth, login } = useAuth();
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
-    const to = searchParams.get("to") || "/";
-
-    useEffect(() => {
-        if (isAuth) {
-            navigate(to, { replace: true });
-        }
-    }, [isAuth, navigate, to]);
 
     const handleSuccess = (data) => {
-        setAuth(data);
-        navigate(to, { replace: true });
-        notify({ type: "success", message: "¡Bienvenido/a de nuevo!" });
+        console.log(data, " - desde login")
+        if(data.ok) {
+            login({
+                username: "ong_sol", 
+                role: "ong_sol"
+            });
+            navigate("/", { replace: true });
+            notify({ type: "success", message: `¡Bienvenido/a de nuevo! Tu rol es: ${data.role}` });
+
+        }
     };
 
     return (
@@ -44,17 +43,11 @@ const Login = () => {
                     <h1 className="mt-6 text-3xl font-bold tracking-tight text-text-primary">
                         Inicia sesión en tu cuenta
                     </h1>
-                    <p className="mt-2 text-sm text-text-secondary">
-                        O si aún no tienes una,{' '}
-                        <Link to="/register" className="font-medium text-brand-primary hover:text-brand-primary-hover transition-colors duration-200">
-                            regístrate aquí
-                        </Link>
-                    </p>
                 </div>
 
                 <div className="bg-surface-primary border border-border-primary rounded-xl shadow-lg p-6 sm:p-8">
                     <SmartForm
-                        url="/api/auth"
+                        url="/api/v1/login"
                         onSuccess={handleSuccess}
                         onError={(error) => notify({ type: "error", message: error?.message || "Credenciales incorrectas." })}
                     >
@@ -62,13 +55,13 @@ const Login = () => {
                             <>
                             
                                 <TextInput
-                                    type="email"
-                                    name="email"
-                                    label="Correo electrónico"
-                                    placeholder="tu.correo@ejemplo.com"
-                                    value={formData.email}
+                                    type="text"
+                                    name="username"
+                                    label="Usuario"
+                                    placeholder="walter.bates"
+                                    value={formData.username}
                                     onChange={handleChange}
-                                    error={errors?.email}
+                                    error={errors?.username}
                                 />
                                 <PasswordInput
                                     label="Contraseña"
@@ -78,12 +71,6 @@ const Login = () => {
                                     onChange={handleChange}
                                     error={errors?.password}
                                 />
-
-                                <div className="text-right text-sm">
-                                    <Link to="/forgot" className="font-medium text-text-secondary hover:text-text-primary transition-colors duration-200">
-                                        ¿Olvidaste tu contraseña?
-                                    </Link>
-                                </div>
 
                                 <button
                                     type="submit"
@@ -95,21 +82,6 @@ const Login = () => {
                         )}
                     </SmartForm>
 
-                    <div className="relative my-6">
-                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                            <div className="w-full border-t border-border-primary" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="bg-surface-primary px-2 text-text-tertiary">
-                                O continúa con
-                            </span>
-                        </div>
-                    </div>
-
-                    <div>
-                        {/* Asumimos que GoogleLoginButton es un botón secundario */}
-                        <GoogleLoginButton />
-                    </div>
                 </div>
 
             </div>

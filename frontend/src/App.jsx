@@ -1,59 +1,61 @@
-import Form from './pages/Form';
 import './i18n';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router';
 
-import Login from './pages/Login';
-import Error404 from './layout/Error404'
-import ProtectedRoute from './components/ProtectedRoute'
-
-
+// Hooks y Providers
 import { ThemeProvider } from './hooks/useTheme';
 import { AuthProvider } from './hooks/useAuth';
-import Form2 from './components/Form2';
 
+// Layouts y Rutas Protegidas
+import Index from './layout/Index';
+import Error404 from './layout/Error404';
+import ProtectedRoute from './components/ProtectedRoute';
 
+// Páginas
+import Login from './pages/Login';
+import ProjectsPage from './pages/ProjectsPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
+import Form from './pages/Form'; // Página para crear proyecto
 
 function App() {
   return (
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Ruta pública para el login */}
+            <Route path="/login" element={<Login />} />
 
-    		<ThemeProvider>
-                    <AuthProvider>
+            {/* --- RUTAS PROTEGIDAS DENTRO DEL LAYOUT PRINCIPAL --- */}
+            <Route 
+              path="/" 
+              element={
+                <ProtectedRoute useLayout={true} /> // Outlet se renderiza en Index
+              }
+            >
+              <Route element={<Index />}>
+                {/* Redirige la ruta raíz a la página de proyectos */}
+                <Route index element={<Navigate to="proyectos" replace />} />
+                
+                {/* Rutas que activan el mismo componente, pero el componente decide qué mostrar */}
+                <Route path="proyectos" element={<ProjectsPage />} />
+                <Route path="proyectos/buscar" element={<ProjectsPage />} />
+                <Route path="revisiones" element={<ProjectsPage />} />
 
+                {/* Ruta para crear un nuevo proyecto */}
+                <Route path="proyectos/crear" element={<Form />} />
 
-    			<BrowserRouter>
+                {/* Ruta para ver el detalle de un proyecto */}
+                <Route path="proyectos/:id" element={<ProjectDetailPage />} />
+              </Route>
+            </Route>
 
-    				<Routes>
-
-    					{/* --- RUTAS DEL CLIENTE (Públicas) --- */}
-                        {/* <Route path="/" element={<Index />}>
-                            <Route index element={<Home />} />
-                            <Route path="login" element={<Login />} />
-                        </Route> */}
-                        <Route path='/segundo' element={<Form />} />
-                        <Route path='/' element={<Form2 />} />
-                        {/* --- RUTAS DEL ADMINISTRADOR (Protegidas) --- */}
-                        {/*<Route 
-                            element={
-                                <ProtectedRoute redirectPath="/login" permission={"isAdmin"} />
-                            }
-                        >
-                            <Route path="/admin" element={<AdminLayout />}>
-    						<Route index element={<Navigate to="usuarios/crear" replace />} />
-                                <Route path="usuarios/crear" element={<UserForm />} />
-                            </Route>
-                        </Route> */}
-
-    					{/* --- RUTA PARA PÁGINAS NO ENCONTRADAS --- */}
-    					<Route path="*" element={<Error404 />} />
-    				</Routes>
-
-    			</BrowserRouter>
-
-
-    			</AuthProvider>
-    		</ThemeProvider>
-    )
+            {/* --- RUTA PARA PÁGINAS NO ENCONTRADAS --- */}
+            <Route path="*" element={<Error404 />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
+  );
 }
 
 export default App;
-

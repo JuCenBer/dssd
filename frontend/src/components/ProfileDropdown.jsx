@@ -23,19 +23,12 @@ const ProfileDropdown = () => {
         <div className="relative" ref={dropdownRef}>
             <button onClick={() => setIsOpen(!isOpen)} className="flex items-center gap-2">
                 <UserCircleIcon className="w-8 h-8 text-foreground" />
-                <span className="text-sm font-medium text-foreground hidden sm:block">{user?.name || 'Mi Cuenta'}</span>
+                <span className="text-sm font-medium text-foreground hidden sm:block">{user?.username || 'Mi Cuenta'}</span>
             </button>
 
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-card rounded-md shadow-lg border border-border z-10">
                     <div className="py-1">
-                        <Link
-                            to="/profile"
-                            className="block px-4 py-2 text-sm text-card-foreground hover:bg-muted"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            Mi Perfil
-                        </Link>
                         {/* <Link to="/settings" className="block px-4 py-2 text-sm text-card-foreground hover:bg-muted" onClick={() => setIsOpen(false)}>
                             Configuración
                         </Link> */}

@@ -1,17 +1,40 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { XMarkIcon, ArrowRightOnRectangleIcon, LockClosedIcon } from '@heroicons/react/24/solid';
+import {
+    XMarkIcon,
+    FolderIcon,
+    DocumentPlusIcon,
+    MagnifyingGlassIcon,
+    ClipboardDocumentCheckIcon,
+    HomeIcon
+} from '@heroicons/react/24/solid';
 import { useAuth } from '@/hooks/useAuth';
+
+// Define los enlaces de la barra lateral para cada rol
+const roleLinks = {
+    ONG_SOLICITANTE: [
+        { name: 'Mis Proyectos', link: '/proyectos', icon: FolderIcon },
+        { name: 'Crear Proyecto', link: '/proyectos/crear', icon: DocumentPlusIcon },
+    ],
+    ONG_COLABORADORA: [
+        { name: 'Buscar Proyectos', link: '/proyectos/buscar', icon: MagnifyingGlassIcon },
+    ],
+    DIRECTIVO: [
+        { name: 'Proyectos para Revisar', link: '/revisiones', icon: ClipboardDocumentCheckIcon },
+    ],
+};
+
+const defaultLinks = [
+    { name: 'Inicio', link: '/', icon: HomeIcon },
+];
 
 const Sidebar = ({ isOpen, onClose }) => {
     const { t } = useTranslation();
-    const { isAuth, logout, hasPermission } = useAuth();
+    const { user, isAuth, logout } = useAuth();
 
-    const sidebarLinks = [
-        { name: 'nav.home', link: '/' },
-    ];
-
+    // Determina qué enlaces mostrar
+    const linksToShow = isAuth ? (roleLinks[user.role] || defaultLinks) : defaultLinks;
 
     return (
         <>
@@ -28,7 +51,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                 }`}
             >
                 <div className="flex items-center justify-between p-4 border-b border-border-primary">
-                    <img src="/logo_nav_bar.png" className="h-8" alt="Logo" />
+                    <Link to="/" className="font-bold text-xl text-text-primary">Proyectia</Link>
                     <button onClick={onClose} className="p-1 rounded-md hover:bg-surface-tertiary" aria-label="Cerrar sidebar">
                         <XMarkIcon className="h-6 w-6 text-text-secondary" />
                     </button>
@@ -36,29 +59,21 @@ const Sidebar = ({ isOpen, onClose }) => {
 
                 <nav className="p-4 flex-grow">
                     <ul className="flex flex-col gap-2">
-                        {sidebarLinks.map((item) => (
-                            <li key={item.name}>
-                                <Link
-                                    to={item.link}
-                                    onClick={onClose}
-                                    className="block text-lg text-text-primary hover:text-brand-primary hover:bg-surface-primary p-3 rounded-md transition-colors"
-                                >
-                                    {t(item.name)}
-                                </Link>
-                            </li>
-                        ))}
-                        {isAuth && hasPermission('isAdmin') && (
-                            <li>
-                                <Link
-                                    to="/admin"
-                                    onClick={onClose}
-                                    className="flex items-center gap-3 text-lg text-text-primary hover:text-brand-primary hover:bg-surface-primary p-3 rounded-md transition-colors"
-                                >
-                                    <LockClosedIcon className="w-5 h-5" />
-                                    {t('nav.admin')}
-                                </Link>
-                            </li>
-                        )}
+                        {linksToShow.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                                <li key={item.name}>
+                                    <Link
+                                        to={item.link}
+                                        onClick={onClose}
+                                        className="flex items-center gap-3 text-lg text-text-primary hover:text-brand-primary hover:bg-surface-primary p-3 rounded-md transition-colors"
+                                    >
+                                        <Icon className="w-5 h-5" />
+                                        {t(item.name)}
+                                    </Link>
+                                </li>
+                            );
+                        })}
                     </ul>
                 </nav>
 

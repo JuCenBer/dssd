@@ -1,40 +1,36 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { createContext, useContext, useCallback, useEffect } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import { authEvents } from '../services/authEvents';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const [storedAuth, setStoredAuth] = useLocalStorage('auth', { user: null, token: null, permissions: [] });
+    // Almacenamos el ID del usuario logueado
+    const [storedAuth, setStoredAuth] = useLocalStorage('auth', { role: '', username: '' });
 
-    const isAuth = Boolean(storedAuth.token);
+    // Obtenemos el objeto de usuario completo desde nuestros datos mock
+    const isAuth = Boolean(storedAuth);
 
-    const setAuth = useCallback(({ user, token, permissions }) => {
-        setStoredAuth({ user, token, permissions });
-    }, [setStoredAuth]);
-
-    const setUserInfo = useCallback((user) => {
-        setStoredAuth(prev => ({ ...prev, user }));
+    const login = useCallback((data) => {
+        setStoredAuth({
+            role: data.role,
+            username: data.username || ''
+        })
     }, [setStoredAuth]);
 
     const logout = useCallback(() => {
-        setStoredAuth({ user: null, token: null, permissions: [] });
+        setStoredAuth({ role: "", username: '' });
     }, [setStoredAuth]);
 
-    const hasPermission = useCallback((permission) => {
-        if (!storedAuth.permissions || !Array.isArray(storedAuth.permissions)) return false;
-        return storedAuth.permissions.includes(permission);
-    }, [storedAuth.permissions]);
+    const hasPermission = (role) => {
+        if(!storedAuth) return false;
+        return role == storedAuth.role;
+    }
 
-    const clearPermissions = useCallback(() => {
-        setStoredAuth(prev => ({ ...prev, permissions: [] }));
-    }, [setStoredAuth]);
-
-    // Escuchar eventos de logout desde el API client
+    // Escuchar eventos de logout desde otros módulos (ej. API client)
     useEffect(() => {
-        const handleLogout = (message?: string) => {
+        const handleLogout = () => {
             logout();
-            // Opcional: mostrar mensaje adicional o redirigir
         };
 
         authEvents.on('logout', handleLogout);
@@ -47,14 +43,11 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider
             value={{
-                user: storedAuth.user,
-                token: storedAuth.token,
-                isAuth,
-                setAuth,
-                setUserInfo,
-                logout,
+                user: storedAuth,
                 hasPermission,
-                clearPermissions,
+                isAuth,
+                login,
+                logout,
             }}
         >
             {children}

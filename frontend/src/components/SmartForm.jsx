@@ -70,6 +70,7 @@ const SmartForm = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          credentials: "include",
           "Authorization": token
         },
         body: JSON.stringify(formData),
@@ -77,11 +78,10 @@ const SmartForm = ({
       });
 
       const responseData = await response.json();
-
+      
       switch (response.status) {
         case 200:
-          let data = responseData && responseData.data ? responseData.data : formData;
-          onSuccess(data);
+          onSuccess(response);
           break;
 
         case 401:
@@ -95,7 +95,7 @@ const SmartForm = ({
         case 409:
             notify({
               type: responseData.type || "error",
-              message: responseData.message
+              message: responseData.error
             });
             let errors = {};
             responseData.fields.forEach(field => {
@@ -107,7 +107,7 @@ const SmartForm = ({
         default:
           notify({
             type: responseData.type || "error",
-            message: responseData.message
+            message: responseData.error
           });
           onFailure();
           break;

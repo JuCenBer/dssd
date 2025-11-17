@@ -1,35 +1,30 @@
-import { Link, Outlet } from "react-router";
+import { Outlet } from "react-router"; 
 import Header from "./Header";
+import Sidebar from "./Sidebar"; 
 import BottomNavBar from "@/layout/BottomNavBar";
 
-
 const Index = () => {
-
-
-
-    const actualYear = new Date().getFullYear();
-
-    return ( 
-        <div className="flex flex-col min-h-screen bg-background text-foreground">
-            {/* Header */}
+    return (
+        // La estructura general sigue siendo una columna vertical
+        <div className="flex flex-col h-screen bg-surface-primary text-text-primary">
             <Header />
             
-            {/* Contenido de la página actual */}
-            <main className="flex-grow">
-                <Outlet />
-            </main>
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar siempre visible en pantallas grandes (lg) */}
+                <Sidebar />
+                
+                {/* Contenido de la página actual */}
+                <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+                    {/* El overflow-y-auto es clave para que el contenido tenga scroll si es muy largo,
+                        y no toda la página. */}
+                    <Outlet />
+                </main>
+            </div>
 
-            {/* Footer */}
-            <footer className="py-4 border-t border-border bg-background">
-                <p className="text-center text-sm text-muted-foreground">
-                    © {actualYear} {import.meta.env.VITE_BRAND_NAME}. Todos los derechos reservados.
-                </p>
-            </footer>
-
-            {/* Barra de Navegación Inferior para Móviles */}
+            {/* El BottomNavBar es para mobile, se mostraría con clases como 'lg:hidden' */}
             <BottomNavBar /> 
         </div>
     );
 }
- 
+
 export default Index;
