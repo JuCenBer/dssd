@@ -16,7 +16,6 @@ const SmartForm = ({
   const [formData, setFormData] = useState({});
   const [errors, setErrors] = useState({});
 
-  const {token} = useAuth();
   const navigate = useNavigate();
 
   // Guarda el valor de un campo en el estado
@@ -70,18 +69,21 @@ const SmartForm = ({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          credentials: "include",
-          "Authorization": token
+          credentials: "include"
         },
         body: JSON.stringify(formData),
         credentials: "include"
       });
 
       const responseData = await response.json();
+      const data = {
+        ...responseData,
+        status: response.status
+      }
       
       switch (response.status) {
         case 200:
-          onSuccess(response);
+          onSuccess(data);
           break;
 
         case 401:

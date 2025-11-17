@@ -22,8 +22,7 @@ const Login = () => {
     const navigate = useNavigate();
 
     const handleSuccess = (data) => {
-        console.log(data, " - desde login")
-        if(data.ok) {
+        if(data.status == 200) {
             login({
                 username: "ong_sol", 
                 role: "ong_sol"

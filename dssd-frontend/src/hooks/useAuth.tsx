@@ -6,24 +6,24 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     // Almacenamos el ID del usuario logueado
-    const [storedAuth, setStoredAuth] = useLocalStorage('auth', { role: '', username: '' });
+    const [storedAuth, setStoredAuth] = useLocalStorage('auth', { role: '', username: '', isAuth: false });
 
-    // Obtenemos el objeto de usuario completo desde nuestros datos mock
-    const isAuth = Boolean(storedAuth);
+    const isAuth = Boolean(storedAuth.isAuth || false);
 
     const login = useCallback((data) => {
         setStoredAuth({
             role: data.role,
-            username: data.username || ''
+            username: data.username || '',
+            isAuth: true
         })
     }, [setStoredAuth]);
 
     const logout = useCallback(() => {
-        setStoredAuth({ role: "", username: '' });
+        setStoredAuth({ role: "", username: '', isAuth: false });
     }, [setStoredAuth]);
 
     const hasPermission = (role) => {
-        if(!storedAuth) return false;
+        if(!isAuth) return false;
         return role == storedAuth.role;
     }
 
