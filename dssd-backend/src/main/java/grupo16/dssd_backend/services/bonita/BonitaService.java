@@ -19,7 +19,7 @@ import java.net.HttpCookie;
 import java.util.*;
 
 @Service
-class BonitaService implements I_BonitaService{
+class BonitaService implements I_BonitaService {
 
     private final RestClient client;
     private static final Logger logger = LoggerFactory.getLogger(BonitaService.class);
@@ -59,8 +59,7 @@ class BonitaService implements I_BonitaService{
                             "Login Bonita: faltan cookies JSESSIONID/X-Bonita-API-Token.");
                 }
 
-                BonitaSession bonitaSession = new BonitaSession(username, js, xt, System.currentTimeMillis(), null);
-                return new BonitaSession(username, js, xt, System.currentTimeMillis(), null);
+                return new BonitaSession(username, js, xt, System.currentTimeMillis(), null, null);
             });
     }
 
@@ -170,8 +169,54 @@ class BonitaService implements I_BonitaService{
                 current.jsessionId(),
                 current.xBonitaToken(),
                 current.createdAtEpochMs(),
-                roleEnum
+                roleEnum,
+                Integer.parseInt(userId)
         );
+    }
+
+    /*
+     * Listado de caseId de procesos de proyectos iniciados por el usuario logueado
+     *
+     */
+    @Override
+    public List<Integer> getUserProcessesCaseIds(String processName) {
+
+        List<Map<String, Object>> procs = client.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/API/bpm/process")
+                        .queryParam("f", "name=" + processName)
+                        .queryParam("f", "activationState=ENABLED")
+                        .build())
+                .headers(this::withAuth)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
+
+        if (procs == null || procs.isEmpty()) throw new RuntimeException("No se encontró el proceso en Bonica por el nombre");
+
+        // si hay varias versiones, elegimos la mayor (podés cambiar a deploymentDate)
+        var processId = procs.stream()
+                .max(Comparator.comparing(m -> String.valueOf(m.get("version"))))
+                .map(m -> String.valueOf(m.get("id")));
+
+        BonitaSession bonitaSession = BonitaSessionHolder.getBonitaSession();
+
+        List<Map<String, String>> cases = client.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/API/bpm/case")
+                        .queryParam("f", "started_by=" + bonitaSession.userId())
+                        .queryParam("f", "state=started")
+                        .queryParam("processDefinitionId", processId.get())
+                        .build())
+                .headers(this::withAuth)
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {});
+
+        if (cases == null || cases.isEmpty()) return List.of();
+
+        return cases.stream()
+                .map(c -> Integer.parseInt(c.get("rootCaseId")))
+                .toList();
+
     }
 
 

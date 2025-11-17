@@ -9,12 +9,10 @@ import grupo16.dssd_backend.models.Role;
 import grupo16.dssd_backend.services.proyecto.I_ProyectoService;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,16 +49,14 @@ public class ProyectoControllerV1 implements I_ProyectoController {
     @GetMapping
     public ResponseEntity<?> getProyectos(HttpServletRequest req) {
 
-//        try {
-//            List<ProyectoDTO> this.getCorrectProyectoService().createProject();
-//        } catch
-//        return ;
-        return null;
+        List<Integer> caseIds = this.getCorrectProyectoService().getProyectos();
+        return ResponseEntity.ok(caseIds);
+
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<?> crearProyecto(ProyectoDTO proyectoDTO) {
+    public ResponseEntity<?> crearProyecto(@RequestBody ProyectoDTO proyectoDTO) {
 
         try {
             this.getCorrectProyectoService().createProject(proyectoDTO);

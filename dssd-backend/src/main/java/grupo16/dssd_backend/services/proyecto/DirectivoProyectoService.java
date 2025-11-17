@@ -11,7 +11,7 @@ public class DirectivoProyectoService extends AbstractProyectoService {
 
 
     @Override
-    public List<ProyectoDTO> getProyectos() {
+    public List<Integer> getProyectos() {
         return List.of();
     }
 

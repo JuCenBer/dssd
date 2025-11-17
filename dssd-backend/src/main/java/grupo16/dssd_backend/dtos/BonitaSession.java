@@ -7,5 +7,6 @@ public record BonitaSession(
         String jsessionId,
         String xBonitaToken,
         long createdAtEpochMs,
-        Role role
+        Role role,
+        Integer userId
 ) {}

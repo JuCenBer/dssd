@@ -1,0 +1,22 @@
+meta {
+  name: process
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{bonita_url}}/API/bpm/process?f=name=Proceso - Planificación y ejecución de proyecto
+  body: none
+  auth: inherit
+}
+
+params:query {
+  f: name=Proceso - Planificación y ejecución de proyecto
+  ~f: deployedBy=23
+  ~c: 10
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
