@@ -204,7 +204,6 @@ class BonitaService implements I_BonitaService {
                 .uri(uriBuilder -> uriBuilder
                         .path("/API/bpm/case")
                         .queryParam("f", "started_by=" + bonitaSession.userId())
-                        .queryParam("f", "state=started")
                         .queryParam("processDefinitionId", processId.get())
                         .build())
                 .headers(this::withAuth)

@@ -24,6 +24,11 @@ public class BonitaAuthFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse res = (HttpServletResponse) servletResponse;
 
+        if ("OPTIONS".equalsIgnoreCase(req.getMethod())) {
+            filterChain.doFilter(req, res);
+            return;
+        }
+
         String path = req.getRequestURI();
 
         if (isExcluded(path)) {

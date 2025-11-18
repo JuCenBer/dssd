@@ -11,7 +11,7 @@ public interface I_ProyectoService {
 
     void createProject(ProyectoDTO proyectoDTO) throws RoleException, ValidationException;
 
-    List<Integer> getProyectos();
+    List<ProyectoDTO> getProyectos();
 
     Role roleForService();
 }

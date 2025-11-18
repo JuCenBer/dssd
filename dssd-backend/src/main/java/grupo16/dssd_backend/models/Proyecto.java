@@ -30,11 +30,16 @@ public class Proyecto {
     }
 
     public Proyecto(ProyectoDTO proyectoDTO){
+        this.id = proyectoDTO.id();
         this.nombre = proyectoDTO.nombre();
         this.caseId = proyectoDTO.caseId();
         this.descripcion = proyectoDTO.descripcion();
         this.ubicacion = proyectoDTO.ubicacion();
         this.actividades = proyectoDTO.actividades().stream().map(actDTO -> new Actividad(actDTO, this)).toList();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getNombre() {

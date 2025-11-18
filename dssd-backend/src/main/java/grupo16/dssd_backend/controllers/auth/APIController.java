@@ -22,20 +22,24 @@ class AuthControllerV1 implements I_AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO req, HttpServletRequest httpReq) {
 
-        BonitaSession bonitaSession = this.bonitaService.loginAndReturnCookies(req.username(), req.password());
-        // guardar en sesión
-        var session = httpReq.getSession(true);
-        session.setAttribute("bonitaSession", bonitaSession);
+        try {
+            BonitaSession bonitaSession = this.bonitaService.loginAndReturnCookies(req.username(), req.password());
+            // guardar en sesión
+            var session = httpReq.getSession(true);
+            session.setAttribute("bonitaSession", bonitaSession);
 
-        bonitaSession = this.bonitaService.getUserRole();
-        session.setAttribute("bonitaSession", bonitaSession);
+            bonitaSession = this.bonitaService.getUserRole();
+            session.setAttribute("bonitaSession", bonitaSession);
 
-        return ResponseEntity.ok().body(Map.of(
-                "username", bonitaSession.username(),
-                "role", bonitaSession.role(),
-                "message", "Sesión iniciada correctamente"));
+            return ResponseEntity.ok().body(Map.of(
+                    "username", bonitaSession.username(),
+                    "role", bonitaSession.role(),
+                    "message", "Sesión iniciada correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
     }
-
 
 
     @Override

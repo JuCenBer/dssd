@@ -10,7 +10,7 @@ import java.util.List;
 public class ONGColProyectoService extends AbstractProyectoService {
 
     @Override
-    public List<Integer> getProyectos() {
+    public List<ProyectoDTO> getProyectos() {
         return List.of();
     }
 

@@ -31,13 +31,18 @@ public class Actividad {
 
     }
 
-    public Actividad(ActividadDTO actividadDTO, Proyecto proyecto){
+    public Actividad(ActividadDTO actividadDTO, Proyecto proyecto) {
+        this.id = actividadDTO.id();
         this.nombre = actividadDTO.nombre();
         this.fechaInicio = actividadDTO.fechaInicio();
         this.fechaFin = actividadDTO.fechaFin();
         this.recurso = Recurso.valueOf(actividadDTO.recurso());
         this.requiereColaboracion = actividadDTO.requiereColaboracion();
         this.proyecto = proyecto;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getNombre() {

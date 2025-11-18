@@ -1,8 +1,11 @@
 package grupo16.dssd_backend.dtos;
 
+import grupo16.dssd_backend.models.Proyecto;
+
 import java.util.List;
 
 public record ProyectoDTO(
+        Long id,
         String nombre,
         String descripcion,
         String ubicacion,
@@ -24,5 +27,22 @@ public record ProyectoDTO(
             return false;
         }
         return true;
+    }
+
+    static ProyectoDTO fromEntity(Proyecto proyecto) {
+        return new ProyectoDTO(
+                proyecto.getId(),
+                proyecto.getNombre(),
+                proyecto.getDescripcion(),
+                proyecto.getUbicacion(),
+                proyecto.getCaseId(),
+                ActividadDTO.fromEntity((proyecto.getActividades()))
+        );
+    }
+
+    public static List<ProyectoDTO> fromEntity(List<Proyecto> proyectos) {
+        return proyectos.stream()
+                .map(ProyectoDTO::fromEntity)
+                .toList();
     }
 }

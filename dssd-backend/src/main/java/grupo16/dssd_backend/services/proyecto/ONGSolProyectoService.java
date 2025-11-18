@@ -31,8 +31,10 @@ public class ONGSolProyectoService extends AbstractProyectoService {
     }
 
     @Override
-    public List<Integer> getProyectos() {
-        return this.bonitaService.getUserProcessesCaseIds(NombresProcesos.PROCESO_CREAR_PROYECTO);
+    public List<ProyectoDTO> getProyectos() {
+        List<Integer> caseIds = this.bonitaService.getUserProcessesCaseIds(NombresProcesos.PROCESO_CREAR_PROYECTO);
+
+        return ProyectoDTO.fromEntity(this.proyectoRepository.findByCaseIdIn(caseIds));
     }
 
     @Override

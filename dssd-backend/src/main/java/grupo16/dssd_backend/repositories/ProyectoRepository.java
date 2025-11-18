@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ProyectoRepository extends JpaRepository<Proyecto, Long> {
 
+    List<Proyecto> findByCaseIdIn(List<Integer> caseIds);
 }

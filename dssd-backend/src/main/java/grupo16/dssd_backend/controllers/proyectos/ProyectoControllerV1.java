@@ -9,7 +9,6 @@ import grupo16.dssd_backend.models.Role;
 import grupo16.dssd_backend.services.proyecto.I_ProyectoService;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,8 +48,9 @@ public class ProyectoControllerV1 implements I_ProyectoController {
     @GetMapping
     public ResponseEntity<?> getProyectos(HttpServletRequest req) {
 
-        List<Integer> caseIds = this.getCorrectProyectoService().getProyectos();
-        return ResponseEntity.ok(caseIds);
+        List<ProyectoDTO> proyectos = this.getCorrectProyectoService().getProyectos();
+
+        return ResponseEntity.ok(proyectos);
 
     }
 
