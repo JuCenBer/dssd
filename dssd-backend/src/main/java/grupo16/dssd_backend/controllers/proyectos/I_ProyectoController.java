@@ -6,8 +6,9 @@ import org.springframework.http.ResponseEntity;
 
 public interface I_ProyectoController {
 
-    ResponseEntity<?> getProyectos(HttpServletRequest req);
+    ResponseEntity<?> getProyectos();
 
     ResponseEntity<?> crearProyecto(ProyectoDTO proyectoDTO);
 
+    ResponseEntity<?> getProyecto(Long proyectoId);
 }

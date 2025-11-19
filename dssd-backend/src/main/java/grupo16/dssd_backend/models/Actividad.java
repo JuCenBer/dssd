@@ -84,4 +84,8 @@ public class Actividad {
     public void setRequiereColaboracion(Boolean requiereColaboracion) {
         this.requiereColaboracion = requiereColaboracion;
     }
+
+    public Proyecto getProyecto() {
+        return proyecto;
+    }
 }

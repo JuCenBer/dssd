@@ -15,6 +15,6 @@ public interface I_BonitaService {
 
     BonitaSession getUserRole();
 
-    List<Integer> getUserProcessesCaseIds(String processName);
+    List<Long> getUserProcessesCaseIds(String processName);
 
 }

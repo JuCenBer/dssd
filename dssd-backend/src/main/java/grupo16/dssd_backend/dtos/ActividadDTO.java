@@ -3,6 +3,7 @@ package grupo16.dssd_backend.dtos;
 import grupo16.dssd_backend.models.Actividad;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 public record ActividadDTO(
@@ -25,7 +26,7 @@ public record ActividadDTO(
         );
     }
 
-    static List<ActividadDTO> fromEntity(List<Actividad> actividades) {
+    static List<ActividadDTO> fromEntity(Collection<Actividad> actividades) {
         return actividades.stream()
                 .map(ActividadDTO::fromEntity)
                 .toList();

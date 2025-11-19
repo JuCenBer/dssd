@@ -1,7 +1,9 @@
 package grupo16.dssd_backend.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import grupo16.dssd_backend.models.Proyecto;
 
+import java.util.Collection;
 import java.util.List;
 
 public record ProyectoDTO(
@@ -13,6 +15,7 @@ public record ProyectoDTO(
         List<ActividadDTO> actividades
 ) {
 
+    @JsonIgnore
     public boolean isValid(){
         if (nombre == null || nombre.isBlank()) {
             return false;
@@ -29,7 +32,7 @@ public record ProyectoDTO(
         return true;
     }
 
-    static ProyectoDTO fromEntity(Proyecto proyecto) {
+    public static ProyectoDTO fromEntity(Proyecto proyecto) {
         return new ProyectoDTO(
                 proyecto.getId(),
                 proyecto.getNombre(),
@@ -40,7 +43,7 @@ public record ProyectoDTO(
         );
     }
 
-    public static List<ProyectoDTO> fromEntity(List<Proyecto> proyectos) {
+    public static List<ProyectoDTO> fromEntity(Collection<Proyecto> proyectos) {
         return proyectos.stream()
                 .map(ProyectoDTO::fromEntity)
                 .toList();

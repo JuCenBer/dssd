@@ -8,6 +8,7 @@ import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import grupo16.dssd_backend.models.Role;
 import grupo16.dssd_backend.services.proyecto.I_ProyectoService;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,9 +47,11 @@ public class ProyectoControllerV1 implements I_ProyectoController {
 
     @Override
     @GetMapping
-    public ResponseEntity<?> getProyectos(HttpServletRequest req) {
+    public ResponseEntity<?> getProyectos() {
 
         List<ProyectoDTO> proyectos = this.getCorrectProyectoService().getProyectos();
+
+        if (proyectos.isEmpty()) return ResponseEntity.noContent().build();
 
         return ResponseEntity.ok(proyectos);
 
@@ -66,5 +69,19 @@ public class ProyectoControllerV1 implements I_ProyectoController {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
         return ResponseEntity.ok(Map.of("message", "Proyecto creado exitosamente"));
+    }
+
+    @Override
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getProyecto(@PathVariable("id") Long proyectoId) {
+
+        try {
+            return ResponseEntity.ok(this.getCorrectProyectoService().getProyecto(proyectoId));
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (ValidationException e) {
+            return ResponseEntity.status(403).body(Map.of("message", e.getMessage()));
+        }
     }
 }

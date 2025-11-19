@@ -14,4 +14,6 @@ public interface I_ProyectoService {
     List<ProyectoDTO> getProyectos();
 
     Role roleForService();
+
+    ProyectoDTO getProyecto(Long proyectoId) throws ValidationException;
 }

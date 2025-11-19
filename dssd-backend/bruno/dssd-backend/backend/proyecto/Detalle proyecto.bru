@@ -1,0 +1,16 @@
+meta {
+  name: Detalle proyecto
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{backend_url}}/proyectos/2
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

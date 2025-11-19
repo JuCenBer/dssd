@@ -179,7 +179,7 @@ class BonitaService implements I_BonitaService {
      *
      */
     @Override
-    public List<Integer> getUserProcessesCaseIds(String processName) {
+    public List<Long> getUserProcessesCaseIds(String processName) {
 
         List<Map<String, Object>> procs = client.get()
                 .uri(uriBuilder -> uriBuilder
@@ -213,9 +213,8 @@ class BonitaService implements I_BonitaService {
         if (cases == null || cases.isEmpty()) return List.of();
 
         return cases.stream()
-                .map(c -> Integer.parseInt(c.get("rootCaseId")))
+                .map(c -> Long.parseLong(c.get("rootCaseId")))
                 .toList();
-
     }
 
 
