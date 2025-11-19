@@ -191,7 +191,7 @@ class BonitaService implements I_BonitaService {
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {});
 
-        if (procs == null || procs.isEmpty()) throw new RuntimeException("No se encontró el proceso en Bonica por el nombre");
+        if (procs == null || procs.isEmpty()) return List.of();
 
         // si hay varias versiones, elegimos la mayor (podés cambiar a deploymentDate)
         var processId = procs.stream()

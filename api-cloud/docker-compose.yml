@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  apicloud:
+    build: ./
+    container_name: dssd-api-cloud
+    ports:
+      - "7070:7070"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/dssd_api_cloud_db
+      - SPRING_DATASOURCE_USERNAME=dssd_api_cloud
+      - SPRING_DATASOURCE_PASSWORD=dssd_api_cloud
+      - SERVICE_URL=http://host.docker.internal:7070
+      - PORT=7070
+  #   depends_on:
+  #     - db
+
+  # db:
+  #   image: postgres:16
+  #   container_name: postgres-db-api-cloud
+  #   restart: always
+  #   command: [ "postgres", "-c", "TimeZone=America/Argentina/Buenos_Aires" ]
+  #   environment:
+  #     - 'POSTGRES_DB=dssd_api_cloud_db'
+  #     - 'POSTGRES_PASSWORD=dssd_api_cloud'
+  #     - 'POSTGRES_USER=dssd_api_cloud'
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
