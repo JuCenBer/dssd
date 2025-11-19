@@ -2,6 +2,7 @@ package grupo16.dssd_backend.services.bonita;
 
 import grupo16.dssd_backend.dtos.BonitaSession;
 import grupo16.dssd_backend.helpers.NombresProcesos;
+import grupo16.dssd_backend.models.Proyecto;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface I_BonitaService {
 
     void logout(BonitaSession session);
 
-    Long iniciarProcesoCreacionProyecto(String nombre);
+    Long iniciarProcesoCreacionProyecto(Proyecto proyecto);
 
     BonitaSession getUserRole();
 

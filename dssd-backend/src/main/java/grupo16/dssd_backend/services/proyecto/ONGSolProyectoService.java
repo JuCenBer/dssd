@@ -21,7 +21,7 @@ public class ONGSolProyectoService extends AbstractProyectoService {
         }
         Proyecto newProyecto = new Proyecto(proyectoDTO);
 
-        Long caseId = this.bonitaService.iniciarProcesoCreacionProyecto(newProyecto.getNombre());
+        Long caseId = this.bonitaService.iniciarProcesoCreacionProyecto(newProyecto);
 
         // TODO: ENVIAR A CLOUD LOS PEDIDOS
 

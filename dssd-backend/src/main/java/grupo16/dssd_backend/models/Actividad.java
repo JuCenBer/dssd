@@ -1,5 +1,6 @@
 package grupo16.dssd_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import jakarta.persistence.*;
 
@@ -23,6 +24,7 @@ public class Actividad {
 
     private Boolean requiereColaboracion;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "proyecto_id", nullable = false)
     private Proyecto proyecto;

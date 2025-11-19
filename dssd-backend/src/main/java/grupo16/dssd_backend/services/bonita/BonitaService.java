@@ -1,12 +1,16 @@
 package grupo16.dssd_backend.services.bonita;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd_backend.dtos.BonitaSession;
 import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import grupo16.dssd_backend.helpers.NombresProcesos;
+import grupo16.dssd_backend.models.Proyecto;
 import grupo16.dssd_backend.models.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -23,12 +27,14 @@ class BonitaService implements I_BonitaService {
 
     private final RestClient client;
     private static final Logger logger = LoggerFactory.getLogger(BonitaService.class);
+    private final ObjectMapper mapper;
 
-    public BonitaService(@Value("${external.service.url}/bonita") String baseUrl) {
+    public BonitaService(@Value("${external.service.url}/bonita") String baseUrl, ObjectMapper mapper) {
         this.client = RestClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .build();
+        this.mapper = mapper;
     }
 
     @Override
@@ -69,7 +75,7 @@ class BonitaService implements I_BonitaService {
     }
 
     @Override
-    public Long iniciarProcesoCreacionProyecto(String nombre) {
+    public Long iniciarProcesoCreacionProyecto(Proyecto proyecto) {
 
         // Buscar proceso por nombre, obtener id
         Optional<String> resp = this.buscarProcesoPorNombre(NombresProcesos.PROCESO_CREAR_PROYECTO);
@@ -82,7 +88,7 @@ class BonitaService implements I_BonitaService {
 
         // Instanciar proceso
 
-        Map<String, Object> instancia = this.instanciarProceso(String.valueOf(id), nombre);
+        Map<String, Object> instancia = this.instanciarProceso(String.valueOf(id));
 
         String caseId = String.valueOf(instancia.get("caseId"));
         logger.info("CASE ID: "+ caseId);
@@ -103,7 +109,19 @@ class BonitaService implements I_BonitaService {
         this.asignarTareaAUsuario(taskId, userId);
         logger.info("TAREA ASIGNADA: "+ userId);
 
-        this.setVariablesCase(caseId, Map.of("nombre", nombre));
+        String proyectoJson = null;
+        try {
+            proyectoJson = mapper.writeValueAsString(proyecto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.setVariablesCase(
+                caseId, Map.of(
+                        "nombre", proyecto.getNombre(),
+                        "proyectoJson", proyectoJson
+                )
+        );
 
         // Ejecutar tarea
         this.ejecutarTareaDeUsuario(taskId, null);
@@ -239,14 +257,12 @@ class BonitaService implements I_BonitaService {
             .map(m -> String.valueOf(m.get("id")));
     }
 
-    private Map<String, Object> instanciarProceso(String processId, String nombre) {
-        Map<String, Object> body = Map.of("nombre", nombre);
+    private Map<String, Object> instanciarProceso(String processId) {
 
         return client.post()
             .uri("/API/bpm/process/{id}/instantiation", processId)
             .headers(this::withAuth)
             .contentType(MediaType.APPLICATION_JSON)
-            .body(body)
             .retrieve()
             .body(new ParameterizedTypeReference<Map<String, Object>>() {});
     }

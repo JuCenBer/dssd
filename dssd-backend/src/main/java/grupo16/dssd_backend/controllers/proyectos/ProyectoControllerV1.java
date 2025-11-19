@@ -56,9 +56,6 @@ public class ProyectoControllerV1 implements I_ProyectoController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(500).body(Map.of("message", e.getMessage()));
         }
-
-
-
     }
 
     @Override
