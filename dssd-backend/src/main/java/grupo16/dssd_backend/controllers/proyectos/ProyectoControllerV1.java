@@ -52,8 +52,6 @@ public class ProyectoControllerV1 implements I_ProyectoController {
         try {
             List<ProyectoDTO> proyectos = this.getCorrectProyectoService().getProyectos();
 
-            if (proyectos.isEmpty()) return ResponseEntity.noContent().build();
-
             return ResponseEntity.ok(proyectos);
         } catch (RuntimeException e) {
             return ResponseEntity.status(500).body(Map.of("message", e.getMessage()));
