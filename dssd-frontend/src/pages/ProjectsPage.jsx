@@ -128,11 +128,6 @@ const ProjectsPage = () => {
                 <>
                     <ProjectList projects={projectItems} />
 
-                    {projectItems.length === 0 && (
-                        <div className="text-center p-10 bg-gray-50 rounded-lg border border-gray-200">
-                            <p className="text-xl text-gray-500">No se encontraron proyectos disponibles.</p>
-                        </div>
-                    )}
                 </>
             )}
         </div>
