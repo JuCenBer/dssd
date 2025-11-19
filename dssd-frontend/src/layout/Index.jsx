@@ -21,8 +21,6 @@ const Index = () => {
                 </main>
             </div>
 
-            {/* El BottomNavBar es para mobile, se mostraría con clases como 'lg:hidden' */}
-            <BottomNavBar /> 
         </div>
     );
 }
