@@ -13,6 +13,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 // Páginas
 import Login from './pages/Login';
 import ProjectsPage from './pages/ProjectsPage';
+import CreateProject from './pages/CreateProject';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import Form from './pages/Form'; // Página para crear proyecto
 
@@ -42,7 +43,7 @@ function App() {
                 <Route path="revisiones" element={<ProjectsPage />} />
 
                 {/* Ruta para crear un nuevo proyecto */}
-                <Route path="proyectos/crear" element={<Form />} />
+                <Route path="proyectos/crear" element={<CreateProject />} />
 
                 {/* Ruta para ver el detalle de un proyecto */}
                 <Route path="proyectos/:id" element={<ProjectDetailPage />} />
