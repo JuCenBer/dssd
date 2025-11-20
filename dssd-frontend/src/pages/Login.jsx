@@ -23,10 +23,7 @@ const Login = () => {
 
     const handleSuccess = (data) => {
         if(data.status == 200) {
-            login({
-                username: "ong_sol", 
-                role: "ong_sol"
-            });
+            login(data);
             navigate("/", { replace: true });
             notify({ type: "success", message: `¡Bienvenido/a de nuevo! Tu rol es: ${data.role}` });
 

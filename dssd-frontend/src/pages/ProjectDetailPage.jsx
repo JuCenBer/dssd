@@ -22,7 +22,9 @@ const ProjectDetailPage = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/proyectos/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/proyectos/${id}`, {
+          credentials: 'include'
+        });
         if (!res.ok) throw new Error("Not found");
         const data = await res.json();
 

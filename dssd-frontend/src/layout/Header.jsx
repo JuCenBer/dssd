@@ -46,23 +46,7 @@ const Header = () => {
                 </nav>
 
                 <div className="flex items-center gap-4">
-                    {isAuth && (
-                        <div className='hidden lg:flex items-center gap-2 border-r border-border-secondary pr-4'>
-                            <span className='text-xs text-text-primary/70'>Switch role:</span>
-                            {mockUsers.map(mockUser => (
-                                <button 
-                                    key={mockUser.id}
-                                    onClick={() => login({...mockUser, username: mockUser.name})}
-                                    className={`px-2 py-1 text-xs font-semibold rounded-md transition-colors ${
-                                        user.role === mockUser.role 
-                                            ? 'bg-brand-primary text-white' 
-                                            : 'text-text-primary/70 hover:bg-surface-secondary'
-                                    }`}>
-                                    {mockUser.role} 
-                                </button>
-                            ))}
-                        </div>
-                    )}
+                    
 
                     <div className="hidden lg:block">
                         {isAuth ? <ProfileDropdown /> : (
