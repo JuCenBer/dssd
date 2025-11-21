@@ -1,6 +1,9 @@
 package grupo16.dssd.api_cloud.services.pedido;
 
 import grupo16.dssd.api_cloud.dtos.PedidoColaboracionDTO;
+import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
+import grupo16.dssd.api_cloud.dtos.bonita.CreacionActividadDTO;
+import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
@@ -36,6 +39,22 @@ public class PedidoColaboracionServiceImpl implements I_PedidoColaboracionServic
         pedidoColaboracion = this.pedidoColaboracionRepository.save(pedidoColaboracion);
 
         return PedidoColaboracionDTO.fromEntity(pedidoColaboracion, Boolean.TRUE);
+    }
+
+    @Override
+    public void crearPedidosColaboracion(List<CreacionActividadDTO> actividades, Proyecto proyecto) {
+
+        for (CreacionActividadDTO act : actividades) {
+            if (act.requiereColaboracion()) {
+                var pedidoDTO = PedidoColaboracionDTO.builder()
+                        .nombre(act.nombre())
+                        .fechaInicio(act.fechaInicio())
+                        .fechaFin(act.fechaFin())
+                        .recurso(act.recurso())
+                        .build();
+                this.crearPedidoColaboracion(pedidoDTO, proyecto.getCargadoPor(), proyecto);
+            }
+        }
     }
 
     @Override

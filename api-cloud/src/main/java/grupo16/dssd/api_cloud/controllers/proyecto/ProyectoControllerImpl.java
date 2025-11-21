@@ -1,12 +1,12 @@
 package grupo16.dssd.api_cloud.controllers.proyecto;
 
 import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
+import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
 import grupo16.dssd.api_cloud.services.pedido.I_PedidoColaboracionService;
 import grupo16.dssd.api_cloud.services.proyecto.I_ProyectoService;
 import grupo16.dssd.api_cloud.services.users.UserService;
-import grupo16.dssd.api_cloud.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -31,6 +31,7 @@ public class ProyectoControllerImpl implements I_ProyectoController {
 
     private final I_ProyectoService proyectoService;
     private final UserService userService;
+    private final I_PedidoColaboracionService pedidosService;
 
     @Override
     @PostMapping
@@ -135,6 +136,27 @@ public class ProyectoControllerImpl implements I_ProyectoController {
         }
 
         return ResponseEntity.ok().body(ProyectoDTO.fromEntity(proyecto));
+    }
+
+    @Override
+    @PostMapping("/bonita")
+    public ResponseEntity<?> createFromBonita(HttpServletRequest request, @RequestBody CreacionProyectoDTO creacionProyectoDTO){
+
+        try {
+            User cargadoPor = this.userService.getUserByUsername((String) request.getAttribute("username"));
+            ProyectoDTO proyectoDTO = this.proyectoService.crearProyecto(creacionProyectoDTO, cargadoPor);
+
+            Proyecto proyecto = this.proyectoService.findById(proyectoDTO.getId())
+                    .orElseThrow(() -> new IllegalStateException("No se pudo crear el proyecto"));
+
+            this.pedidosService.crearPedidosColaboracion(creacionProyectoDTO.actividades(), proyecto);
+
+            return ResponseEntity.ok(proyectoDTO);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
+
     }
 
 

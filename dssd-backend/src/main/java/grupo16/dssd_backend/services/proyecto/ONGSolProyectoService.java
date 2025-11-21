@@ -1,37 +1,68 @@
 package grupo16.dssd_backend.services.proyecto;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
 import grupo16.dssd_backend.exceptions.ValidationException;
 import grupo16.dssd_backend.helpers.NombresProcesos;
+import grupo16.dssd_backend.models.Actividad;
 import grupo16.dssd_backend.models.Proyecto;
 import grupo16.dssd_backend.models.Role;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ONGSolProyectoService extends AbstractProyectoService {
 
+
     @Override
+    @Transactional
     public void createProject(ProyectoDTO proyectoDTO) throws ValidationException {
 
         if(!proyectoDTO.isValid()){
-            throw new ValidationException("Datos ingresados inválidos");
+            throw new ValidationException("Datos ingresados inválidos.");
         }
         Proyecto newProyecto = new Proyecto(proyectoDTO);
 
-        Long caseId = this.bonitaService.iniciarProcesoCreacionProyecto(newProyecto);
+        if (newProyecto.getActividades().stream().noneMatch(Actividad::getRequiereColaboracion)) {
+            throw new ValidationException("Al menos una actividad del proyecto debe requerir colaboración.");
+        };
 
-        // TODO: ENVIAR A CLOUD LOS PEDIDOS
-
+        // Bonita: instanciar proceso
+        Long caseId = this.bonitaService.instanciarProcesoCreacionProyecto(newProyecto);
         newProyecto.setCaseId(caseId);
 
-        this.proyectoRepository.save(newProyecto);
+        // Persiste proyecto
+        newProyecto = this.proyectoRepository.save(newProyecto);
+
+        // Bonita: Setear variable de proceso proyectoJson
+        String proyectoJson = null;
+        try {
+            proyectoJson = mapper.writeValueAsString(newProyecto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.bonitaService.setVariablesCase(
+                caseId.toString(), Map.of(
+                        "nombre", newProyecto.getNombre(),
+                        "proyectoJson", proyectoJson
+                )
+        );
+
+        this.bonitaService.ejecutarSiguienteTareaReady(caseId);
+
+        // Bonita: Tarea de crear pedidos de colaboración
+
+
 
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ProyectoDTO> getProyectos() {
         List<Long> userCaseIds = this.bonitaService.getUserProcessesCaseIds(NombresProcesos.PROCESO_CREAR_PROYECTO);
 
@@ -44,6 +75,7 @@ public class ONGSolProyectoService extends AbstractProyectoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProyectoDTO getProyecto(Long proyectoId) throws ValidationException {
         ProyectoDTO proyectoDTO =  ProyectoDTO.fromEntity(
                 this.proyectoRepository.findById(proyectoId)

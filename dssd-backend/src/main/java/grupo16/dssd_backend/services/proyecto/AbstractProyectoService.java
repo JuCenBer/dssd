@@ -1,5 +1,6 @@
 package grupo16.dssd_backend.services.proyecto;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
@@ -19,6 +20,9 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
 
     @Autowired
     protected I_BonitaService bonitaService;
+
+    @Autowired
+    protected ObjectMapper mapper;
 
     @Override
     public void createProject(ProyectoDTO proyectoDTO) throws RoleException, ValidationException {
