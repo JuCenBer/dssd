@@ -1,6 +1,5 @@
 package grupo16.dssd_backend.services.bonita;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd_backend.dtos.BonitaSession;
 import grupo16.dssd_backend.helpers.BonitaSessionHolder;
@@ -10,7 +9,6 @@ import grupo16.dssd_backend.models.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -75,7 +73,7 @@ class BonitaService implements I_BonitaService {
     }
 
     @Override
-    public Long iniciarProcesoCreacionProyecto(Proyecto proyecto) {
+    public Long instanciarProcesoCreacionProyecto(Proyecto proyecto) {
 
         // Buscar proceso por nombre, obtener id
         Optional<String> resp = this.buscarProcesoPorNombre(NombresProcesos.PROCESO_CREAR_PROYECTO);
@@ -87,46 +85,34 @@ class BonitaService implements I_BonitaService {
         logger.info("PROCESO ENCONTRADO: "+ resp.get());
 
         // Instanciar proceso
-
         Map<String, Object> instancia = this.instanciarProceso(String.valueOf(id));
 
         String caseId = String.valueOf(instancia.get("caseId"));
         logger.info("CASE ID: "+ caseId);
 
+        return Long.parseLong(caseId);
+    }
+
+    @Override
+    public void ejecutarSiguienteTareaReady(Long caseId) {
         // Obtener tareas del caso
         List<Map<String, Object>> tareas =
-                this.buscarTareasPorCaso(caseId);
+                this.buscarTareasReadyPorCaso(caseId.toString());
 
         // Asignar tarea a usuario
         while (tareas.isEmpty()) {
             logger.info("No hay tareas ready en el caso " + caseId);
-            tareas = this.buscarTareasPorCaso(caseId);
+            tareas = this.buscarTareasReadyPorCaso(caseId.toString());
         }
-        String taskId = String.valueOf(tareas.get(0).get("id"));
+        String taskId = String.valueOf(tareas.getFirst().get("id"));
 
-        String userId = this.getUserId();
+        String userId = BonitaSessionHolder.getBonitaSession().userId().toString();
 
         this.asignarTareaAUsuario(taskId, userId);
         logger.info("TAREA ASIGNADA: "+ userId);
 
-        String proyectoJson = null;
-        try {
-            proyectoJson = mapper.writeValueAsString(proyecto);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-
-        this.setVariablesCase(
-                caseId, Map.of(
-                        "nombre", proyecto.getNombre(),
-                        "proyectoJson", proyectoJson
-                )
-        );
-
         // Ejecutar tarea
         this.ejecutarTareaDeUsuario(taskId, null);
-
-        return Long.parseLong(caseId);
     }
 
     @Override
@@ -267,7 +253,7 @@ class BonitaService implements I_BonitaService {
             .body(new ParameterizedTypeReference<Map<String, Object>>() {});
     }
 
-    private List<Map<String, Object>> buscarTareasPorCaso(String caseId) {
+    private List<Map<String, Object>> buscarTareasReadyPorCaso(String caseId) {
         return client.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/API/bpm/humanTask")
@@ -281,7 +267,8 @@ class BonitaService implements I_BonitaService {
             .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
     }
 
-    private void setVariablesCase(String caseId, Map<String, Object> variables) {
+    @Override
+    public void setVariablesCase(String caseId, Map<String, Object> variables) {
 
         for (Map.Entry<String, Object> entry : variables.entrySet()) {
             String varName = entry.getKey();
@@ -368,22 +355,22 @@ class BonitaService implements I_BonitaService {
         return out;
     }
 
-    private String getUserId(){
-        String username = "walter.bates"; // el usuario con el que te logueaste
-        String userId = null;
-        List<Map<String, Object>> users = client.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/API/identity/user")
-                        .queryParam("f", "userName=" + username)
-                        .build())
-                .cookie("JSESSIONID", BonitaSessionHolder.getBonitaSession().jsessionId()) // js es el valor de la cookie de sesión
-                .retrieve()
-                .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
-
-        // Ahora podés obtener el id
-        if (users != null && !users.isEmpty()) {
-            userId = (String) users.get(0).get("id");
-        }
-        return userId;
-    }
+//    private String getUserId(){
+//        String username = BonitaSessionHolder.getBonitaSession().username();
+//        String userId = null;
+//        List<Map<String, Object>> users = client.get()
+//                .uri(uriBuilder -> uriBuilder
+//                        .path("/API/identity/user")
+//                        .queryParam("f", "userName=" + username)
+//                        .build())
+//                .cookie("JSESSIONID", BonitaSessionHolder.getBonitaSession().jsessionId()) // js es el valor de la cookie de sesión
+//                .retrieve()
+//                .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
+//
+//        // Ahora podés obtener el id
+//        if (users != null && !users.isEmpty()) {
+//            userId = (String) users.get(0).get("id");
+//        }
+//        return userId;
+//    }
 }

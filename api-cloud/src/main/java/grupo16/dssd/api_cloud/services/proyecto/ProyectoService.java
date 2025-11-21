@@ -1,6 +1,7 @@
 package grupo16.dssd.api_cloud.services.proyecto;
 
 import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
+import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
@@ -41,6 +42,19 @@ public class ProyectoService implements I_ProyectoService {
         proyecto = this.proyectoRepository.save(proyecto);
 
         return ProyectoDTO.fromEntity(proyecto);
+    }
+
+    @Override
+    public ProyectoDTO crearProyecto(CreacionProyectoDTO creacionProyectoDTO, User cargadoPor) {
+
+        ProyectoDTO proyectoDTO = ProyectoDTO.builder()
+                .caseId(creacionProyectoDTO.caseId())
+                .nombre(creacionProyectoDTO.nombre())
+                .descripcion(creacionProyectoDTO.descripcion())
+                .ubicacion(creacionProyectoDTO.ubicacion())
+                .build();
+
+        return this.crearProyecto(proyectoDTO, cargadoPor);
     }
 
     @Override
