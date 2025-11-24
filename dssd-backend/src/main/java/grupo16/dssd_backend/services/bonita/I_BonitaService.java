@@ -21,4 +21,6 @@ public interface I_BonitaService {
     List<Long> getUserProcessesCaseIds(String processName);
 
     void setVariablesCase(String caseId, Map<String, Object> variables);
+
+    Object getCaseVariableValue(Long caseId, String variableName);
 }

@@ -1,6 +1,7 @@
 package grupo16.dssd_backend.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import grupo16.dssd_backend.models.EstadoProyecto;
 import grupo16.dssd_backend.models.Proyecto;
 
 import java.util.Collection;
@@ -12,7 +13,8 @@ public record ProyectoDTO(
         String descripcion,
         String ubicacion,
         Long caseId,
-        List<ActividadDTO> actividades
+        List<ActividadDTO> actividades,
+        EstadoProyecto estado
 ) {
 
     @JsonIgnore
@@ -39,7 +41,8 @@ public record ProyectoDTO(
                 proyecto.getDescripcion(),
                 proyecto.getUbicacion(),
                 proyecto.getCaseId(),
-                ActividadDTO.fromEntity((proyecto.getActividades()))
+                ActividadDTO.fromEntity((proyecto.getActividades())),
+                proyecto.getEstado()
         );
     }
 

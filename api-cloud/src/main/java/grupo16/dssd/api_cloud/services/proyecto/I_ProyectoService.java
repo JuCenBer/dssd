@@ -18,5 +18,5 @@ public interface I_ProyectoService {
 
     List<ProyectoDTO> findAll();
 
-
+    Optional<Proyecto> findByCaseId(Long id);
 }

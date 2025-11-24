@@ -1,12 +1,15 @@
 package grupo16.dssd_backend.models;
 
-import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 public class Proyecto {
 
@@ -22,6 +25,11 @@ public class Proyecto {
 
     private String ubicacion;
 
+    @Enumerated(EnumType.STRING)
+    private EstadoProyecto estado;
+
+    private Long externalId;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "proyecto", orphanRemoval = true)
     private List<Actividad> actividades;
 
@@ -35,38 +43,13 @@ public class Proyecto {
         this.caseId = proyectoDTO.caseId();
         this.descripcion = proyectoDTO.descripcion();
         this.ubicacion = proyectoDTO.ubicacion();
-        this.actividades = proyectoDTO.actividades().stream().map(actDTO -> new Actividad(actDTO, this)).toList();
+        this.actividades = new ArrayList<>(
+                proyectoDTO.actividades().stream()
+                        .map(actDTO -> new Actividad(actDTO, this))
+                        .toList()
+        );
+        this.estado = EstadoProyecto.EN_PLANIFICACION;
+        this.externalId = null;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
-    }
-
-    public List<Actividad> getActividades() {
-        return actividades;
-    }
-
-    public Long getCaseId() {
-        return caseId;
-    }
-
-    public void setCaseId(Long caseId) {
-        this.caseId = caseId;
-    }
 }

@@ -63,4 +63,10 @@ public class ProyectoService implements I_ProyectoService {
         return ProyectoDTO.fromEntity(this.proyectoRepository.findAll());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Proyecto> findByCaseId(Long caseId) {
+        return this.proyectoRepository.findByCaseId(caseId);
+    }
+
 }

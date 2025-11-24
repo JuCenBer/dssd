@@ -53,11 +53,23 @@ public class ONGSolProyectoService extends AbstractProyectoService {
                 )
         );
 
+        // Bonita: Avanzar en tarea
         this.bonitaService.ejecutarSiguienteTareaReady(caseId);
 
-        // Bonita: Tarea de crear pedidos de colaboración
+        // Bonita: Obtener externalId
+        Long externalId = null;
+        while (externalId == null) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            externalId = (Long) this.bonitaService.getCaseVariableValue(caseId, "externalId");
+        }
 
-
+        // Guardar el externalId en el proyecto
+        newProyecto.setExternalId(externalId);
+        this.proyectoRepository.save(newProyecto);
 
     }
 

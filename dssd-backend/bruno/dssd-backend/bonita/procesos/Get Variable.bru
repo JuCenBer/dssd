@@ -1,0 +1,21 @@
+meta {
+  name: Get Variable
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{bonita_url}}/API/bpm/caseVariable/:caseId/:variableName
+  body: none
+  auth: inherit
+}
+
+params:path {
+  variableName: externalId
+  caseId: 1003
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

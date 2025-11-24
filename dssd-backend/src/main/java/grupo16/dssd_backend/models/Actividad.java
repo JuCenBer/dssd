@@ -3,10 +3,13 @@ package grupo16.dssd_backend.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
+@Getter @Setter
 public class Actividad {
 
     @Id
@@ -23,6 +26,8 @@ public class Actividad {
     private Recurso recurso;
 
     private Boolean requiereColaboracion;
+
+    private Boolean finalizada;
 
     @JsonIgnore
     @ManyToOne
@@ -41,54 +46,8 @@ public class Actividad {
         this.recurso = Recurso.valueOf(actividadDTO.recurso());
         this.requiereColaboracion = actividadDTO.requiereColaboracion();
         this.proyecto = proyecto;
+        this.finalizada = false;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public LocalDate getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(LocalDate fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public LocalDate getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(LocalDate fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    public Recurso getRecurso() {
-        return recurso;
-    }
-
-    public void setRecurso(Recurso recurso) {
-        this.recurso = recurso;
-    }
-
-    public Boolean getRequiereColaboracion() {
-        return requiereColaboracion;
-    }
-
-    public void setRequiereColaboracion(Boolean requiereColaboracion) {
-        this.requiereColaboracion = requiereColaboracion;
-    }
-
-    public Proyecto getProyecto() {
-        return proyecto;
-    }
 
 }

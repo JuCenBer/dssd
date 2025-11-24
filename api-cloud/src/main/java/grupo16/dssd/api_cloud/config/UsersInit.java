@@ -1,5 +1,6 @@
 package grupo16.dssd.api_cloud.config;
 
+import grupo16.dssd.api_cloud.models.Role;
 import grupo16.dssd.api_cloud.models.User;
 import grupo16.dssd.api_cloud.repositories.UserRepository;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,7 @@ public class UsersInit {
                     .apiKey(passwordEncoder.encode("virginie.jomphe"))
                     .compromisosColaboracion(List.of())
                     .pedidosColaboracion(List.of())
+                    .role(Role.ONG_SOL)
                     .build());
 
             createUserIfNotExists(User.builder()
@@ -37,6 +39,7 @@ public class UsersInit {
                     .apiKey(passwordEncoder.encode("walter.bates"))
                     .compromisosColaboracion(List.of())
                     .pedidosColaboracion(List.of())
+                    .role(Role.ONG_SOL)
                     .build());
 
 
@@ -47,6 +50,7 @@ public class UsersInit {
                     .apiKey(passwordEncoder.encode("thorsten.hartmann"))
                     .compromisosColaboracion(List.of())
                     .pedidosColaboracion(List.of())
+                    .role(Role.ONG_COL)
                     .build());
 
             createUserIfNotExists(User.builder()
@@ -55,6 +59,7 @@ public class UsersInit {
                     .apiKey(passwordEncoder.encode("william.jobs"))
                     .compromisosColaboracion(List.of())
                     .pedidosColaboracion(List.of())
+                    .role(Role.ONG_COL)
                     .build());
 
 
@@ -65,6 +70,7 @@ public class UsersInit {
                     .apiKey(passwordEncoder.encode("thomas.wallis"))
                     .compromisosColaboracion(List.of())
                     .pedidosColaboracion(List.of())
+                    .role(Role.DIRECTIVO)
                     .build());
 
             createUserIfNotExists(User.builder()
@@ -73,6 +79,17 @@ public class UsersInit {
                     .apiKey(passwordEncoder.encode("zachary.williamson"))
                     .compromisosColaboracion(List.of())
                     .pedidosColaboracion(List.of())
+                    .role(Role.DIRECTIVO)
+                    .build());
+
+            // SISTEM
+            createUserIfNotExists(User.builder()
+                    .nombreOng("Sistema Back")
+                    .username("pp.back")
+                    .apiKey(passwordEncoder.encode("pp.back"))
+                    .compromisosColaboracion(List.of())
+                    .pedidosColaboracion(List.of())
+                    .role(Role.SISTEMA)
                     .build());
 
 

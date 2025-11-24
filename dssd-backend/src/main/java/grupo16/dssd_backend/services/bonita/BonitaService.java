@@ -1,5 +1,6 @@
 package grupo16.dssd_backend.services.bonita;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd_backend.dtos.BonitaSession;
 import grupo16.dssd_backend.helpers.BonitaSessionHolder;
@@ -355,22 +356,53 @@ class BonitaService implements I_BonitaService {
         return out;
     }
 
-//    private String getUserId(){
-//        String username = BonitaSessionHolder.getBonitaSession().username();
-//        String userId = null;
-//        List<Map<String, Object>> users = client.get()
-//                .uri(uriBuilder -> uriBuilder
-//                        .path("/API/identity/user")
-//                        .queryParam("f", "userName=" + username)
-//                        .build())
-//                .cookie("JSESSIONID", BonitaSessionHolder.getBonitaSession().jsessionId()) // js es el valor de la cookie de sesión
-//                .retrieve()
-//                .body(new ParameterizedTypeReference<List<Map<String, Object>>>() {});
-//
-//        // Ahora podés obtener el id
-//        if (users != null && !users.isEmpty()) {
-//            userId = (String) users.get(0).get("id");
-//        }
-//        return userId;
-//    }
+    @Override
+    public Object getCaseVariableValue(Long caseId, String variableName) {
+
+        var json = client.get()
+                .uri("/API/bpm/caseVariable/{caseId}/{var}", caseId, variableName)
+                .headers(this::withAuth)
+                .retrieve()
+                .body(JsonNode.class);
+
+        if (json == null) {
+            throw new IllegalStateException("Fallo en request de variable a Bonita: " + variableName);
+        }
+
+        if (json.get("value").asText().equals("null")) {
+            return null;
+        }
+
+        String type = json.get("type").asText();
+        String rawValue = json.get("value").asText();
+
+        return convertValue(type, rawValue);
+    }
+
+    private Object convertValue(String type, String raw) {
+
+        // Strings vienen así: "\"hola\"" → hay que sacar comillas internas
+        if (String.class.getName().equals(type)) {
+            if (raw.startsWith("\"") && raw.endsWith("\""))
+                raw = raw.substring(1, raw.length() - 1);
+            return raw;
+        }
+
+        if ("java.lang.Long".equals(type)) {
+            return Long.valueOf(raw);
+        }
+
+        if ("java.lang.Integer".equals(type)) {
+            return Integer.valueOf(raw);
+        }
+
+        if ("java.lang.Boolean".equals(type)) {
+            return Boolean.valueOf(raw);
+        }
+
+        // Podés agregar más tipos si usás objetos en Bonita
+        return raw; // fallback
+    }
+
+
 }

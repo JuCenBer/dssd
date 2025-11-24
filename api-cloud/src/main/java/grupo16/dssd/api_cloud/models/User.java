@@ -25,6 +25,9 @@ public class User {
     @Column(name = "api_key")
     private String apiKey;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToMany(mappedBy = "userPedido")
     private List<PedidoColaboracion> pedidosColaboracion;
 

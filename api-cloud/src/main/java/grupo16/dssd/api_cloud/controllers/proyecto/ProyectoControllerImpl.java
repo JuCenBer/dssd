@@ -159,5 +159,23 @@ public class ProyectoControllerImpl implements I_ProyectoController {
 
     }
 
+//    @GetMapping("/{caseId}")
+//    public ResponseEntity<?> getDetailsByCaseId(HttpServletRequest request, @PathVariable Long caseId) {
+//
+//        if (caseId == null || caseId < 1) {
+//            return ResponseEntity.badRequest().body("Case ID de proyecto inválido.");
+//        }
+//
+//        Proyecto proyecto;
+//        try {
+//            proyecto = this.proyectoService.findByCaseId(caseId)
+//                    .orElseThrow(() -> new Exception("No se encontró el proyecto"));
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//
+//        return ResponseEntity.ok().body(ProyectoDTO.fromEntity(proyecto));
+//    }
+
 
 }

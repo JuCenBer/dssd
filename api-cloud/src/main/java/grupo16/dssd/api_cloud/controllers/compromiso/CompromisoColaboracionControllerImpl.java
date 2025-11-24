@@ -45,8 +45,6 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
     private final I_PedidoColaboracionService pedidoColaboracionService;
     private final I_CompromisoColaboracionService compromisoColaboracionService;
     private final UserService userService;
-    private final ObjectMapper objectMapper;
-
 
     @Override
     @PostMapping
