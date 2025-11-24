@@ -1,5 +1,6 @@
 package grupo16.dssd.api_cloud.controllers.proyecto;
 
+import grupo16.dssd.api_cloud.dtos.ProyectoCompletoDTO;
 import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
 import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
 import grupo16.dssd.api_cloud.models.Proyecto;
@@ -121,7 +122,7 @@ public class ProyectoControllerImpl implements I_ProyectoController {
                     @ApiResponse(responseCode = "500", description = "Error interno")
             }
     )
-    public ResponseEntity<?> get(HttpServletRequest request, @PathVariable Long idProyecto) {
+    public ResponseEntity<?> get(HttpServletRequest request, @PathVariable Long idProyecto, @RequestParam(required = false, defaultValue = "false") Boolean completo) {
 
         if (idProyecto == null || idProyecto < 1) {
             return ResponseEntity.badRequest().body("ID de proyecto inválido.");
@@ -135,7 +136,11 @@ public class ProyectoControllerImpl implements I_ProyectoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-        return ResponseEntity.ok().body(ProyectoDTO.fromEntity(proyecto));
+        if (completo) {
+            return ResponseEntity.ok(ProyectoCompletoDTO.fromEntity(proyecto));
+        } else {
+            return ResponseEntity.ok(ProyectoDTO.fromEntity(proyecto));
+        }
     }
 
     @Override

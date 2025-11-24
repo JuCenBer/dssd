@@ -63,13 +63,17 @@ public class ProyectoControllerV1 implements I_ProyectoController {
     public ResponseEntity<?> crearProyecto(@RequestBody ProyectoDTO proyectoDTO) {
 
         try {
-            this.getCorrectProyectoService().createProject(proyectoDTO);
+            ProyectoDTO proyecto = this.getCorrectProyectoService().createProject(proyectoDTO);
+
+            return ResponseEntity.ok(Map.of(
+                    "id", proyecto.id(),
+                    "estado", proyecto.estado()));
+
         } catch (RoleException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
-        return ResponseEntity.ok(Map.of("message", "Proyecto creado exitosamente"));
     }
 
     @Override

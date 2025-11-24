@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface I_ProyectoService {
 
-    void createProject(ProyectoDTO proyectoDTO) throws RoleException, ValidationException;
+    ProyectoDTO createProject(ProyectoDTO proyectoDTO) throws RoleException, ValidationException;
 
     List<ProyectoDTO> getProyectos();
 

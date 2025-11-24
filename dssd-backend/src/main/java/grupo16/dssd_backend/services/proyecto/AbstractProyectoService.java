@@ -25,7 +25,13 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
     protected ObjectMapper mapper;
 
     @Override
-    public void createProject(ProyectoDTO proyectoDTO) throws RoleException, ValidationException {
+    public ProyectoDTO createProject(ProyectoDTO proyectoDTO) throws RoleException, ValidationException {
         throw new RoleException("No tiene el rol necesario para realizar esta acción");
+    }
+
+    @Override
+    public ProyectoDTO getProyecto(Long proyectoId) throws ValidationException {
+
+        return null;
     }
 }

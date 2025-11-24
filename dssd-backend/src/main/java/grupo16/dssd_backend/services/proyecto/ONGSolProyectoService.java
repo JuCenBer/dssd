@@ -20,7 +20,7 @@ public class ONGSolProyectoService extends AbstractProyectoService {
 
     @Override
     @Transactional
-    public void createProject(ProyectoDTO proyectoDTO) throws ValidationException {
+    public ProyectoDTO createProject(ProyectoDTO proyectoDTO) throws ValidationException {
 
         if(!proyectoDTO.isValid()){
             throw new ValidationException("Datos ingresados inválidos.");
@@ -71,6 +71,7 @@ public class ONGSolProyectoService extends AbstractProyectoService {
         newProyecto.setExternalId(externalId);
         this.proyectoRepository.save(newProyecto);
 
+        return ProyectoDTO.fromEntity(newProyecto);
     }
 
     @Override

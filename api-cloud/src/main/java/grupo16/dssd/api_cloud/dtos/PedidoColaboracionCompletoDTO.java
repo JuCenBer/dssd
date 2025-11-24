@@ -11,25 +11,19 @@ import java.util.List;
 
 @Data
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class PedidoColaboracionDTO {
+public class PedidoColaboracionCompletoDTO {
 
     private Long id;
     private UserDTO userPedido;
-    private ProyectoDTO proyectoPedido;
     private String nombre;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private Recurso recurso;
     private Boolean completado;
-//    private List<CompromisoColaboracionDTO> compromisosColaboracion;
+    private CompromisoColaboracionDTO colaboracion;
 
-    public static PedidoColaboracionDTO fromEntity(PedidoColaboracion pedido, Boolean withProyecto) {
-        PedidoColaboracionDTOBuilder builder = PedidoColaboracionDTO.builder();
-
-        if (withProyecto) builder.proyectoPedido(ProyectoDTO.fromEntity(pedido.getProyectoPedido()));
-
-        return builder
+    public static PedidoColaboracionCompletoDTO fromEntity(PedidoColaboracion pedido) {
+        return PedidoColaboracionCompletoDTO.builder()
                 .id(pedido.getId())
                 .nombre(pedido.getNombre())
                 .fechaInicio(pedido.getFechaInicio())
@@ -37,14 +31,15 @@ public class PedidoColaboracionDTO {
                 .completado(pedido.getCompletado())
                 .recurso(pedido.getRecurso())
                 .userPedido(UserDTO.fromEntity(pedido.getUserPedido()))
-//                .compromisosColaboracion(CompromisoColaboracionDTO.fromEntity(pedido.getCompromisosColaboracion()))
+                .colaboracion(pedido.getColaboracion() != null ?
+                        CompromisoColaboracionDTO.fromEntity(pedido.getColaboracion(), Boolean.FALSE)
+                        : null)
                 .build();
     }
 
-    public static List<PedidoColaboracionDTO> fromEntity(List<PedidoColaboracion> pedidos, Boolean withProyecto) {
+    public static List<PedidoColaboracionCompletoDTO> fromEntity(List<PedidoColaboracion> pedidos) {
         return pedidos.stream()
-                .map((pedido) -> PedidoColaboracionDTO.fromEntity(pedido, withProyecto))
+                .map(PedidoColaboracionCompletoDTO::fromEntity)
                 .toList();
     }
-
 }

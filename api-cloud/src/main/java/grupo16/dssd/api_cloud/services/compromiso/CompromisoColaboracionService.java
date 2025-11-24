@@ -29,7 +29,7 @@ public class CompromisoColaboracionService implements I_CompromisoColaboracionSe
                 .cumplido(Boolean.FALSE)
                 .build();
 
-        pedido.getCompromisosColaboracion().add(compromiso);
+        pedido.setColaboracion(compromiso);
 
         compromiso = this.compromisoRepository.save(compromiso);
         return CompromisoColaboracionDTO.fromEntity(compromiso, Boolean.TRUE);

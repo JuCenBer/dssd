@@ -5,9 +5,13 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}{{apiUrl}}/proyectos/1
+  url: {{baseUrl}}{{apiUrl}}/proyectos/1?completo=true
   body: none
   auth: inherit
+}
+
+params:query {
+  completo: true
 }
 
 settings {

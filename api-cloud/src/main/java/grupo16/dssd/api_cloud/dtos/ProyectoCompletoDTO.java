@@ -1,14 +1,15 @@
 package grupo16.dssd.api_cloud.dtos;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import grupo16.dssd.api_cloud.models.Proyecto;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Builder
-public class ProyectoDTO {
+public class ProyectoCompletoDTO {
 
     private Long id;
 
@@ -20,25 +21,25 @@ public class ProyectoDTO {
 
     private String ubicacion;
 
-//    private List<PedidoColaboracionDTO> pedidosColaboracion;
+    private List<PedidoColaboracionCompletoDTO> pedidosColaboracion;
 
     private UserDTO cargadoPor;
 
-    public static ProyectoDTO fromEntity(Proyecto proyecto) {
-        return ProyectoDTO.builder()
+    public static ProyectoCompletoDTO fromEntity(Proyecto proyecto) {
+        return ProyectoCompletoDTO.builder()
                 .id(proyecto.getId())
                 .nombre(proyecto.getNombre())
                 .caseId(proyecto.getCaseId())
                 .descripcion(proyecto.getDescripcion())
                 .ubicacion(proyecto.getUbicacion())
-//                .pedidosColaboracion()
+                .pedidosColaboracion(PedidoColaboracionCompletoDTO.fromEntity(proyecto.getPedidosColaboracion()))
                 .cargadoPor(UserDTO.fromEntity(proyecto.getCargadoPor()))
                 .build();
     }
 
-    public static List<ProyectoDTO> fromEntity(List<Proyecto> proyectos) {
+    public static List<ProyectoCompletoDTO> fromEntity(List<Proyecto> proyectos) {
         return proyectos.stream()
-                .map(ProyectoDTO::fromEntity)
+                .map(ProyectoCompletoDTO::fromEntity)
                 .toList();
     }
 }

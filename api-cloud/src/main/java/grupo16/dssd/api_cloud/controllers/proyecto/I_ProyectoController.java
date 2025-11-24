@@ -11,7 +11,7 @@ public interface I_ProyectoController {
 
     ResponseEntity<?> getAll(HttpServletRequest request);
 
-    ResponseEntity<?> get(HttpServletRequest request, Long idProyecto);
+    ResponseEntity<?> get(HttpServletRequest request, Long idProyecto, Boolean completo);
 
     ResponseEntity<?> createFromBonita(HttpServletRequest request, CreacionProyectoDTO proyectoDTO);
 }

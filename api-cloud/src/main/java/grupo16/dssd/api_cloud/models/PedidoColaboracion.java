@@ -36,8 +36,8 @@ public class PedidoColaboracion {
     @Enumerated(EnumType.STRING)
     private Recurso recurso;
 
-    @OneToMany(mappedBy = "pedidoColaboracion", orphanRemoval = true)
-    private List<CompromisoColaboracion> compromisosColaboracion;
+    @OneToOne
+    private CompromisoColaboracion colaboracion;
 
     public PedidoColaboracion(String nombre, LocalDate fechaInicio, LocalDate fechaFin, Recurso recurso, Boolean completado, User userPedido, Proyecto proyectoPedido) {
 
@@ -48,7 +48,7 @@ public class PedidoColaboracion {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
         this.recurso = recurso;
-        this.setCompromisosColaboracion(new ArrayList<CompromisoColaboracion>());
+        this.colaboracion = null;
 
         userPedido.getPedidosColaboracion().add(this);
         proyectoPedido.getPedidosColaboracion().add(this);

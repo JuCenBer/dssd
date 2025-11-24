@@ -22,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
@@ -32,6 +33,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.text.spi.CollatorProvider;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -88,36 +90,42 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
             ResponseEntity.badRequest().body("Compromiso invalido");
         }
 
-        // MÁS VALIDACIONES (y/o poner restricciones en el mapeo del modelo) para que no acepte cosas en null
-
         try {
             User user = this.userService.getUserByUsername((String) request.getAttribute("username"));
 
             Proyecto proyecto = this.proyectoService.findById(idProyecto)
-                    .orElseThrow(() -> new Exception("El proyecto indicado no existe."));
+                    .orElseThrow(() -> new EntityNotFoundException("El proyecto indicado no existe."));
 
             PedidoColaboracion pedido = this.pedidoColaboracionService.findById(idProyecto)
-                    .orElseThrow(() -> new Exception("El pedido indicado no existe."));
+                    .orElseThrow(() -> new EntityNotFoundException("El pedido indicado no existe."));
 
             if (!pedido.getProyectoPedido().getId().equals(proyecto.getId())) {
-                return ResponseEntity.badRequest().body("El pedido no pertenece al proyecto indicado.");
+                return ResponseEntity.badRequest().body(Map.of("message","El pedido no pertenece al proyecto indicado."));
+            }
+
+            if (pedido.getColaboracion() != null) {
+                return ResponseEntity.badRequest().body(Map.of("message","El pedido ya tiene una colaboración"));
             }
 
             if (proyecto.getCargadoPor().equals(user)) {
-                return ResponseEntity.badRequest().body("No puedes cargar un compromiso a un proyecto de tu misma ONG.");
+                return ResponseEntity.badRequest().body(Map.of("message", "No puedes cargar un compromiso a un proyecto de tu misma ONG."));
             }
-
 
             compromisoDTO = this.compromisoColaboracionService.crearCompromisoColaboracion(compromisoDTO, user, pedido);
 
+            return ResponseEntity.created(
+                    ServletUriComponentsBuilder.fromCurrentRequest()
+                            .path("/{id}")
+                            .buildAndExpand(compromisoDTO.getId())
+                            .toUri()).body(compromisoDTO);
+
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(":c Ha ocurrido un problema: " + e.getMessage());
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("message", ":c Ha ocurrido un problema: " + e.getMessage()));
         }
-        return ResponseEntity.created(
-                ServletUriComponentsBuilder.fromCurrentRequest()
-                        .path("/{id}")
-                        .buildAndExpand(compromisoDTO.getId())
-                        .toUri()).body(compromisoDTO);
     }
 
     @GetMapping
@@ -141,7 +149,7 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
             return ResponseEntity.badRequest().body("ID de pedido inválido.");
         }
 
-        List<CompromisoColaboracionDTO> compromisos = null;
+        CompromisoColaboracionDTO colaboracion = null;
 
         try {
             Proyecto proyecto = this.proyectoService.findById(idProyecto)
@@ -154,14 +162,13 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
                 return ResponseEntity.badRequest().body("El pedido no pertenece al proyecto indicado.");
             }
 
-            compromisos =  pedido.getCompromisosColaboracion().stream()
-                    .map(compromiso -> CompromisoColaboracionDTO.fromEntity(compromiso, false)).toList();
+            colaboracion =  CompromisoColaboracionDTO.fromEntity(pedido.getColaboracion(), Boolean.FALSE);
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-        return ResponseEntity.ok().body(compromisos);
+        return ResponseEntity.ok().body(colaboracion);
     }
 
     @Override
