@@ -101,7 +101,7 @@ public class CloudService implements I_CloudService {
 
             JsonNode body = response.getBody();
 
-            if (body == null) {
+            if (body == null || body.isEmpty()) {
                 throw new IllegalStateException("No se recibió información del proyecto.");
             }
 

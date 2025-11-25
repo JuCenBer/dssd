@@ -3,6 +3,7 @@ package grupo16.dssd_backend.services.proyecto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
+import grupo16.dssd_backend.dtos.cloud.ColaboracionDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
 import grupo16.dssd_backend.models.Actividad;
@@ -14,6 +15,7 @@ import grupo16.dssd_backend.services.cloud.I_CloudService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,17 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
 
         ProyectoDTO proyectoDTO = ProyectoDTO.fromEntity(proyecto);
 
-        List<ActividadDTO> actividadesColaborativas = this.cloudService.getProyectoDetails(proyecto).actividades();
+        List<ActividadDTO> actividadesColaborativas = this.cloudService.getProyectoDetails(proyecto).actividades()
+                .stream().map(actividadDTO ->
+                        new ActividadDTO(
+                                actividadDTO.id(),
+                                actividadDTO.nombre(),
+                                actividadDTO.fechaInicio(),
+                                actividadDTO.fechaFin(),
+                                actividadDTO.recurso(),
+                                Boolean.TRUE, //Se realiza el map para poder corregir este dato, dado que se instancia como NULL.
+                                actividadDTO.colaboracion())).toList();
+
 
         List<ActividadDTO> actividadesNoColaborativas =
                 proyectoDTO.actividades().stream().filter(actividadDTO -> !actividadDTO.requiereColaboracion()).toList();
