@@ -113,11 +113,23 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
 
             compromisoDTO = this.compromisoColaboracionService.crearCompromisoColaboracion(compromisoDTO, user, pedido);
 
+            boolean etapasCubiertas = false;
+            long cantProyectosCubiertos = proyecto.getPedidosColaboracion()
+                    .stream().filter(pedidoColaboracion -> pedidoColaboracion.getColaboracion() != null).count();
+
+            if(cantProyectosCubiertos == proyecto.getPedidosColaboracion().size()) etapasCubiertas = true;
+
+            Map<String, Object> responseBody = Map.of(
+                    "etapasCubiertas", etapasCubiertas,
+                    "data", compromisoDTO
+            );
+
             return ResponseEntity.created(
                     ServletUriComponentsBuilder.fromCurrentRequest()
                             .path("/{id}")
                             .buildAndExpand(compromisoDTO.getId())
-                            .toUri()).body(compromisoDTO);
+                            .toUri()
+            ).body(responseBody);
 
         } catch (EntityNotFoundException e) {
             return ResponseEntity.badRequest()
