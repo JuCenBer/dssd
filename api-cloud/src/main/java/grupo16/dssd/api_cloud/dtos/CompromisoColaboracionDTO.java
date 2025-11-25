@@ -13,7 +13,6 @@ public class CompromisoColaboracionDTO {
     private UserDTO userCompromiso;
     private String descripcion;
     private PedidoColaboracionDTO pedidoColaboracion;
-    private Boolean cumplido;
 
     public static CompromisoColaboracionDTO fromEntity(CompromisoColaboracion compromiso, Boolean withPedido) {
         CompromisoColaboracionDTOBuilder builder = CompromisoColaboracionDTO.builder();
@@ -24,7 +23,6 @@ public class CompromisoColaboracionDTO {
                 .id(compromiso.getId())
                 .userCompromiso(UserDTO.fromEntity(compromiso.getUserCompromiso()))
                 .descripcion(compromiso.getDescripcion())
-                .cumplido(compromiso.getCumplido())
                 .build();
     }
 

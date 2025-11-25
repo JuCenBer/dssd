@@ -1,6 +1,7 @@
 package grupo16.dssd_backend.services.proyecto;
 
 import grupo16.dssd_backend.dtos.ProyectoDTO;
+import grupo16.dssd_backend.dtos.cloud.ColaboracionDTO;
 import grupo16.dssd_backend.models.Actividad;
 import grupo16.dssd_backend.models.Proyecto;
 import grupo16.dssd_backend.models.Role;
@@ -33,16 +34,20 @@ public class ONGColProyectoService extends AbstractProyectoService {
         return Role.ONG_COL;
     }
 
-    @Override
-    public ProyectoDTO getProyecto(Long proyectoId) {
-        ProyectoDTO proyectoDTO =  ProyectoDTO.fromEntity(
-                this.proyectoRepository.findById(proyectoId)
-                        .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"))
-        );
+//    @Override
+//    public ProyectoDTO getProyecto(Long proyectoId) {
+//        ProyectoDTO proyectoDTO =  ProyectoDTO.fromEntity(
+//                this.proyectoRepository.findById(proyectoId)
+//                        .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"))
+//        );
+//
+//        // TODO: bonitaService -> Obtener compromisos de colaboración
+//        // TODO: Para el ONG_COL, va a poder ver el proyecto si en esos compromisos está él
+//
+//        return proyectoDTO;
+//    }
 
-        // TODO: bonitaService -> Obtener compromisos de colaboración
-        // TODO: Para el ONG_COL, va a poder ver el proyecto si en esos compromisos está él
-        
-        return proyectoDTO;
+    public void agregarCompromisoColaboracion(ColaboracionDTO colaboracionDTO){
+
     }
 }

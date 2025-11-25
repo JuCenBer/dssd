@@ -1,6 +1,8 @@
 package grupo16.dssd_backend.dtos;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import grupo16.dssd_backend.models.EstadoProyecto;
 import grupo16.dssd_backend.models.Proyecto;
 
@@ -13,7 +15,10 @@ public record ProyectoDTO(
         String descripcion,
         String ubicacion,
         Long caseId,
+
+        @JsonAlias({"pedidosColaboracion","actividades"})
         List<ActividadDTO> actividades,
+
         EstadoProyecto estado
 ) {
 

@@ -1,6 +1,7 @@
 package grupo16.dssd_backend.services.proyecto;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
 import grupo16.dssd_backend.exceptions.ValidationException;
 import grupo16.dssd_backend.helpers.NombresProcesos;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ONGSolProyectoService extends AbstractProyectoService {
@@ -87,22 +89,22 @@ public class ONGSolProyectoService extends AbstractProyectoService {
         return Role.ONG_SOL;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public ProyectoDTO getProyecto(Long proyectoId) throws ValidationException {
-        ProyectoDTO proyectoDTO =  ProyectoDTO.fromEntity(
-                this.proyectoRepository.findById(proyectoId)
-                        .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"))
-        );
-
-        List<Long> userCaseIds = this.bonitaService.getUserProcessesCaseIds(NombresProcesos.PROCESO_CREAR_PROYECTO);
-
-        if (!userCaseIds.contains(proyectoDTO.caseId())) {
-            throw new ValidationException("No tienes permiso para visualizar este proyecto.");
-        }
-
-        // bonitaService -> Obtener compromisos de colaboración
-
-        return proyectoDTO;
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public ProyectoDTO getProyecto(Long proyectoId) throws ValidationException {
+//        ProyectoDTO proyectoDTO =  ProyectoDTO.fromEntity(
+//                this.proyectoRepository.findById(proyectoId)
+//                        .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"))
+//        );
+//
+//        List<Long> userCaseIds = this.bonitaService.getUserProcessesCaseIds(NombresProcesos.PROCESO_CREAR_PROYECTO);
+//
+//        if (!userCaseIds.contains(proyectoDTO.caseId())) {
+//            throw new ValidationException("No tienes permiso para visualizar este proyecto.");
+//        }
+//
+//        // bonitaService -> Obtener compromisos de colaboración
+//
+//        return proyectoDTO;
+//    }
 }
