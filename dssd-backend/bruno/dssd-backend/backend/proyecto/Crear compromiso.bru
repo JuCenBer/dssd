@@ -1,0 +1,22 @@
+meta {
+  name: Crear compromiso
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{backend_url}}/proyectos/1/pedidos/8/compromisos
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "descripcion": "Ayudo colaborando con herramientas."
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
