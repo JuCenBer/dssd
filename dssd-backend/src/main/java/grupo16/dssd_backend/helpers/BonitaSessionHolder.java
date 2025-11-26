@@ -13,6 +13,9 @@ public class BonitaSessionHolder {
         var session = attrs.getRequest().getSession(false);
         if (session == null) throw new IllegalStateException("Sin sesión");
         var bs = (BonitaSession) session.getAttribute("bonitaSession");
+        System.out.println(bs.xBonitaToken());
+        System.out.println(bs.userId());
+        System.out.println(bs.jsessionId());
         return bs;
     }
 }

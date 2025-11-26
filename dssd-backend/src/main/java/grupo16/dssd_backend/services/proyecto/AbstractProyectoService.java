@@ -48,7 +48,9 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
 
         ProyectoDTO proyectoDTO = ProyectoDTO.fromEntity(proyecto);
 
-        List<ActividadDTO> actividadesColaborativas = this.cloudService.getProyectoDetails(proyecto).actividades()
+        ProyectoDTO proyectoCloud = this.cloudService.getProyectoDetails(proyecto);
+
+        List<ActividadDTO> actividadesColaborativas = proyectoCloud.actividades()
                 .stream().map(actividadDTO ->
                         new ActividadDTO(
                                 actividadDTO.id(),
@@ -76,7 +78,7 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
                 proyecto.getUbicacion(),
                 proyecto.getCaseId(),
                 actividades,
-                proyecto.getEstado()
+                proyectoCloud.estado()
         );
         return proyectoDTO;
     }

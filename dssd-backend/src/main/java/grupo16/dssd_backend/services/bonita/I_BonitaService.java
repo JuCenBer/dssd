@@ -23,4 +23,8 @@ public interface I_BonitaService {
     void setVariablesCase(String caseId, Map<String, Object> variables);
 
     Object getCaseVariableValue(Long caseId, String variableName);
+
+    void asignarTareaAUsuario(String taskId, String userId);
+
+    List<Map<String, Object>> buscarTareasReadyPorCaso(String caseId);
 }
