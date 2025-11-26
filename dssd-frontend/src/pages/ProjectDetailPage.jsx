@@ -65,10 +65,12 @@ const ProjectDetailPage = () => {
   };
 
   const colaborarActividad = async (idActividad) => {
-    await fetch(`/api/v1/actividades/${idActividad}/colaborar`, {
+    const response = await fetch(`/api/v1/actividades/${idActividad}/colaborar`, {
       method: "POST"
     });
-    window.location.reload();
+
+    console.log(response)
+    
   };
 
   const enviarObservacion = async () => {
@@ -105,11 +107,11 @@ const ProjectDetailPage = () => {
         <div className="flex items-center gap-4">
           <StateBadget state={project.estado} />
 
-          {isOwner && (
+          {/* {isOwner && (
             <button className="flex items-center gap-1.5 text-sm text-brand-primary font-semibold">
               <PencilIcon className="w-4 h-4" /> Editar
             </button>
-          )}
+          )} */}
         </div>
       </div>
 
