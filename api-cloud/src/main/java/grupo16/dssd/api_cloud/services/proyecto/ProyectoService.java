@@ -2,6 +2,7 @@ package grupo16.dssd.api_cloud.services.proyecto;
 
 import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
 import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
+import grupo16.dssd.api_cloud.models.EstadoProyecto;
 import grupo16.dssd.api_cloud.models.PedidoColaboracion;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
@@ -37,6 +38,7 @@ public class ProyectoService implements I_ProyectoService {
                 .ubicacion(proyectoDTO.getUbicacion())
                 .pedidosColaboracion(new ArrayList<PedidoColaboracion>())
                 .cargadoPor(cargadoPor)
+                .estado(proyectoDTO.getEstado())
                 .build();
 
         proyecto = this.proyectoRepository.save(proyecto);
@@ -52,6 +54,7 @@ public class ProyectoService implements I_ProyectoService {
                 .nombre(creacionProyectoDTO.nombre())
                 .descripcion(creacionProyectoDTO.descripcion())
                 .ubicacion(creacionProyectoDTO.ubicacion())
+                .estado(EstadoProyecto.EN_PLANIFICACION)
                 .build();
 
         return this.crearProyecto(proyectoDTO, cargadoPor);

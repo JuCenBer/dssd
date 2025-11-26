@@ -1,6 +1,7 @@
 package grupo16.dssd.api_cloud.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import grupo16.dssd.api_cloud.models.EstadoProyecto;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +24,8 @@ public class ProyectoCompletoDTO {
 
     private List<PedidoColaboracionCompletoDTO> pedidosColaboracion;
 
+    private EstadoProyecto estado;
+
     private UserDTO cargadoPor;
 
     public static ProyectoCompletoDTO fromEntity(Proyecto proyecto) {
@@ -34,6 +37,7 @@ public class ProyectoCompletoDTO {
                 .ubicacion(proyecto.getUbicacion())
                 .pedidosColaboracion(PedidoColaboracionCompletoDTO.fromEntity(proyecto.getPedidosColaboracion()))
                 .cargadoPor(UserDTO.fromEntity(proyecto.getCargadoPor()))
+                .estado(proyecto.getEstado())
                 .build();
     }
 

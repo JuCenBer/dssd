@@ -119,6 +119,8 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
 
             if(cantProyectosCubiertos == proyecto.getPedidosColaboracion().size()) etapasCubiertas = true;
 
+
+
             Map<String, Object> responseBody = Map.of(
                     "etapasCubiertas", etapasCubiertas,
                     "data", compromisoDTO

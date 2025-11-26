@@ -1,5 +1,6 @@
 package grupo16.dssd.api_cloud.dtos;
 
+import grupo16.dssd.api_cloud.models.EstadoProyecto;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import lombok.*;
 
@@ -24,6 +25,8 @@ public class ProyectoDTO {
 
     private UserDTO cargadoPor;
 
+    private EstadoProyecto estado;
+
     public static ProyectoDTO fromEntity(Proyecto proyecto) {
         return ProyectoDTO.builder()
                 .id(proyecto.getId())
@@ -33,6 +36,7 @@ public class ProyectoDTO {
                 .ubicacion(proyecto.getUbicacion())
 //                .pedidosColaboracion()
                 .cargadoPor(UserDTO.fromEntity(proyecto.getCargadoPor()))
+                .estado(proyecto.getEstado())
                 .build();
     }
 

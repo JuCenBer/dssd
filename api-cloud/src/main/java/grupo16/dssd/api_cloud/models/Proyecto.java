@@ -22,6 +22,9 @@ public class Proyecto {
 
     private String ubicacion;
 
+    @Enumerated(EnumType.STRING)
+    private EstadoProyecto estado;
+
     @ManyToOne
     @JoinColumn(name = "cargado_por_id", nullable = false)
     private User cargadoPor;
