@@ -7,17 +7,17 @@ const StateBadget = ({ state }) => {
     const {t} = useTranslation()
 
     switch (state) {
-        case 'active':
-            className = 'bg-green-800/50 text-green-300 border-green-700';
-            stateText = t('state.active');
-            break;
-        case 'hidden':
+        case 'EN_PLANIFICACION':
             className = 'bg-gray-700/50 text-gray-300 border-gray-600';
-            stateText = t('state.hidden');
+            stateText = "En Planificacion";
             break;
-        case 'deleted':
-            className = 'bg-red-800/50 text-red-300 border-red-700';
-            stateText = t('state.deleted');
+        case 'EN_EJECUCION':
+            className = 'bg-gray-700/50 text-gray-300 border-gray-600';
+            stateText =  "En Ejecucion";
+            break;
+        case 'FINALIZADO':
+            className = 'bg-green-800/50 text-green-300 border-green-700';
+            stateText = "Finalizado"
             break;
         case 'creating':
             className = 'bg-yellow-800/50 text-yellow-300 border-yellow-700';

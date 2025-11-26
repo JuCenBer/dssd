@@ -1,5 +1,6 @@
 package grupo16.dssd_backend.services.proyecto;
 
+//import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
@@ -36,6 +37,10 @@ public class ONGSolProyectoService extends AbstractProyectoService {
         // Bonita: instanciar proceso
         Long caseId = this.bonitaService.instanciarProcesoCreacionProyecto(newProyecto);
         newProyecto.setCaseId(caseId);
+
+        // Guardar el id del usuario que cargó el proyecto
+        //Integer bonitaUserId = BonitaSessionHolder.getBonitaSession().userId();
+        //newProyecto.setCargadoPorId(bonitaUserId.longValue());
 
         // Persiste proyecto
         newProyecto = this.proyectoRepository.save(newProyecto);

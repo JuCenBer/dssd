@@ -68,8 +68,7 @@ const SmartForm = ({
       const response = await fetch(import.meta.env.VITE_API_URL + url, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          credentials: "include"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(formData),
         credentials: "include"
@@ -109,7 +108,7 @@ const SmartForm = ({
         default:
           notify({
             type: responseData.type || "error",
-            message: responseData.error
+            message: responseData.message
           });
           onFailure();
           break;

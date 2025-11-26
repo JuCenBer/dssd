@@ -26,7 +26,7 @@ public class Proyecto {
     private EstadoProyecto estado;
 
     @ManyToOne
-    @JoinColumn(name = "cargado_por_id", nullable = false)
+    @JoinColumn(name = "cargado_por_id", nullable = true)
     private User cargadoPor;
 
     @OneToMany(mappedBy = "proyectoPedido", cascade = CascadeType.ALL, orphanRemoval = true)
