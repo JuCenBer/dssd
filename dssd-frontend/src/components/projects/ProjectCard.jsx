@@ -10,6 +10,11 @@ const ProjectCard = ({ project }) => {
   return (
     <Link 
       to={`/proyectos/${project.id}`}
+      onClick={() => {
+        if (project.cargadoPor) {
+          localStorage.setItem("projectOwner", JSON.stringify(project.cargadoPor));
+        }
+      }}
       className="block bg-surface-primary border border-border-primary rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-4"
     >
       <div className="flex justify-between items-start">
@@ -22,10 +27,10 @@ const ProjectCard = ({ project }) => {
           <BuildingOffice2Icon className="w-4 h-4" />
           <span>{project.ubicacion}</span>
         </div>
-        {/* <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5">
           <ClockIcon className="w-4 h-4" />
           <span>{project.cargadoPor.nombreOng}</span>
-        </div> */}
+        </div>
       </div>
     </Link>
   );

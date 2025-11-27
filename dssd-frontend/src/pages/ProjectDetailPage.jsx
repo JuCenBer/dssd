@@ -41,6 +41,11 @@ const ProjectDetailPage = () => {
         data.estado = data.estado || "Pendiente";
         data.actividades = Array.isArray(data.actividades) ? data.actividades : [];
 
+        const storedOwner = localStorage.getItem("projectOwner");
+        if (!data.cargadoPor && storedOwner) {
+          data.cargadoPor = JSON.parse(storedOwner);
+        }
+
         setProject(data);
       } catch (err) {
         setProject(null);
@@ -61,7 +66,9 @@ const ProjectDetailPage = () => {
     return <Error404 />;
   }
 
-  const isOwner = isOngSol && user?.orgId === project.organizacionCreadoraId;
+  const isOwner =
+  isOngSol &&
+  project.cargadoPor && project.cargadoPor.username === user?.username
 
   /* -------------------------- Acciones API -------------------------- */
 
@@ -166,6 +173,8 @@ const ProjectDetailPage = () => {
   project.estado === "EN_EJECUCION" &&
   !tieneObsPendientes;
 
+  const storedOwner = JSON.parse(localStorage.getItem("projectOwner") || "null");
+
 
   return (
     <div className="container mx-auto p-4 sm:p-6">
@@ -183,9 +192,16 @@ const ProjectDetailPage = () => {
 
       {/* Título */}
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
-        <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">
-          {project.nombre}
-        </h1>
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-primary">
+            {project.nombre}
+          </h1>
+          {storedOwner && (
+            <p className="text-sm text-text-secondary mb-4">
+              Creado por <span className="font-semibold">{storedOwner.nombreOng}</span>
+            </p>
+          )}
+        </div>
         <div className="flex items-center gap-4">
           <StateBadget state={project.estado} />
 
