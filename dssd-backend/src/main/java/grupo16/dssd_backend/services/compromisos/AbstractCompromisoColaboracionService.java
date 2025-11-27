@@ -8,7 +8,7 @@ import grupo16.dssd_backend.repositories.ProyectoRepository;
 import grupo16.dssd_backend.services.bonita.I_BonitaService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AbstractCompromisoColaboracionService implements I_CompromisoColaboracionService{
+public abstract class AbstractCompromisoColaboracionService implements I_CompromisoColaboracionService {
 
     @Autowired
     protected I_BonitaService bonitaService;
@@ -21,13 +21,7 @@ public class AbstractCompromisoColaboracionService implements I_CompromisoColabo
 
     @Override
     public ColaboracionDTO createColaboracion(ColaboracionDTO colaboracionDTO, Long idProyecto, Long idPedido) throws RoleException {
-        return null;
+        throw new RoleException("No tiene el rol necesario para colaborar en un proyecto.");
     }
-
-    @Override
-    public Role roleForService() {
-        return null;
-    }
-
 
 }

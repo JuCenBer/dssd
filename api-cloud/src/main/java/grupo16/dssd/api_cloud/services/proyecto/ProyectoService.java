@@ -72,4 +72,11 @@ public class ProyectoService implements I_ProyectoService {
         return this.proyectoRepository.findByCaseId(caseId);
     }
 
+    @Override
+    @Transactional
+    public Proyecto updateEstado(Proyecto proyecto, EstadoProyecto estado) {
+        proyecto.setEstado(estado);
+        return this.proyectoRepository.save(proyecto);
+    }
+
 }

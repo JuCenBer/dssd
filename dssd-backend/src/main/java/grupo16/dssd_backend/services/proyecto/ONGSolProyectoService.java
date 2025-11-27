@@ -4,9 +4,12 @@ package grupo16.dssd_backend.services.proyecto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
+import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
 import grupo16.dssd_backend.exceptions.ValidationException;
+import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import grupo16.dssd_backend.helpers.NombresProcesos;
 import grupo16.dssd_backend.models.Actividad;
+import grupo16.dssd_backend.models.EstadoProyecto;
 import grupo16.dssd_backend.models.Proyecto;
 import grupo16.dssd_backend.models.Role;
 import jakarta.persistence.EntityNotFoundException;
@@ -82,12 +85,13 @@ public class ONGSolProyectoService extends AbstractProyectoService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<ProyectoDTO> getProyectos() {
-        List<Long> userCaseIds = this.bonitaService.getUserProcessesCaseIds(NombresProcesos.PROCESO_CREAR_PROYECTO);
-
-        return ProyectoDTO.fromEntity(this.proyectoRepository.findByCaseIdIn(userCaseIds));
+    protected List<ProyectoCloudDTO> applyRoleFilter(List<ProyectoCloudDTO> proyectos) {
+        return proyectos.stream()
+                .filter(proyecto -> proyecto.estado().equals(EstadoProyecto.EN_EJECUCION)
+                || proyecto.cargadoPor().getUsername().equals(BonitaSessionHolder.getBonitaSession().username()))
+                .toList();
     }
+
 
     @Override
     public Role roleForService() {

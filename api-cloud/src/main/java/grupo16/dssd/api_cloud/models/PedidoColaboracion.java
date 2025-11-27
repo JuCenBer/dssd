@@ -24,8 +24,6 @@ public class PedidoColaboracion {
     @JoinColumn(name="proyecto_pedido_id", nullable = false)
     private Proyecto proyectoPedido;
 
-    private Boolean completado;
-
     // Atributos de la Actividad:
     private String nombre;
 
@@ -36,14 +34,16 @@ public class PedidoColaboracion {
     @Enumerated(EnumType.STRING)
     private Recurso recurso;
 
+    private Boolean finalizada;
+
     @OneToOne
     private CompromisoColaboracion colaboracion;
 
-    public PedidoColaboracion(String nombre, LocalDate fechaInicio, LocalDate fechaFin, Recurso recurso, Boolean completado, User userPedido, Proyecto proyectoPedido) {
+    public PedidoColaboracion(String nombre, LocalDate fechaInicio, LocalDate fechaFin, Recurso recurso, User userPedido, Proyecto proyectoPedido) {
 
         this.userPedido = userPedido;
         this.proyectoPedido = proyectoPedido;
-        this.completado = completado;
+        this.finalizada = Boolean.FALSE;
         this.nombre = nombre;
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;

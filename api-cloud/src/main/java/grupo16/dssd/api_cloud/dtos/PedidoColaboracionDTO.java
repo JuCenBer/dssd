@@ -21,7 +21,7 @@ public class PedidoColaboracionDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private Recurso recurso;
-    private Boolean completado;
+    private Boolean finalizada;
 //    private List<CompromisoColaboracionDTO> compromisosColaboracion;
 
     public static PedidoColaboracionDTO fromEntity(PedidoColaboracion pedido, Boolean withProyecto) {
@@ -34,7 +34,7 @@ public class PedidoColaboracionDTO {
                 .nombre(pedido.getNombre())
                 .fechaInicio(pedido.getFechaInicio())
                 .fechaFin(pedido.getFechaFin())
-                .completado(pedido.getCompletado())
+                .finalizada(pedido.getFinalizada())
                 .recurso(pedido.getRecurso())
                 .userPedido(UserDTO.fromEntity(pedido.getUserPedido()))
 //                .compromisosColaboracion(CompromisoColaboracionDTO.fromEntity(pedido.getCompromisosColaboracion()))

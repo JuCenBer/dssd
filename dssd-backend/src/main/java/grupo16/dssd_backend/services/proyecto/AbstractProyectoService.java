@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
 import grupo16.dssd_backend.dtos.cloud.ColaboracionDTO;
+import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
 import grupo16.dssd_backend.models.Actividad;
@@ -42,6 +43,16 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
     }
 
     @Override
+    public List<ProyectoCloudDTO> getProyectos() {
+
+        List<ProyectoCloudDTO> proyectos = this.cloudService.getAllProyectos();
+
+        return this.applyRoleFilter(proyectos);
+    }
+
+    protected abstract List<ProyectoCloudDTO> applyRoleFilter(List<ProyectoCloudDTO> proyectos);
+
+    @Override
     public ProyectoDTO getProyecto(Long proyectoId) throws ValidationException {
         Proyecto proyecto = this.proyectoRepository.findById(proyectoId)
                         .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"));
@@ -52,15 +63,17 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
 
         List<ActividadDTO> actividadesColaborativas = proyectoCloud.actividades()
                 .stream().map(actividadDTO ->
-                        new ActividadDTO(
-                                actividadDTO.id(),
-                                actividadDTO.nombre(),
-                                actividadDTO.fechaInicio(),
-                                actividadDTO.fechaFin(),
-                                actividadDTO.recurso(),
-                                Boolean.TRUE, //Se realiza el map para poder corregir este dato, dado que se instancia como NULL.
-                                actividadDTO.colaboracion())).toList();
-
+                        ActividadDTO.builder()
+                                .id(actividadDTO.id())
+                                .nombre(actividadDTO.nombre())
+                                .fechaInicio(actividadDTO.fechaInicio())
+                                .fechaFin(actividadDTO.fechaFin())
+                                .recurso(actividadDTO.recurso())
+                                .colaboracion(actividadDTO.colaboracion())
+                                .finalizada(actividadDTO.finalizada())
+                                .requiereColaboracion(Boolean.TRUE)
+                                .build()
+                ).toList();
 
         List<ActividadDTO> actividadesNoColaborativas =
                 proyectoDTO.actividades().stream().filter(actividadDTO -> !actividadDTO.requiereColaboracion()).toList();
@@ -70,6 +83,47 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
         actividades.addAll(actividadesNoColaborativas);
         actividades.addAll(actividadesColaborativas);
 
+        proyectoDTO = new ProyectoDTO(
+                proyecto.getId(),
+                proyecto.getNombre(),
+                proyecto.getDescripcion(),
+                proyecto.getUbicacion(),
+                proyecto.getCaseId(),
+                actividades,
+                proyectoCloud.estado()
+        );
+        return proyectoDTO;
+    }
+
+    @Override
+    public ProyectoDTO getProyectoByExternalId(Long externalId) throws ValidationException {
+        Proyecto proyecto = this.proyectoRepository.findByExternalId(externalId)
+                .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"));
+
+        ProyectoDTO proyectoDTO = ProyectoDTO.fromEntity(proyecto);
+
+        ProyectoDTO proyectoCloud = this.cloudService.getProyectoDetails(proyecto);
+
+        List<ActividadDTO> actividadesColaborativas = proyectoCloud.actividades()
+                .stream().map(actividadDTO ->
+                        ActividadDTO.builder()
+                                .id(actividadDTO.id())
+                                .nombre(actividadDTO.nombre())
+                                .fechaInicio(actividadDTO.fechaInicio())
+                                .fechaFin(actividadDTO.fechaFin())
+                                .recurso(actividadDTO.recurso())
+                                .colaboracion(actividadDTO.colaboracion())
+                                .finalizada(actividadDTO.finalizada())
+                                .requiereColaboracion(Boolean.TRUE)
+                                .build()
+                ).toList();
+
+        List<ActividadDTO> actividadesNoColaborativas =
+                proyectoDTO.actividades().stream().filter(actividadDTO -> !actividadDTO.requiereColaboracion()).toList();
+
+        List<ActividadDTO> actividades = new ArrayList<ActividadDTO>();
+        actividades.addAll(actividadesNoColaborativas);
+        actividades.addAll(actividadesColaborativas);
 
         proyectoDTO = new ProyectoDTO(
                 proyecto.getId(),

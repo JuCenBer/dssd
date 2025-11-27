@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/proyectos/{idProyecto}/pedidos/{idPedido}/compromisos")
+@RequestMapping("/api/v1/proyectos/{proyectoExternalId}/pedidos/{idPedido}/compromisos")
 public class CompromisoColaboracionControllerV1 implements I_CompromisoColaboracionController {
 
     private final List<I_CompromisoColaboracionService> compromisoColaboracionServices;
@@ -47,17 +47,16 @@ public class CompromisoColaboracionControllerV1 implements I_CompromisoColaborac
 
     @PostMapping
     public ResponseEntity<?> crearCompromiso(@RequestBody ColaboracionDTO colaboracionDTO,
-                                             @PathVariable("idProyecto") Long idProyecto,
+                                             @PathVariable("proyectoExternalId") Long proyectoExternalId,
                                              @PathVariable("idPedido") Long idPedido){
 
         try {
-            ColaboracionDTO colaboracion = this.getCorrectProyectoService().createColaboracion(colaboracionDTO, idProyecto, idPedido);
+            ColaboracionDTO colaboracion = this.getCorrectProyectoService().createColaboracion(colaboracionDTO, proyectoExternalId, idPedido);
+            return ResponseEntity.ok(colaboracion);
         }
-        catch (RoleException e){
+        catch (RoleException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
         }
-
-        return ResponseEntity.ok("");
     }
 
 }

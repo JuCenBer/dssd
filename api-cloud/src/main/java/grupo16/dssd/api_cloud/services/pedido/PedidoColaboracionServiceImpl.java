@@ -32,7 +32,6 @@ public class PedidoColaboracionServiceImpl implements I_PedidoColaboracionServic
                 pedidoDTO.getFechaInicio(),
                 pedidoDTO.getFechaFin(),
                 pedidoDTO.getRecurso(),
-                Boolean.FALSE,
                 userPedido,
                 proyecto);
 

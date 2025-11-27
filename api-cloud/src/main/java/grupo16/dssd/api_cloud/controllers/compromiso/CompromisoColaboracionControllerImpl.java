@@ -1,18 +1,11 @@
 package grupo16.dssd.api_cloud.controllers.compromiso;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd.api_cloud.dtos.CompromisoColaboracionDTO;
-import grupo16.dssd.api_cloud.dtos.PedidoColaboracionDTO;
-import grupo16.dssd.api_cloud.models.CompromisoColaboracion;
-import grupo16.dssd.api_cloud.models.PedidoColaboracion;
-import grupo16.dssd.api_cloud.models.Proyecto;
-import grupo16.dssd.api_cloud.models.User;
+import grupo16.dssd.api_cloud.models.*;
 import grupo16.dssd.api_cloud.services.compromiso.I_CompromisoColaboracionService;
 import grupo16.dssd.api_cloud.services.pedido.I_PedidoColaboracionService;
 import grupo16.dssd.api_cloud.services.proyecto.I_ProyectoService;
 import grupo16.dssd.api_cloud.services.users.UserService;
-import grupo16.dssd.api_cloud.utils.JwtUtils;
-import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -25,14 +18,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.text.spi.CollatorProvider;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -117,8 +106,10 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
             long cantProyectosCubiertos = proyecto.getPedidosColaboracion()
                     .stream().filter(pedidoColaboracion -> pedidoColaboracion.getColaboracion() != null).count();
 
-            if(cantProyectosCubiertos == proyecto.getPedidosColaboracion().size()) etapasCubiertas = true;
-
+            if (cantProyectosCubiertos == proyecto.getPedidosColaboracion().size()) {
+                etapasCubiertas = true;
+                this.proyectoService.updateEstado(proyecto, EstadoProyecto.EN_EJECUCION);
+            }
 
 
             Map<String, Object> responseBody = Map.of(

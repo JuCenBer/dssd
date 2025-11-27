@@ -16,7 +16,8 @@ public record ActividadDTO(
         LocalDate fechaFin,
         String recurso,
         Boolean requiereColaboracion,
-        ColaboracionDTO colaboracion
+        ColaboracionDTO colaboracion,
+        Boolean finalizada
 
 ) {
 
@@ -29,6 +30,7 @@ public record ActividadDTO(
                 .recurso(actividad.getRecurso().name())
                 .requiereColaboracion(actividad.getRequiereColaboracion())
                 .colaboracion(null)
+                .finalizada(actividad.getFinalizada())
                 .build();
     }
 

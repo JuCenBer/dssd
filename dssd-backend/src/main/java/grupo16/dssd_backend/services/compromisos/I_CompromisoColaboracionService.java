@@ -6,7 +6,7 @@ import grupo16.dssd_backend.models.Role;
 
 public interface I_CompromisoColaboracionService {
 
-     ColaboracionDTO createColaboracion(ColaboracionDTO colaboracionDTO, Long idProyecto, Long idPedido) throws RoleException;
+     ColaboracionDTO createColaboracion(ColaboracionDTO colaboracionDTO, Long proyectoExternalId, Long idPedido) throws RoleException;
 
      Role roleForService();
 }

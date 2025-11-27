@@ -1,0 +1,16 @@
+meta {
+  name: Finalizar proyecto
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{backend_url}}/proyectos/1/finalizar
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

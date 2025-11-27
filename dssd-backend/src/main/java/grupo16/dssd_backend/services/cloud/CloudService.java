@@ -1,22 +1,20 @@
 package grupo16.dssd_backend.services.cloud;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import grupo16.dssd_backend.config.CloudProperties;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
+import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
 import grupo16.dssd_backend.models.Proyecto;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
+import java.util.List;
 
 @Service
 public class CloudService implements I_CloudService {
@@ -36,7 +34,7 @@ public class CloudService implements I_CloudService {
 
     public void authenticate() {
         try {
-// Construimos el JSON manualmente
+            // Construimos el JSON manualmente
             ObjectNode loginRequest = objectMapper.createObjectNode();
             loginRequest.put("username", properties.getUsername());
             loginRequest.put("apiKey", properties.getApiKey());
@@ -107,11 +105,56 @@ public class CloudService implements I_CloudService {
 
             return objectMapper.treeToValue(body,ProyectoDTO.class);
 
-        } catch (Exception e) {
+        } catch (HttpClientErrorException.Unauthorized e) {
+            this.authenticate();
+            return this.getProyectoDetails(proyecto);
+        }catch (Exception e) {
             throw new RuntimeException("Error obteniendo el proyecto", e);
         }
 
     }
+
+    @Override
+    public List<ProyectoCloudDTO> getAllProyectos() {
+
+        if (this.jwtToken == null) {
+            this.authenticate();
+        }
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(this.jwtToken);
+
+            HttpEntity<Void> request = new HttpEntity<>(headers);
+
+            String url = properties.getBaseUrl() + "/api/v1/proyectos";
+
+            ResponseEntity<JsonNode> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    request,
+                    JsonNode.class
+            );
+
+            JsonNode body = response.getBody();
+
+            if (body == null || body.isEmpty()) {
+                throw new IllegalStateException("No se recibió información de los proyectos.");
+            }
+
+            return objectMapper.convertValue(
+                    body,
+                    new TypeReference<List<ProyectoCloudDTO>>() {}
+            );
+
+        } catch (HttpClientErrorException.Unauthorized e) {
+            this.authenticate();
+            return this.getAllProyectos();
+        } catch (Exception e) {
+            throw new RuntimeException("Error obteniendo los proyectos", e);
+        }
+    }
+
 
 
 }

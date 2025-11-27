@@ -1,6 +1,7 @@
 package grupo16.dssd_backend.services.proyecto;
 
 import grupo16.dssd_backend.dtos.ProyectoDTO;
+import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
 import grupo16.dssd_backend.models.Role;
@@ -11,9 +12,11 @@ public interface I_ProyectoService {
 
     ProyectoDTO createProject(ProyectoDTO proyectoDTO) throws RoleException, ValidationException;
 
-    List<ProyectoDTO> getProyectos();
+    List<ProyectoCloudDTO> getProyectos();
 
     Role roleForService();
 
     ProyectoDTO getProyecto(Long proyectoId) throws ValidationException;
+
+    ProyectoDTO getProyectoByExternalId(Long externalId) throws ValidationException;
 }

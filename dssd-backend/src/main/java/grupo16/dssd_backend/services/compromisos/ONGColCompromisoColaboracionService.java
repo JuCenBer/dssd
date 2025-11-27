@@ -17,8 +17,8 @@ import java.util.Map;
 public class ONGColCompromisoColaboracionService extends AbstractCompromisoColaboracionService{
 
     @Override
-    public ColaboracionDTO createColaboracion(ColaboracionDTO colaboracionDTO, Long idProyecto, Long idPedido) throws RoleException {
-        Proyecto proyecto = this.proyectoRepository.findById(idProyecto)
+    public ColaboracionDTO createColaboracion(ColaboracionDTO colaboracionDTO, Long proyectoExternalId, Long idPedido) throws RoleException {
+        Proyecto proyecto = this.proyectoRepository.findByExternalId(proyectoExternalId)
                 .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"));
 
         String colaboracionJson = null;
@@ -31,12 +31,6 @@ public class ONGColCompromisoColaboracionService extends AbstractCompromisoColab
         // Obtener tareas del caso
         List<Map<String, Object>> tareas =
                 bonitaService.buscarTareasReadyPorCaso(proyecto.getCaseId().toString());
-
-//        String taskId = String.valueOf(tareas.getFirst().get("id"));
-//
-//        String userId = BonitaSessionHolder.getBonitaSession().userId().toString();
-//
-//        bonitaService.asignarTareaAUsuario(taskId,userId);
 
         bonitaService.setVariablesCase(proyecto.getCaseId().toString(),Map.of(
                 "idProyectoCloud", proyecto.getExternalId().toString(),

@@ -2,6 +2,7 @@ package grupo16.dssd.api_cloud.services.proyecto;
 
 import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
 import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
+import grupo16.dssd.api_cloud.models.EstadoProyecto;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
 
@@ -19,4 +20,6 @@ public interface I_ProyectoService {
     List<ProyectoDTO> findAll();
 
     Optional<Proyecto> findByCaseId(Long id);
+
+    Proyecto updateEstado(Proyecto proyecto, EstadoProyecto estado);
 }

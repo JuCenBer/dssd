@@ -2,6 +2,7 @@ package grupo16.dssd_backend.controllers.proyectos;
 
 import grupo16.dssd_backend.dtos.BonitaSession;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
+import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
 import grupo16.dssd_backend.helpers.BonitaSessionHolder;
@@ -50,7 +51,7 @@ public class ProyectoControllerV1 implements I_ProyectoController {
     public ResponseEntity<?> getProyectos() {
 
         try {
-            List<ProyectoDTO> proyectos = this.getCorrectProyectoService().getProyectos();
+            List<ProyectoCloudDTO> proyectos = this.getCorrectProyectoService().getProyectos();
 
             return ResponseEntity.ok(proyectos);
         } catch (RuntimeException e) {
@@ -77,11 +78,11 @@ public class ProyectoControllerV1 implements I_ProyectoController {
     }
 
     @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getProyecto(@PathVariable("id") Long proyectoId) {
+    @GetMapping("/{externalId}")
+    public ResponseEntity<?> getProyecto(@PathVariable("externalId") Long externalId) {
 
         try {
-            return ResponseEntity.ok(this.getCorrectProyectoService().getProyecto(proyectoId));
+            return ResponseEntity.ok(this.getCorrectProyectoService().getProyectoByExternalId(externalId));
 
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
