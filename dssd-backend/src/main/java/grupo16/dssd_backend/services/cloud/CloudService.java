@@ -73,7 +73,7 @@ public class CloudService implements I_CloudService {
 
     @Override
     // Request a api cloud -> /api/v1/proyectos/1?completo=true
-    public ProyectoDTO getProyectoDetails(Proyecto proyecto) {
+    public ProyectoCloudDTO getProyectoDetails(Proyecto proyecto) {
 
         if (this.jwtToken == null) {
             this.authenticate();
@@ -103,7 +103,7 @@ public class CloudService implements I_CloudService {
                 throw new IllegalStateException("No se recibió información del proyecto.");
             }
 
-            return objectMapper.treeToValue(body,ProyectoDTO.class);
+            return objectMapper.treeToValue(body,ProyectoCloudDTO.class);
 
         } catch (HttpClientErrorException.Unauthorized e) {
             this.authenticate();

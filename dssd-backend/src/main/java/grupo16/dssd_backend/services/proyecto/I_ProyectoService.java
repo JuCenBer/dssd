@@ -19,4 +19,6 @@ public interface I_ProyectoService {
     ProyectoDTO getProyecto(Long proyectoId) throws ValidationException;
 
     ProyectoDTO getProyectoByExternalId(Long externalId) throws ValidationException;
+
+    void finalizarProyecto(Long externalId) throws ValidationException, RoleException;
 }

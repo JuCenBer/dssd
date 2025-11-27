@@ -59,7 +59,7 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
 
         ProyectoDTO proyectoDTO = ProyectoDTO.fromEntity(proyecto);
 
-        ProyectoDTO proyectoCloud = this.cloudService.getProyectoDetails(proyecto);
+        ProyectoCloudDTO proyectoCloud = this.cloudService.getProyectoDetails(proyecto);
 
         List<ActividadDTO> actividadesColaborativas = proyectoCloud.actividades()
                 .stream().map(actividadDTO ->
@@ -102,7 +102,7 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
 
         ProyectoDTO proyectoDTO = ProyectoDTO.fromEntity(proyecto);
 
-        ProyectoDTO proyectoCloud = this.cloudService.getProyectoDetails(proyecto);
+        ProyectoCloudDTO proyectoCloud = this.cloudService.getProyectoDetails(proyecto);
 
         List<ActividadDTO> actividadesColaborativas = proyectoCloud.actividades()
                 .stream().map(actividadDTO ->
@@ -135,5 +135,10 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
                 proyectoCloud.estado()
         );
         return proyectoDTO;
+    }
+
+    @Override
+    public void finalizarProyecto(Long externalId) throws RoleException, ValidationException {
+        throw new RoleException("No tiene el rol necesario para realizar esta acción");
     }
 }

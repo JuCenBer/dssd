@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
 import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
+import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
 import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import grupo16.dssd_backend.helpers.NombresProcesos;
@@ -98,22 +99,22 @@ public class ONGSolProyectoService extends AbstractProyectoService {
         return Role.ONG_SOL;
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public ProyectoDTO getProyecto(Long proyectoId) throws ValidationException {
-//        ProyectoDTO proyectoDTO =  ProyectoDTO.fromEntity(
-//                this.proyectoRepository.findById(proyectoId)
-//                        .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"))
-//        );
-//
-//        List<Long> userCaseIds = this.bonitaService.getUserProcessesCaseIds(NombresProcesos.PROCESO_CREAR_PROYECTO);
-//
-//        if (!userCaseIds.contains(proyectoDTO.caseId())) {
-//            throw new ValidationException("No tienes permiso para visualizar este proyecto.");
-//        }
-//
-//        // bonitaService -> Obtener compromisos de colaboración
-//
-//        return proyectoDTO;
-//    }
+    @Override
+    public void finalizarProyecto(Long externalId) throws ValidationException {
+
+        Proyecto proyecto = this.proyectoRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new ValidationException("No existe el proyecto indicado"));
+
+        ProyectoCloudDTO proyectoCloud = this.cloudService.getProyectoDetails(proyecto);
+
+        if (!proyectoCloud.cargadoPor().getUsername().equals(BonitaSessionHolder.getBonitaSession().username())) {
+            throw new ValidationException("El proyecto no fue creado por este usuario.");
+        }
+
+        if (!proyectoCloud.estado().equals(EstadoProyecto.EN_EJECUCION)) {
+            throw new ValidationException("Sólo puede finalizarse un proyecto que esté en ejecución.");
+        }
+
+        this.bonitaService.ejecutarSiguienteTareaReady(proyecto.getCaseId());
+    }
 }

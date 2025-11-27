@@ -10,7 +10,7 @@ public interface I_CloudService {
 
     void authenticate();
 
-    ProyectoDTO getProyectoDetails(Proyecto proyecto);
+    ProyectoCloudDTO getProyectoDetails(Proyecto proyecto);
 
     // Request a api cloud -> /api/v1/proyectos
     List<ProyectoCloudDTO> getAllProyectos();

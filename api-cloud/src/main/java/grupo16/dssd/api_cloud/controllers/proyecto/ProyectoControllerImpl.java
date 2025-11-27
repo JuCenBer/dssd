@@ -3,6 +3,7 @@ package grupo16.dssd.api_cloud.controllers.proyecto;
 import grupo16.dssd.api_cloud.dtos.ProyectoCompletoDTO;
 import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
 import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
+import grupo16.dssd.api_cloud.models.EstadoProyecto;
 import grupo16.dssd.api_cloud.models.Proyecto;
 import grupo16.dssd.api_cloud.models.User;
 import grupo16.dssd.api_cloud.services.pedido.I_PedidoColaboracionService;
@@ -18,9 +19,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin("*")
@@ -28,13 +33,12 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Tag(name = "Proyectos", description = "Operaciones para crear y consultar proyectos")
 @SecurityRequirement(name = "bearerAuth")
-public class ProyectoControllerImpl implements I_ProyectoController {
+public class ProyectoControllerImpl {
 
     private final I_ProyectoService proyectoService;
     private final UserService userService;
     private final I_PedidoColaboracionService pedidosService;
 
-    @Override
     @PostMapping
     @Operation(
             summary = "Crear proyecto",
@@ -83,7 +87,6 @@ public class ProyectoControllerImpl implements I_ProyectoController {
         return ResponseEntity.ok(proyectoDTO);
     }
 
-    @Override
     @GetMapping
     @Operation(
             summary = "Listar proyectos",
@@ -103,7 +106,6 @@ public class ProyectoControllerImpl implements I_ProyectoController {
         return ResponseEntity.ok(this.proyectoService.findAll());
     }
 
-    @Override
     @GetMapping("/{idProyecto}")
     @Operation(
             summary = "Obtener proyecto por ID",
@@ -143,7 +145,6 @@ public class ProyectoControllerImpl implements I_ProyectoController {
         }
     }
 
-    @Override
     @PostMapping("/bonita")
     public ResponseEntity<?> createFromBonita(HttpServletRequest request, @RequestBody CreacionProyectoDTO creacionProyectoDTO){
 
@@ -160,7 +161,29 @@ public class ProyectoControllerImpl implements I_ProyectoController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
 
+    @PostMapping("/{id}/finalizar")
+    ResponseEntity<?> finalizarProceso(HttpServletRequest request, @PathVariable Long id) {
+
+        try {
+            Proyecto proyecto = this.proyectoService.findById(id)
+                    .orElseThrow();
+
+            if (!proyecto.getCargadoPor().getUsername().equals(request.getAttribute("username"))) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tiene permiso para actualizar este proyecto");
+            }
+            if (!proyecto.getEstado().equals(EstadoProyecto.EN_EJECUCION)) {
+                return ResponseEntity.badRequest().body("Sólo los proyectos en ejecución pueden ser finalizados");
+            }
+
+            this.proyectoService.updateEstado(proyecto, EstadoProyecto.FINALIZADO);
+
+            return ResponseEntity.ok().build();
+
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
 
     }
 

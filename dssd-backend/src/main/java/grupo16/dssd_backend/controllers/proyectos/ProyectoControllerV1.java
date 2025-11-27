@@ -21,7 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/proyectos")
-public class ProyectoControllerV1 implements I_ProyectoController {
+public class ProyectoControllerV1 {
 
     private final List<I_ProyectoService> proyectoServices;
 
@@ -46,7 +46,6 @@ public class ProyectoControllerV1 implements I_ProyectoController {
         return this.proyectoServiceMap.get(BonitaSessionHolder.getBonitaSession().role());
     }
 
-    @Override
     @GetMapping
     public ResponseEntity<?> getProyectos() {
 
@@ -59,7 +58,6 @@ public class ProyectoControllerV1 implements I_ProyectoController {
         }
     }
 
-    @Override
     @PostMapping
     public ResponseEntity<?> crearProyecto(@RequestBody ProyectoDTO proyectoDTO) {
 
@@ -77,7 +75,6 @@ public class ProyectoControllerV1 implements I_ProyectoController {
         }
     }
 
-    @Override
     @GetMapping("/{externalId}")
     public ResponseEntity<?> getProyecto(@PathVariable("externalId") Long externalId) {
 
@@ -88,6 +85,21 @@ public class ProyectoControllerV1 implements I_ProyectoController {
             return ResponseEntity.notFound().build();
         } catch (ValidationException e) {
             return ResponseEntity.status(403).body(Map.of("message", e.getMessage()));
+        }
+    }
+
+    @PostMapping("/{externalId}/finalizar")
+    public ResponseEntity<?> finalizarProyecto(@PathVariable("externalId") Long externalId) {
+
+        try {
+            this.getCorrectProyectoService().finalizarProyecto(externalId);
+
+            return ResponseEntity.ok().build();
+
+        } catch (RoleException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
 }
