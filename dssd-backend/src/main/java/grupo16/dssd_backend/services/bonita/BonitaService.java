@@ -254,7 +254,7 @@ class BonitaService implements I_BonitaService {
             .body(new ParameterizedTypeReference<Map<String, Object>>() {});
     }
 
-    private List<Map<String, Object>> buscarTareasReadyPorCaso(String caseId) {
+    public List<Map<String, Object>> buscarTareasReadyPorCaso(String caseId) {
         return client.get()
             .uri(uriBuilder -> uriBuilder
                 .path("/API/bpm/humanTask")
@@ -306,7 +306,7 @@ class BonitaService implements I_BonitaService {
         return body;
     }
 
-    private void asignarTareaAUsuario(String taskId, String userId) {
+    public void asignarTareaAUsuario(String taskId, String userId) {
         client.put()
             .uri("/API/bpm/humanTask/{id}", taskId)
             .headers(this::withAuth)

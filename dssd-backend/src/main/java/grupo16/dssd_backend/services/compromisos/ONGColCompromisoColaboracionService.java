@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
 import grupo16.dssd_backend.dtos.cloud.ColaboracionDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
+import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import grupo16.dssd_backend.models.Proyecto;
 import grupo16.dssd_backend.models.Role;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -19,8 +21,6 @@ public class ONGColCompromisoColaboracionService extends AbstractCompromisoColab
         Proyecto proyecto = this.proyectoRepository.findById(idProyecto)
                 .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"));
 
-        ProyectoDTO proyectoDTO = ProyectoDTO.fromEntity(proyecto);
-
         String colaboracionJson = null;
         try {
             colaboracionJson = mapper.writeValueAsString(colaboracionDTO);
@@ -28,9 +28,19 @@ public class ONGColCompromisoColaboracionService extends AbstractCompromisoColab
             throw new RuntimeException(e);
         }
 
+        // Obtener tareas del caso
+        List<Map<String, Object>> tareas =
+                bonitaService.buscarTareasReadyPorCaso(proyecto.getCaseId().toString());
+
+//        String taskId = String.valueOf(tareas.getFirst().get("id"));
+//
+//        String userId = BonitaSessionHolder.getBonitaSession().userId().toString();
+//
+//        bonitaService.asignarTareaAUsuario(taskId,userId);
+
         bonitaService.setVariablesCase(proyecto.getCaseId().toString(),Map.of(
-                "idProyectoCloud", proyecto.getExternalId(),
-                "idPedidoCloud", idPedido,
+                "idProyectoCloud", proyecto.getExternalId().toString(),
+                "idPedidoCloud", idPedido.toString(),
                 "colaboracionJson", colaboracionJson
         ));
 

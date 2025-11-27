@@ -25,7 +25,7 @@ public class Proyecto {
 
     private String ubicacion;
 
-    @Enumerated(EnumType.STRING)
+    @Transient
     private EstadoProyecto estado;
 
     private Long externalId;
@@ -51,5 +51,4 @@ public class Proyecto {
         this.estado = EstadoProyecto.EN_PLANIFICACION;
         this.externalId = null;
     }
-
 }
