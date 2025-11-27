@@ -65,9 +65,22 @@ const ProjectDetailPage = () => {
 
   /* -------------------------- Acciones API -------------------------- */
 
-  const pasarAEjecucion = async () => {
-    await fetch(`/api/v1/proyectos/${id}/ejecucion`, { method: "POST" });
-    window.location.reload();
+  const finalizarProyecto = async () => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/proyectos/${id}/finalizar`, { 
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: 'include',
+    });
+    console.log(response)
+    if(response.ok) {
+      setLoading(true)
+      setTimeout(() => {
+        fetchProject();
+        notificationService.success("Se ha finalizado el proyecto!")
+      }, 3000);
+
+    }
+    
   };
 
   const colaborarActividad = async (idActividad) => {
@@ -93,22 +106,33 @@ const ProjectDetailPage = () => {
 	  setLoading(true)
 	  setTimeout(() => {
 		  fetchProject();
-	  }, 5000);
+	  }, 3000);
 	  setMostrarInput(false);
     }
     };
 
   const enviarObservacion = async () => {
-    await fetch(`/api/v1/proyectos/${id}/observacion`, {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/proyectos/${id}/observacion`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ comentario: obs })
+      credentials: 'include',
+      body: JSON.stringify({ comentario: obs }),
     });
-    setObs("");
-    window.location.reload();
+    console.log(response)
+    if(response.ok) {
+      setObs("");
+      setLoading(true)
+      setTimeout(() => {
+        fetchProject();
+        notificationService.success("Se ha enviado la observacion con exito!")
+      }, 3000);
+
+    }
   };
 
   /* ***************************************************************** */
+
+  const puedeFinalizar = isOwner && project.estado === "EN_EJECUCION";
 
   return (
     <div className="container mx-auto p-4 sm:p-6">
@@ -143,12 +167,12 @@ const ProjectDetailPage = () => {
       <p className="text-text-secondary mb-8">{project.descripcion}</p>
 
       {/* PASAR A EJECUCIÓN */}
-      {isOwner && project.estado === "Pendiente" && (
+      {puedeFinalizar && (
         <button
-          onClick={pasarAEjecucion}
+          onClick={finalizarProyecto}
           className="mb-6 px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md shadow-md"
         >
-          Pasar a Ejecución
+          Finalizar Proyecto
         </button>
       )}
 
@@ -184,10 +208,10 @@ const ProjectDetailPage = () => {
                         {act.requiereColaboracion ? (
                           <>
                             {!act.colaboracion ? (
-                              <p className="bg-gray-700/50 text-gray-300 border-gray-600 px-2.5 py-1 text-xs font-medium rounded-full border">Esperando colaboracion</p>
-                            ) : <p className="bg-gray-700/50 text-gray-300 border-gray-600 px-2.5 py-1 text-xs font-medium rounded-full border">Colaborando</p>}
+                              <p className="bg-yellow-800/50 text-yellow-300 border-yellow-700 px-2.5 py-1 text-xs font-medium rounded-full border">Esperando colaboracion</p>
+                            ) : <p className="bg-green-800/50 text-green-300 border-green-700 px-2.5 py-1 text-xs font-medium rounded-full border">Colaborando</p>}
                           </>
-                        ) : <p className="bg-yellow-800/50 text-yellow-300 border-yellow-700 px-2.5 py-1 text-xs font-medium rounded-full border">Sin Colaboraciones</p>}
+                        ) : <p className="bg-gray-700/50 text-gray-300 border-gray-600 px-2.5 py-1 text-xs font-medium rounded-full border">Sin Colaboraciones</p>}
                       </div>
 
                       <div className='flex justify-between gap-10 items-end'>

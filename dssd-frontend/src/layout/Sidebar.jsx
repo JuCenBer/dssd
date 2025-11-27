@@ -7,14 +7,15 @@ import {
     HomeIcon, 
     ClipboardDocumentListIcon, 
     BriefcaseIcon,
-    Cog6ToothIcon 
+    Cog6ToothIcon,
+    ChartBarIcon 
 } from '@heroicons/react/24/solid';
 
 // Definimos los links en un array para que el código sea más limpio
 const navigationLinks = [
     { name: 'Proyectos', href: '/proyectos', icon: HomeIcon, permission: null }, // Sin permiso, visible para todos
-    { name: 'Pedidos de colaboracion', href: '/pedidos', icon: ClipboardDocumentListIcon, permission: 'ong_col' },
-    { name: 'Gestión de Proyectos', href: '/gestion-proyectos', icon: BriefcaseIcon, permission: 'directivo' },
+    /* { name: 'Pedidos de colaboracion', href: '/pedidos', icon: ClipboardDocumentListIcon, permission: 'ong_col' }, */
+    { name: 'Metricas', href: '/metricas', icon: ChartBarIcon, permission: 'directivo' },
 ];
 
 const Sidebar = () => {
