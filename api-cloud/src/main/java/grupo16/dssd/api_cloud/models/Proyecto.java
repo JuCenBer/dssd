@@ -31,4 +31,7 @@ public class Proyecto {
 
     @OneToMany(mappedBy = "proyectoPedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PedidoColaboracion> pedidosColaboracion;
+
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Observacion> observaciones;
 }

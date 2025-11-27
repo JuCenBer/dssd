@@ -41,6 +41,7 @@ public class CompromisoColaboracionService implements I_CompromisoColaboracionSe
     }
 
     @Override
+    @Deprecated
     public CompromisoColaboracionDTO cumplirCompromiso(CompromisoColaboracion compromiso) {
         compromiso.setCumplido(Boolean.TRUE);
         return CompromisoColaboracionDTO.fromEntity(this.compromisoRepository.save(compromiso), Boolean.TRUE);

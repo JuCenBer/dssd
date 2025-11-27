@@ -13,6 +13,7 @@ public interface I_CompromisoColaboracionService {
 
     Optional<CompromisoColaboracion> findById(Long id);
 
+    @Deprecated
     CompromisoColaboracionDTO cumplirCompromiso(CompromisoColaboracion compromiso);
 
 }

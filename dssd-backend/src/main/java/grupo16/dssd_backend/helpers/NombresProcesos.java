@@ -4,4 +4,5 @@ public class NombresProcesos {
 
     public static final String PROCESO_CREAR_PROYECTO = "Proceso - Planificación y ejecución de proyecto";
 
+    public static final String PROCESO_CONTROL_PROYECTO = "Seguimiento y Control de proyecto";
 }

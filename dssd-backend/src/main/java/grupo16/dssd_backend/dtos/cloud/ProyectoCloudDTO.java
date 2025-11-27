@@ -20,6 +20,7 @@ public record ProyectoCloudDTO(
     CloudUserDTO cargadoPor,
     EstadoProyecto estado,
     @JsonAlias({"pedidosColaboracion","actividades"})
-    List<ActividadDTO> actividades
+    List<ActividadDTO> actividades,
+    List<ObservacionCloudDTO> observaciones
 ) {
 }

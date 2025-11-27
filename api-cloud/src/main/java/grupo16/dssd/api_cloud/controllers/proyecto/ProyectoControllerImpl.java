@@ -1,10 +1,12 @@
 package grupo16.dssd.api_cloud.controllers.proyecto;
 
+import grupo16.dssd.api_cloud.dtos.ObservacionDTO;
 import grupo16.dssd.api_cloud.dtos.ProyectoCompletoDTO;
 import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
 import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
 import grupo16.dssd.api_cloud.models.EstadoProyecto;
 import grupo16.dssd.api_cloud.models.Proyecto;
+import grupo16.dssd.api_cloud.models.Role;
 import grupo16.dssd.api_cloud.models.User;
 import grupo16.dssd.api_cloud.services.pedido.I_PedidoColaboracionService;
 import grupo16.dssd.api_cloud.services.proyecto.I_ProyectoService;
@@ -21,10 +23,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestController
@@ -183,6 +187,38 @@ public class ProyectoControllerImpl {
 
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping("/{id}/observacion")
+    ResponseEntity<?> crearObservacion(HttpServletRequest request, @PathVariable Long id, @RequestBody ObservacionDTO observacionDTO) {
+
+        try {
+            Proyecto proyecto = this.proyectoService.findById(id)
+                    .orElseThrow();
+
+            User user = this.userService.getUserByUsername((String)request.getAttribute("username"));
+
+            if (!user.getRole().equals(Role.DIRECTIVO)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "No tiene permiso para realizar esta acción."));
+            }
+            if (!proyecto.getEstado().equals(EstadoProyecto.EN_EJECUCION)) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "Sólo se pueden agregar observaciones a proyectos en ejecución"));
+            }
+
+            ProyectoCompletoDTO proyectoDTO = this.proyectoService.agregarObservacion(proyecto, observacionDTO, user);
+
+            return ResponseEntity.ok(proyectoDTO);
+
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
 
     }

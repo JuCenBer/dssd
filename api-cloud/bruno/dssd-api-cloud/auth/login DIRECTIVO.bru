@@ -1,0 +1,27 @@
+meta {
+  name: login DIRECTIVO
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "thomas.wallis",
+    "apiKey": "thomas.wallis"
+  }
+}
+
+vars:post-response {
+  token: res.body.token
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,22 @@
+meta {
+  name: Agregar observación
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/proyectos/1/observacion
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "comentario": "En la actividad 2 se podría proceder de la siguiente manera: ..."
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

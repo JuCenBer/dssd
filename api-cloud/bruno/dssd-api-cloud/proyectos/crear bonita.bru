@@ -1,0 +1,47 @@
+meta {
+  name: crear bonita
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/proyectos/bonita
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "nombre": "Proyecto Techos 3",
+    "descripcion": "Techado 2",
+    "ubicacion": "La Plata",
+    "actividades": [
+      {
+        "nombre": "$1000",
+        "fechaInicio": "2025-12-16",
+        "fechaFin": "2025-12-20",
+        "recurso": "DINERO",
+        "requiereColaboracion": "true"
+      },
+      {
+        "nombre": "Campaña de concientización",
+        "fechaInicio": "2025-12-16",
+        "fechaFin": "2025-12-20",
+        "recurso": "MANO_DE_OBRA",
+        "requiereColaboracion": "true"
+      },
+      {
+        "nombre": "40 horas de obra",
+        "fechaInicio": "2025-12-18",
+        "fechaFin": "2025-12-20",
+        "recurso": "MANO_DE_OBRA",
+        "requiereColaboracion": "false"
+      }
+    ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

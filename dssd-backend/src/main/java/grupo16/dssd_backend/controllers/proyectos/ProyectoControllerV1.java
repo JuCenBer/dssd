@@ -10,7 +10,6 @@ import grupo16.dssd_backend.models.Role;
 import grupo16.dssd_backend.services.proyecto.I_ProyectoService;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -102,4 +101,20 @@ public class ProyectoControllerV1 {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
     }
+
+    @PostMapping("/{externalId}/observacion")
+    public ResponseEntity<?> agregarObservacion(@PathVariable("externalId") Long externalId) {
+
+        try {
+            this.getCorrectProyectoService().finalizarProyecto(externalId);
+
+            return ResponseEntity.ok().build();
+
+        } catch (RoleException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
+    }
+
 }

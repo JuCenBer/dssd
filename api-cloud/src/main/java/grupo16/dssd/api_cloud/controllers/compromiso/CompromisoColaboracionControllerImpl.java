@@ -228,6 +228,7 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
     }
 
     @Override
+    @Deprecated
     @PostMapping("/{idCompromiso}/cumplir")
     @Operation(
             summary = "Marcar compromiso como cumplido",

@@ -28,6 +28,8 @@ public class ProyectoCompletoDTO {
 
     private UserDTO cargadoPor;
 
+    private List<ObservacionDTO> observaciones;
+
     public static ProyectoCompletoDTO fromEntity(Proyecto proyecto) {
         return ProyectoCompletoDTO.builder()
                 .id(proyecto.getId())
@@ -38,6 +40,7 @@ public class ProyectoCompletoDTO {
                 .pedidosColaboracion(PedidoColaboracionCompletoDTO.fromEntity(proyecto.getPedidosColaboracion()))
                 .cargadoPor(UserDTO.fromEntity(proyecto.getCargadoPor()))
                 .estado(proyecto.getEstado())
+                .observaciones(ObservacionDTO.fromEntity(proyecto.getObservaciones()))
                 .build();
     }
 

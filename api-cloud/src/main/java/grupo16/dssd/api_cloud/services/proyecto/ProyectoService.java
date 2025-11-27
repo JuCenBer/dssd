@@ -1,11 +1,11 @@
 package grupo16.dssd.api_cloud.services.proyecto;
 
+import grupo16.dssd.api_cloud.dtos.ObservacionDTO;
+import grupo16.dssd.api_cloud.dtos.ProyectoCompletoDTO;
 import grupo16.dssd.api_cloud.dtos.ProyectoDTO;
 import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
-import grupo16.dssd.api_cloud.models.EstadoProyecto;
-import grupo16.dssd.api_cloud.models.PedidoColaboracion;
-import grupo16.dssd.api_cloud.models.Proyecto;
-import grupo16.dssd.api_cloud.models.User;
+import grupo16.dssd.api_cloud.models.*;
+import grupo16.dssd.api_cloud.repositories.ObservacionRepository;
 import grupo16.dssd.api_cloud.repositories.ProyectoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +21,8 @@ public class ProyectoService implements I_ProyectoService {
 
     private final ProyectoRepository proyectoRepository;
 
+    private final ObservacionRepository observacionRepository;
+
     @Override
     public Optional<Proyecto> findById(Long id) {
         return this.proyectoRepository.findById(id);
@@ -30,7 +32,6 @@ public class ProyectoService implements I_ProyectoService {
     @Transactional
     public ProyectoDTO crearProyecto(ProyectoDTO proyectoDTO, User cargadoPor) {
 
-
         Proyecto proyecto = Proyecto.builder()
                 .caseId(proyectoDTO.getCaseId())
                 .nombre(proyectoDTO.getNombre())
@@ -39,6 +40,7 @@ public class ProyectoService implements I_ProyectoService {
                 .pedidosColaboracion(new ArrayList<PedidoColaboracion>())
                 .cargadoPor(cargadoPor)
                 .estado(proyectoDTO.getEstado())
+                .observaciones(new ArrayList<Observacion>())
                 .build();
 
         proyecto = this.proyectoRepository.save(proyecto);
@@ -77,6 +79,25 @@ public class ProyectoService implements I_ProyectoService {
     public Proyecto updateEstado(Proyecto proyecto, EstadoProyecto estado) {
         proyecto.setEstado(estado);
         return this.proyectoRepository.save(proyecto);
+    }
+
+    @Override
+    public ProyectoCompletoDTO agregarObservacion(Proyecto proyecto, ObservacionDTO observacionDTO, User hechoPor) {
+
+        Observacion observacion = Observacion.builder()
+                .proyecto(proyecto)
+                .comentario(observacionDTO.getComentario())
+                .resuelto(Boolean.FALSE)
+                .hechoPor(hechoPor)
+                .build();
+
+        proyecto.getObservaciones().add(observacion);
+
+        observacion = this.observacionRepository.save(observacion);
+
+        proyecto = observacion.getProyecto();
+
+        return ProyectoCompletoDTO.fromEntity(proyecto);
     }
 
 }
