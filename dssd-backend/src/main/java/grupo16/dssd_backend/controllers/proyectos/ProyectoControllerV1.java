@@ -119,4 +119,21 @@ public class ProyectoControllerV1 {
         }
     }
 
+    @PostMapping("/{externalId}/observacion/{idObservacion}/resolver")
+    public ResponseEntity<?> resolverObservacion(@PathVariable("externalId") Long externalId, @PathVariable("idObservacion") Long idObservacion) {
+
+        try {
+            this.getCorrectProyectoService().resolverObservacion(externalId, idObservacion);
+
+            return ResponseEntity.ok().build();
+
+        } catch (RoleException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

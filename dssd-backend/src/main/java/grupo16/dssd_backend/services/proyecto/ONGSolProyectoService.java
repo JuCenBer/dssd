@@ -4,6 +4,7 @@ package grupo16.dssd_backend.services.proyecto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
+import grupo16.dssd_backend.dtos.cloud.ObservacionCloudDTO;
 import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,6 +113,33 @@ public class ONGSolProyectoService extends AbstractProyectoService {
             throw new ValidationException("Sólo puede finalizarse un proyecto que esté en ejecución.");
         }
 
+        if (proyectoCloud.observaciones().stream().anyMatch(obs -> !obs.resuelto())) {
+            throw new ValidationException("El proyecto tiene observaciones por resolver.");
+        }
+
         this.bonitaService.ejecutarSiguienteTareaReady(proyecto.getCaseId());
+    }
+
+    @Override
+    public void resolverObservacion(Long externalId, Long idObservacion) throws RoleException, ValidationException {
+        Proyecto proyecto = this.proyectoRepository.findByExternalId(externalId)
+                .orElseThrow(() -> new ValidationException("No existe el proyecto indicado"));
+
+        ProyectoCloudDTO proyectoCloud = this.cloudService.getProyectoDetails(proyecto);
+
+        if (!proyectoCloud.estado().equals(EstadoProyecto.EN_EJECUCION)) {
+            throw new ValidationException("Sólo puedes resolver observaciones en un proyecto en ejecución");
+        }
+
+        if (!BonitaSessionHolder.getBonitaSession().username().equals(proyectoCloud.cargadoPor().getUsername())) {
+            throw new ValidationException("Sólo puedes resolver observaciones de un proyecto propio");
+        }
+
+        ObservacionCloudDTO observacion = proyectoCloud.observaciones().stream()
+                .filter(obs -> obs.id().equals(idObservacion) && !obs.resuelto())
+                .findFirst()
+                .orElseThrow(() -> new ValidationException("La observación no pertenece al proyecto indicado."));
+
+        this.bonitaService.ejecutarSiguienteTareaReady(observacion.caseId());
     }
 }

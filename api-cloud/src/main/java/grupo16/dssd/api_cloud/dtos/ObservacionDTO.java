@@ -16,7 +16,7 @@ public class ObservacionDTO {
     private UserDTO hechoPor;
     private Long caseId;
 
-    static ObservacionDTO fromEntity(Observacion observacion) {
+    public static ObservacionDTO fromEntity(Observacion observacion) {
         return ObservacionDTO.builder()
                 .id(observacion.getId())
                 .comentario(observacion.getComentario())

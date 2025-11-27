@@ -24,4 +24,6 @@ public interface I_ProyectoService {
     void finalizarProyecto(Long externalId) throws ValidationException, RoleException;
 
     void agregarObservacion(Long externalId, ObservacionCloudDTO observacion) throws RoleException, ValidationException;
+
+    void resolverObservacion(Long externalId, Long idObservacion) throws RoleException, ValidationException;
 }

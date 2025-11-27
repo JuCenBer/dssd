@@ -1,0 +1,27 @@
+meta {
+  name: Agregar colaboración
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{backend_url}}/proyectos/:idProyectoExterno/pedidos/:idPedido/compromisos
+  body: json
+  auth: inherit
+}
+
+params:path {
+  idProyectoExterno: 1
+  idPedido: 1
+}
+
+body:json {
+  {
+    "descripcion": "Puedo colaborar"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

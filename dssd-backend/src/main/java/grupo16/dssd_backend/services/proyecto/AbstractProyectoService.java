@@ -147,4 +147,9 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
     public void agregarObservacion(Long externalId, ObservacionCloudDTO observacion) throws RoleException, ValidationException {
         throw new RoleException("No tiene el rol necesario para realizar esta acción");
     }
+
+    @Override
+    public void resolverObservacion(Long externalId, Long idObservacion) throws RoleException, ValidationException {
+        throw new RoleException("No tiene el rol necesario para realizar esta acción");
+    }
 }

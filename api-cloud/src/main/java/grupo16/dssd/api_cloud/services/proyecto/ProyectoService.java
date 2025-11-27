@@ -7,6 +7,7 @@ import grupo16.dssd.api_cloud.dtos.bonita.CreacionProyectoDTO;
 import grupo16.dssd.api_cloud.models.*;
 import grupo16.dssd.api_cloud.repositories.ObservacionRepository;
 import grupo16.dssd.api_cloud.repositories.ProyectoRepository;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,12 +78,21 @@ public class ProyectoService implements I_ProyectoService {
     @Override
     @Transactional
     public Proyecto updateEstado(Proyecto proyecto, EstadoProyecto estado) {
+
+        if (estado.equals(EstadoProyecto.FINALIZADO)) {
+            if (proyecto.getObservaciones().stream().anyMatch(obs -> !obs.getResuelto())) {
+                throw new ValidationException("Proyecto no puede ser finalizado. Tiene observaciones por resolver.");
+            }
+        }
+
         proyecto.setEstado(estado);
+
         return this.proyectoRepository.save(proyecto);
     }
 
     @Override
-    public ProyectoCompletoDTO agregarObservacion(Proyecto proyecto, ObservacionDTO observacionDTO, User hechoPor) {
+    @Transactional
+    public ObservacionDTO agregarObservacion(Proyecto proyecto, ObservacionDTO observacionDTO, User hechoPor) {
 
         Observacion observacion = Observacion.builder()
                 .proyecto(proyecto)
@@ -96,9 +106,25 @@ public class ProyectoService implements I_ProyectoService {
 
         observacion = this.observacionRepository.save(observacion);
 
-        proyecto = observacion.getProyecto();
+        return ObservacionDTO.fromEntity(observacion);
+    }
 
-        return ProyectoCompletoDTO.fromEntity(proyecto);
+    @Override
+    @Transactional
+    public ProyectoCompletoDTO resolverObservacion(Proyecto proyecto, Long idObservacion) {
+
+        Observacion observacion = this.observacionRepository.findById(idObservacion)
+                .orElseThrow();
+
+        if (!proyecto.getObservaciones().contains(observacion)) {
+            throw new ValidationException("La observación no pertenece al proyecto indicado.");
+        }
+
+        observacion.setResuelto(Boolean.TRUE);
+
+        this.observacionRepository.save(observacion);
+
+        return ProyectoCompletoDTO.fromEntity(observacion.getProyecto());
     }
 
 }

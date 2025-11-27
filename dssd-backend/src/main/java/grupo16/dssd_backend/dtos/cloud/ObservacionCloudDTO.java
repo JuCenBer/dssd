@@ -4,6 +4,7 @@ public record ObservacionCloudDTO(
         Long id,
         String comentario,
         Boolean resuelto,
-        CloudUserDTO hechoPor
+        CloudUserDTO hechoPor,
+        Long caseId
 ) {
 }

@@ -26,5 +26,7 @@ public interface I_ProyectoService {
 
     Proyecto updateEstado(Proyecto proyecto, EstadoProyecto estado);
 
-    ProyectoCompletoDTO agregarObservacion(Proyecto proyecto, ObservacionDTO observacion, User hechoPor);
+    ObservacionDTO agregarObservacion(Proyecto proyecto, ObservacionDTO observacion, User hechoPor);
+
+    ProyectoCompletoDTO resolverObservacion(Proyecto proyecto, Long idObservacion);
 }

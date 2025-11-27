@@ -211,12 +211,49 @@ public class ProyectoControllerImpl {
                         .body(Map.of("message", "Sólo se pueden agregar observaciones a proyectos en ejecución"));
             }
 
-            ProyectoCompletoDTO proyectoDTO = this.proyectoService.agregarObservacion(proyecto, observacionDTO, user);
+            ObservacionDTO observacion = this.proyectoService.agregarObservacion(proyecto, observacionDTO, user);
+
+            return ResponseEntity.ok(observacion);
+
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+
+    }
+
+    @PostMapping("/{id}/observacion/{idObservacion}/resolver")
+    ResponseEntity<?> resolverObservacion(HttpServletRequest request, @PathVariable Long id, @PathVariable Long idObservacion) {
+
+        try {
+            Proyecto proyecto = this.proyectoService.findById(id)
+                    .orElseThrow();
+
+            User user = this.userService.getUserByUsername((String)request.getAttribute("username"));
+
+            if (!user.getRole().equals(Role.ONG_SOL)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "No tiene permiso para realizar esta acción."));
+            }
+            if (!proyecto.getEstado().equals(EstadoProyecto.EN_EJECUCION)) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "Sólo se pueden resolver observaciones en proyectos en ejecución"));
+            }
+
+            if (!proyecto.getCargadoPor().getUsername().equals(user.getUsername())) {
+                return ResponseEntity.badRequest()
+                        .body(Map.of("message", "Sólo se pueden resolver observaciones en proyectos propios"));
+            }
+
+            ProyectoCompletoDTO proyectoDTO = this.proyectoService.resolverObservacion(proyecto, idObservacion);
 
             return ResponseEntity.ok(proyectoDTO);
 
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
