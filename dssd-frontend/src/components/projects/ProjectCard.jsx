@@ -20,12 +20,12 @@ const ProjectCard = ({ project }) => {
       <div className="flex justify-between items-center text-xs text-text-tertiary">
         <div className="flex items-center gap-1.5">
           <BuildingOffice2Icon className="w-4 h-4" />
-          <span>{project.organizacionCreadora}</span>
+          <span>{project.ubicacion}</span>
         </div>
-        <div className="flex items-center gap-1.5">
+        {/* <div className="flex items-center gap-1.5">
           <ClockIcon className="w-4 h-4" />
-          <span>{project.fecha_inicio}</span>
-        </div>
+          <span>{project.cargadoPor.nombreOng}</span>
+        </div> */}
       </div>
     </Link>
   );

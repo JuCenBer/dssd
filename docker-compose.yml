@@ -24,6 +24,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=dssd-backend
       - SPRING_DATASOURCE_PASSWORD=dssd-backend
       - SERVICE_URL=http://host.docker.internal:8080
+      - API_CLOUD_URL=http://host.docker.internal:7070
     depends_on:
       - db
 

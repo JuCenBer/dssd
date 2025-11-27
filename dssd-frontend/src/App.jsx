@@ -16,6 +16,7 @@ import ProjectsPage from './pages/ProjectsPage';
 import CreateProject from './pages/CreateProject';
 import ProjectDetailPage from './pages/ProjectDetailPage';
 import Form from './pages/Form'; // Página para crear proyecto
+import MetricsPage from './pages/MetricsPage';
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
                 <Route path="proyectos" element={<ProjectsPage />} />
                 <Route path="proyectos/buscar" element={<ProjectsPage />} />
                 <Route path="revisiones" element={<ProjectsPage />} />
+
+                <Route path="metricas" element={<MetricsPage />} />
 
                 {/* Ruta para crear un nuevo proyecto */}
                 <Route path="proyectos/crear" element={<CreateProject />} />
