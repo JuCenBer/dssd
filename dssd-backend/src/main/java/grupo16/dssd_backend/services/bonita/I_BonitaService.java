@@ -10,8 +10,6 @@ public interface I_BonitaService {
 
     BonitaSession loginAndReturnCookies(String username, String password);
 
-    void logout(BonitaSession session);
-
     Long instanciarProcesoCreacionProyecto(Proyecto proyecto);
 
     void ejecutarSiguienteTareaReady(Long caseId);

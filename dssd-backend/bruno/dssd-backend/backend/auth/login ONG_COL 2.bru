@@ -1,18 +1,19 @@
 meta {
-  name: Crear compromiso
+  name: login ONG_COL 2
   type: http
-  seq: 4
+  seq: 3
 }
 
 post {
-  url: {{backend_url}}/proyectos/1/pedidos/2/compromisos
+  url: {{backend_url}}/login
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "descripcion": "Ayudo."
+    "username": "thorsten.hartmann",
+    "password": "bpm"
   }
 }
 

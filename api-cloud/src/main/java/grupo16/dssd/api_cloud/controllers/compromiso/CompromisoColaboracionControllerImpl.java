@@ -85,7 +85,7 @@ public class CompromisoColaboracionControllerImpl implements I_CompromisoColabor
             Proyecto proyecto = this.proyectoService.findById(idProyecto)
                     .orElseThrow(() -> new EntityNotFoundException("El proyecto indicado no existe."));
 
-            PedidoColaboracion pedido = this.pedidoColaboracionService.findById(idProyecto)
+            PedidoColaboracion pedido = this.pedidoColaboracionService.findById(idPedido)
                     .orElseThrow(() -> new EntityNotFoundException("El pedido indicado no existe."));
 
             if (!pedido.getProyectoPedido().getId().equals(proyecto.getId())) {

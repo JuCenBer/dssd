@@ -1,0 +1,27 @@
+meta {
+  name: login BACK
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{apiUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "pp.back",
+    "apiKey": "pp.back"
+  }
+}
+
+vars:post-response {
+  token: res.body.token
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

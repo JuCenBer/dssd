@@ -41,19 +41,5 @@ class AuthControllerV1 implements I_AuthController {
 
     }
 
-
-    @Override
-    @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request) {
-        try {
-            // opcional: llamar a /bonita/logoutservice con las cookies actuales
-            var bs = (BonitaSession) request.getSession(false).getAttribute("bonitaSession");
-            if (bs != null) bonitaService.logout(bs);
-        } finally {
-            if (request.getSession(false) != null) request.getSession(false).invalidate();
-        }
-        return ResponseEntity.noContent().build();
-    }
-
 }
 

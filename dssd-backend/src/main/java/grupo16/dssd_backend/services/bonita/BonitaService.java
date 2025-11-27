@@ -68,10 +68,10 @@ class BonitaService implements I_BonitaService {
             });
     }
 
-    @Override
-    public void logout(BonitaSession session) {
-
-    }
+//    @Override
+//    public void logout(BonitaSession session) {
+//
+//    }
 
     @Override
     public Long instanciarProcesoCreacionProyecto(Proyecto proyecto) {

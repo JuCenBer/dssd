@@ -88,7 +88,7 @@ public class ONGSolProyectoService extends AbstractProyectoService {
     @Override
     protected List<ProyectoCloudDTO> applyRoleFilter(List<ProyectoCloudDTO> proyectos) {
         return proyectos.stream()
-                .filter(proyecto -> proyecto.estado().equals(EstadoProyecto.EN_EJECUCION)
+                .filter(proyecto -> !proyecto.estado().equals(EstadoProyecto.EN_PLANIFICACION)
                 || proyecto.cargadoPor().getUsername().equals(BonitaSessionHolder.getBonitaSession().username()))
                 .toList();
     }

@@ -19,9 +19,7 @@ public class ONGColProyectoService extends AbstractProyectoService {
 
     @Override
     protected List<ProyectoCloudDTO> applyRoleFilter(List<ProyectoCloudDTO> proyectos) {
-        return proyectos.stream()
-                .filter(proyecto -> !proyecto.estado().equals(EstadoProyecto.FINALIZADO))
-                .toList();
+        return proyectos;
     }
 
     @Override
@@ -29,20 +27,4 @@ public class ONGColProyectoService extends AbstractProyectoService {
         return Role.ONG_COL;
     }
 
-//    @Override
-//    public ProyectoDTO getProyecto(Long proyectoId) {
-//        ProyectoDTO proyectoDTO =  ProyectoDTO.fromEntity(
-//                this.proyectoRepository.findById(proyectoId)
-//                        .orElseThrow(()-> new EntityNotFoundException("Proyecto no encontrado"))
-//        );
-//
-//        // TODO: bonitaService -> Obtener compromisos de colaboración
-//        // TODO: Para el ONG_COL, va a poder ver el proyecto si en esos compromisos está él
-//
-//        return proyectoDTO;
-//    }
-
-    public void agregarCompromisoColaboracion(ColaboracionDTO colaboracionDTO){
-
-    }
 }

@@ -9,7 +9,4 @@ public interface I_AuthController {
 
     ResponseEntity<?> login(LoginDTO req, HttpServletRequest httpReq);
 
-    ResponseEntity<?> logout(HttpServletRequest req);
-
-
 }
