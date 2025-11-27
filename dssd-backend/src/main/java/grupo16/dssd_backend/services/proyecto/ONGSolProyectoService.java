@@ -42,10 +42,6 @@ public class ONGSolProyectoService extends AbstractProyectoService {
         Long caseId = this.bonitaService.instanciarProcesoCreacionProyecto(newProyecto);
         newProyecto.setCaseId(caseId);
 
-        // Guardar el id del usuario que cargó el proyecto
-        //Integer bonitaUserId = BonitaSessionHolder.getBonitaSession().userId();
-        //newProyecto.setCargadoPorId(bonitaUserId.longValue());
-
         // Persiste proyecto
         newProyecto = this.proyectoRepository.save(newProyecto);
 
@@ -80,8 +76,8 @@ public class ONGSolProyectoService extends AbstractProyectoService {
 
         // Guardar el externalId en el proyecto
         newProyecto.setExternalId(externalId);
-        this.proyectoRepository.save(newProyecto);
-
+        newProyecto = this.proyectoRepository.save(newProyecto);
+        newProyecto.setEstado(EstadoProyecto.EN_PLANIFICACION);
         return ProyectoDTO.fromEntity(newProyecto);
     }
 

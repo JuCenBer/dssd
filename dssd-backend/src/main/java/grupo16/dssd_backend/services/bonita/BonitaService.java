@@ -3,6 +3,7 @@ package grupo16.dssd_backend.services.bonita;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd_backend.dtos.BonitaSession;
+import grupo16.dssd_backend.dtos.cloud.ObservacionCloudDTO;
 import grupo16.dssd_backend.helpers.BonitaSessionHolder;
 import grupo16.dssd_backend.helpers.NombresProcesos;
 import grupo16.dssd_backend.models.Proyecto;
@@ -68,10 +69,6 @@ class BonitaService implements I_BonitaService {
             });
     }
 
-//    @Override
-//    public void logout(BonitaSession session) {
-//
-//    }
 
     @Override
     public Long instanciarProcesoCreacionProyecto(Proyecto proyecto) {
@@ -90,6 +87,31 @@ class BonitaService implements I_BonitaService {
 
         String caseId = String.valueOf(instancia.get("caseId"));
         logger.info("CASE ID: "+ caseId);
+
+        return Long.parseLong(caseId);
+    }
+
+    @Override
+    public Long instanciarProcesoControlProyecto(Proyecto proyecto, ObservacionCloudDTO observacion) {
+
+        // Buscar proceso por nombre, obtener id
+        Optional<String> resp = this.buscarProcesoPorNombre(NombresProcesos.PROCESO_CONTROL_PROYECTO);
+        if (resp.isEmpty()) {
+            throw new IllegalStateException("No se encontró el proceso " + NombresProcesos.PROCESO_CONTROL_PROYECTO);
+        }
+
+        Long id = Long.valueOf(resp.get());
+        logger.info("PROCESO ENCONTRADO: "+ resp.get());
+
+        // Instanciar proceso
+        Map<String, Object> instancia = this.instanciarProceso(String.valueOf(id));
+
+        String caseId = String.valueOf(instancia.get("caseId"));
+        logger.info("CASE ID: "+ caseId);
+
+        this.setVariablesCase(caseId,
+                Map.of("idProyectoCloud", proyecto.getExternalId().toString(),
+                "observacionString", observacion.comentario()));
 
         return Long.parseLong(caseId);
     }

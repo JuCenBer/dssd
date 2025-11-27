@@ -2,6 +2,7 @@ package grupo16.dssd_backend.controllers.proyectos;
 
 import grupo16.dssd_backend.dtos.BonitaSession;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
+import grupo16.dssd_backend.dtos.cloud.ObservacionCloudDTO;
 import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/v1/proyectos")
@@ -63,9 +65,7 @@ public class ProyectoControllerV1 {
         try {
             ProyectoDTO proyecto = this.getCorrectProyectoService().createProject(proyectoDTO);
 
-            return ResponseEntity.ok(Map.of(
-                    "id", proyecto.id(),
-                    "estado", proyecto.estado()));
+            return ResponseEntity.ok(proyecto);
 
         } catch (RoleException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
@@ -103,10 +103,10 @@ public class ProyectoControllerV1 {
     }
 
     @PostMapping("/{externalId}/observacion")
-    public ResponseEntity<?> agregarObservacion(@PathVariable("externalId") Long externalId) {
+    public ResponseEntity<?> agregarObservacion(@PathVariable("externalId") Long externalId, @RequestBody ObservacionCloudDTO observacion) {
 
         try {
-            this.getCorrectProyectoService().finalizarProyecto(externalId);
+            this.getCorrectProyectoService().agregarObservacion(externalId, observacion);
 
             return ResponseEntity.ok().build();
 
@@ -114,6 +114,8 @@ public class ProyectoControllerV1 {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", e.getMessage()));
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.notFound().build();
         }
     }
 

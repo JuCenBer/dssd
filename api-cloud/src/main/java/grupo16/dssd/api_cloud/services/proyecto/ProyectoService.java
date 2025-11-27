@@ -89,6 +89,7 @@ public class ProyectoService implements I_ProyectoService {
                 .comentario(observacionDTO.getComentario())
                 .resuelto(Boolean.FALSE)
                 .hechoPor(hechoPor)
+                .caseId(observacionDTO.getCaseId())
                 .build();
 
         proyecto.getObservaciones().add(observacion);

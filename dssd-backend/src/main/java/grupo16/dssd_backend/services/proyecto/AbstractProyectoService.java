@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import grupo16.dssd_backend.dtos.ActividadDTO;
 import grupo16.dssd_backend.dtos.ProyectoDTO;
 import grupo16.dssd_backend.dtos.cloud.ColaboracionDTO;
+import grupo16.dssd_backend.dtos.cloud.ObservacionCloudDTO;
 import grupo16.dssd_backend.dtos.cloud.ProyectoCloudDTO;
 import grupo16.dssd_backend.exceptions.RoleException;
 import grupo16.dssd_backend.exceptions.ValidationException;
@@ -70,7 +71,6 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
                                 .fechaFin(actividadDTO.fechaFin())
                                 .recurso(actividadDTO.recurso())
                                 .colaboracion(actividadDTO.colaboracion())
-                                .finalizada(actividadDTO.finalizada())
                                 .requiereColaboracion(Boolean.TRUE)
                                 .build()
                 ).toList();
@@ -90,6 +90,7 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
                 proyecto.getUbicacion(),
                 proyecto.getCaseId(),
                 actividades,
+                proyectoCloud.observaciones(),
                 proyectoCloud.estado()
         );
         return proyectoDTO;
@@ -113,7 +114,6 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
                                 .fechaFin(actividadDTO.fechaFin())
                                 .recurso(actividadDTO.recurso())
                                 .colaboracion(actividadDTO.colaboracion())
-                                .finalizada(actividadDTO.finalizada())
                                 .requiereColaboracion(Boolean.TRUE)
                                 .build()
                 ).toList();
@@ -132,6 +132,7 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
                 proyecto.getUbicacion(),
                 proyecto.getCaseId(),
                 actividades,
+                proyectoCloud.observaciones(),
                 proyectoCloud.estado()
         );
         return proyectoDTO;
@@ -139,6 +140,11 @@ public abstract class AbstractProyectoService implements I_ProyectoService {
 
     @Override
     public void finalizarProyecto(Long externalId) throws RoleException, ValidationException {
+        throw new RoleException("No tiene el rol necesario para realizar esta acción");
+    }
+
+    @Override
+    public void agregarObservacion(Long externalId, ObservacionCloudDTO observacion) throws RoleException, ValidationException {
         throw new RoleException("No tiene el rol necesario para realizar esta acción");
     }
 }

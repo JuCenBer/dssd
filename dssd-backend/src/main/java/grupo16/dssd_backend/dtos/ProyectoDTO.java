@@ -3,12 +3,15 @@ package grupo16.dssd_backend.dtos;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import grupo16.dssd_backend.dtos.cloud.ObservacionCloudDTO;
 import grupo16.dssd_backend.models.EstadoProyecto;
 import grupo16.dssd_backend.models.Proyecto;
+import lombok.Builder;
 
 import java.util.Collection;
 import java.util.List;
 
+@Builder
 public record ProyectoDTO(
         Long id,
         String nombre,
@@ -18,6 +21,8 @@ public record ProyectoDTO(
 
         @JsonAlias({"pedidosColaboracion","actividades"})
         List<ActividadDTO> actividades,
+
+        List<ObservacionCloudDTO> observaciones,
 
         EstadoProyecto estado
 ) {
@@ -40,15 +45,15 @@ public record ProyectoDTO(
     }
 
     public static ProyectoDTO fromEntity(Proyecto proyecto) {
-        return new ProyectoDTO(
-                proyecto.getId(),
-                proyecto.getNombre(),
-                proyecto.getDescripcion(),
-                proyecto.getUbicacion(),
-                proyecto.getCaseId(),
-                ActividadDTO.fromEntity((proyecto.getActividades())),
-                proyecto.getEstado()
-        );
+        return ProyectoDTO.builder()
+                .id(proyecto.getId())
+                .nombre(proyecto.getNombre())
+                .descripcion(proyecto.getDescripcion())
+                .ubicacion(proyecto.getUbicacion())
+                .caseId(proyecto.getCaseId())
+                .actividades(ActividadDTO.fromEntity((proyecto.getActividades())))
+                .estado(proyecto.getEstado())
+                .build();
     }
 
     public static List<ProyectoDTO> fromEntity(Collection<Proyecto> proyectos) {

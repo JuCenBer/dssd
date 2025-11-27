@@ -27,8 +27,6 @@ public class Actividad {
 
     private Boolean requiereColaboracion;
 
-    private Boolean finalizada;
-
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "proyecto_id", nullable = false)
@@ -46,7 +44,6 @@ public class Actividad {
         this.recurso = Recurso.valueOf(actividadDTO.recurso());
         this.requiereColaboracion = actividadDTO.requiereColaboracion();
         this.proyecto = proyecto;
-        this.finalizada = false;
     }
 
 

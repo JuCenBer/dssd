@@ -1,18 +1,18 @@
 meta {
-  name: Crear compromiso
+  name: Agregar observacion
   type: http
-  seq: 4
+  seq: 6
 }
 
 post {
-  url: {{backend_url}}/proyectos/1/pedidos/1/compromisos
+  url: {{backend_url}}/proyectos/1/observacion
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "descripcion": "Ayudo."
+    "comentario": "En x paso hacer y cosa"
   }
 }
 

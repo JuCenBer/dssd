@@ -25,4 +25,6 @@ public class Observacion {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private User hechoPor;
+
+    private Long caseId;
 }

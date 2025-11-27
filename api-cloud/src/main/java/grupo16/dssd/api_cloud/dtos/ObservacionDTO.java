@@ -14,6 +14,7 @@ public class ObservacionDTO {
     private String comentario;
     private Boolean resuelto;
     private UserDTO hechoPor;
+    private Long caseId;
 
     static ObservacionDTO fromEntity(Observacion observacion) {
         return ObservacionDTO.builder()
@@ -21,6 +22,7 @@ public class ObservacionDTO {
                 .comentario(observacion.getComentario())
                 .resuelto(observacion.getResuelto())
                 .hechoPor(UserDTO.fromEntity(observacion.getHechoPor()))
+                .caseId(observacion.getCaseId())
                 .build();
     }
 
