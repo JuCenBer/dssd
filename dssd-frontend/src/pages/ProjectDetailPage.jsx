@@ -4,10 +4,13 @@ import { useAuth } from '@/hooks/useAuth';
 import Error404 from '@/layout/Error404';
 import StateBadget from '@/components/badges/StateBadget';
 import { ArrowLeftIcon, PencilIcon } from '@heroicons/react/24/solid';
+import { notificationService } from '@/services/notificationService';
 
 const ProjectDetailPage = () => {
   const { id } = useParams();
   const { user, hasPermission } = useAuth();
+  const [descripcionColab, setDescripcionColab] = useState({});
+  const [mostrarInput, setMostrarInput] = useState({});
 
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +23,13 @@ const ProjectDetailPage = () => {
   /* -------------------------- Fetch Project -------------------------- */
 
   useEffect(() => {
-    const fetchProject = async () => {
+    
+
+    fetchProject();
+  }, [id]);
+
+  const fetchProject = async () => {
+	setLoading(true)
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/proyectos/${id}`, {
           credentials: 'include'
@@ -39,9 +48,6 @@ const ProjectDetailPage = () => {
         setLoading(false);
       }
     };
-
-    fetchProject();
-  }, [id]);
 
   if (loading) {
     return (
@@ -65,13 +71,32 @@ const ProjectDetailPage = () => {
   };
 
   const colaborarActividad = async (idActividad) => {
-    const response = await fetch(`/api/v1/actividades/${idActividad}/colaborar`, {
-      method: "POST"
-    });
+    const descripcion = descripcionColab[idActividad];
 
-    console.log(response)
-    
-  };
+    if (!descripcion || descripcion.trim() === "") {
+      alert("La descripción no puede estar vacía");
+      return;
+    }
+
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/v1/proyectos/${id}/pedidos/${idActividad}/compromisos`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ descripcion }),
+      }
+    );
+
+    if (response.ok) {
+      notificationService.success("Has enviado la colaboracion!");
+	  setLoading(true)
+	  setTimeout(() => {
+		  fetchProject();
+	  }, 5000);
+	  setMostrarInput(false);
+    }
+    };
 
   const enviarObservacion = async () => {
     await fetch(`/api/v1/proyectos/${id}/observacion`, {
@@ -132,20 +157,20 @@ const ProjectDetailPage = () => {
         <div className="lg:col-span-2 space-y-8">
           {/* ACTIVIDADES */}
           <div>
-            <h2 className="text-xl font-semibold text-text-primary mb-4">
+            <h2 className="text-2xl font-semibold text-text-primary mb-4">
               Actividades
             </h2>
 
             <div className="space-y-4">
               {project.actividades.length > 0 ? (
                 project.actividades.map((act) => {
-                  const colaborador = act.colaborador || null;
+                  const colaboracion = act.colaboracion || null;
 
                   const puedeColaborar =
-                    isOngCol && !colaborador; // no tiene colaborador → disponible
+                    isOngCol && !colaboracion && act.requiereColaboracion; // no tiene colaborador → disponible
 
                   const esMiColaboracion =
-                    isOngCol && colaborador && colaborador.id === user?.orgId;
+                    isOngCol && colaboracion && colaboracion.userCompromiso.username === user?.username;
 
                   return (
                     <div
@@ -153,38 +178,101 @@ const ProjectDetailPage = () => {
                       className="p-4 bg-surface-secondary rounded-lg flex flex-col gap-2 border border-border-primary"
                     >
                       <div className="flex justify-between items-center">
-                        <p className="font-medium text-text-primary">
+                        <p className="font-medium text-xl text-text-primary">
                           {act.nombre}
                         </p>
-                        <StateBadget state={act.estado || "Pendiente"} />
+                        {act.requiereColaboracion ? (
+                          <>
+                            {!act.colaboracion ? (
+                              <p className="bg-gray-700/50 text-gray-300 border-gray-600 px-2.5 py-1 text-xs font-medium rounded-full border">Esperando colaboracion</p>
+                            ) : <p className="bg-gray-700/50 text-gray-300 border-gray-600 px-2.5 py-1 text-xs font-medium rounded-full border">Colaborando</p>}
+                          </>
+                        ) : <p className="bg-yellow-800/50 text-yellow-300 border-yellow-700 px-2.5 py-1 text-xs font-medium rounded-full border">Sin Colaboraciones</p>}
                       </div>
 
-                      {/* Info colaborador */}
-                      <p className="text-sm text-text-secondary">
-                        Colaborador:{" "}
-                        <span className="font-medium">
-                          {colaborador
-                            ? colaborador.nombre
-                            : "Sin colaborador"}
-                        </span>
-                      </p>
+                      <div className='flex justify-between gap-10 items-end'>
+                        <div className='flex flex-col gap-2 w-2/4'>
+							<p className=' text-text-secondary'>
+								Tipo de recurso:{" "}
+								{act.recurso}
+							</p>
 
-                      {/* ONG_COL puede colaborar */}
-                      {puedeColaborar && (
-                        <button
-                          onClick={() => colaborarActividad(act.id)}
-                          className="mt-1 px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded"
-                        >
-                          Colaborar en esta actividad
-                        </button>
-                      )}
+                        
+							{colaboracion ? (
+								<>
+									<p className="text-sm text-text-secondary">
+										Colaborador: <span className="font-medium">{colaboracion.userCompromiso.nombreOng} - {colaboracion.userCompromiso.username}</span>
+									</p>
 
-                      {/* Marca si es su colaboración */}
-                      {esMiColaboracion && (
-                        <p className="text-xs text-green-400 font-semibold">
-                          ✔ Tu organización colabora en esta actividad
+									{/* Marca si es su colaboración */}
+									{esMiColaboracion && (
+										<p className="text-xs text-green-400 font-semibold">
+										✔ Tu organización colabora en esta actividad
+										</p>
+									)}
+
+									{esMiColaboracion || isOwner || isDirectivo ? (
+										<div className='p-2 text-sm border-brand-secondary rounded bg-background-secondary flex flex-col gap-2'>
+											Descripcion:{" "}
+											{colaboracion.descripcion}
+										</div>
+									) : null}
+								
+								</>
+								) : puedeColaborar ? (
+								<>
+									{!mostrarInput[act.id] ? (
+									<button
+										onClick={() =>
+										setMostrarInput((prev) => ({ ...prev, [act.id]: true }))
+										}
+										className="mt-1 px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded"
+									>
+										Colaborar en esta actividad
+									</button>
+									) : (
+									<div className="flex flex-col gap-2 mt-2">
+										<textarea
+										type="text"
+										placeholder="Descripción de la colaboración"
+										className="p-2 min-h-24 border rounded bg-background-primary text-sm text-text-primary"
+										value={descripcionColab[act.id] || ""}
+										onChange={(e) =>
+											setDescripcionColab((prev) => ({
+											...prev,
+											[act.id]: e.target.value,
+											}))
+										}
+										/>
+
+										<button
+										onClick={() => colaborarActividad(act.id)}
+										className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm font-semibold"
+										>
+										Confirmar colaboración
+										</button>
+									</div>
+									)}
+							
+								</>
+							) : null}
+
+
+
+                        </div>
+
+
+                        <p className='text-sm text-text-secondary ml-auto'>
+                          Del{" "}
+                          {act.fechaInicio}
+                          {" "} al {" "}
+                          {act.fechaFin}
                         </p>
-                      )}
+
+
+                      </div>
+
+
                     </div>
                   );
                 })

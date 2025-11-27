@@ -134,8 +134,8 @@ const CreateProject = () => {
             message: 'El nombre es obligatorio.'
         },
         descripcion: {
-            function: (value) => value?.trim() !== '',
-            message: 'La descripción es obligatoria.'
+            function: (value) => value?.trim() !== '' && value.length < 255,
+            message: 'La descripción es obligatoria y no puede superar los 255 caracteres.'
         },
         ubicacion: {
             function: (value) => value?.trim() !== '',
