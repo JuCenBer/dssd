@@ -30,7 +30,7 @@ const Header = () => {
         <>
             <header className="sticky top-0 z-30 h-[var(--header-height)] flex justify-between items-center px-4 sm:px-6 bg-surface-primary border-b border-border-primary shadow-sm">
                 <Link to="/">
-                    <span className="font-bold text-xl text-text-primary">Proyectia</span>
+                    <span className="font-bold text-xl text-text-primary">ONG Collab</span>
                 </Link>
 
                 <nav className="hidden lg:flex items-center gap-6 text-sm font-medium">
