@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import SmartForm from '@/components/SmartForm';
 import { notify } from '@/services/notificationService';
 import { TextInput, TextAreaInput, SelectInput } from '@/components/Inputs';
@@ -6,16 +6,65 @@ import {useNavigate} from "react-router"
 
 /* ---------------------------- Input Aux Components ---------------------------- */
 
-const DateInput = ({ label, name, value, onChange, error }) => (
-    <TextInput
-        label={label}
-        name={name}
-        value={value}
-        onChange={onChange}
-        error={error}
-        type="date"
-    />
-);
+const DateInput = ({ label, name, value, onChange, error }) => {
+    const inputRef = useRef(null);
+
+    // Mismas clases base que tu TextInput para consistencia
+    const baseClasses = "block w-full rounded-md py-2 pl-3 pr-10 shadow-sm transition-colors duration-200 bg-surface-secondary text-text-primary placeholder:text-text-tertiary focus:outline-none cursor-pointer";
+    
+    // Clases condicionales de borde
+    const borderClasses = error
+        ? "border-error-primary focus:border-error-primary focus:ring-2 focus:ring-error-primary/50"
+        : "border-border-secondary focus:border-border-focus focus:ring-2 focus:ring-border-focus/50";
+
+    // Función para abrir el calendario al hacer click en cualquier parte del input
+    const handleDivClick = () => {
+        if (inputRef.current) {
+            inputRef.current.showPicker();
+        }
+    };
+
+    return (
+        <div className="w-full">
+            {label && (
+                <label 
+                    onClick={handleDivClick} 
+                    className="block text-sm font-medium text-text-primary mb-1 cursor-pointer"
+                >
+                    {label}
+                </label>
+            )}
+            <div className="relative mt-1" onClick={handleDivClick}>
+                <input
+                    ref={inputRef}
+                    type="date"
+                    name={name}
+                    id={name}
+                    value={value || ""}
+                    onChange={onChange}
+                    className={`border ${baseClasses} ${borderClasses} [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:opacity-0`}
+                    // [color-scheme:dark] -> Hace que el popup del calendario sea oscuro en Chrome/Edge
+                    // [&::-webkit...]:opacity-0 -> Oculta el icono nativo negro para usar el nuestro
+                />
+                
+                {/* Icono de Calendario Personalizado (Blanco/Gris) */}
+                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        strokeWidth={1.5} 
+                        stroke="currentColor" 
+                        className="w-5 h-5 text-gray-400" // Ajusta este color si tienes una variable de texto específica
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                </div>
+            </div>
+            {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+        </div>
+    );
+};
 
 const CheckboxInput = ({ label, name, checked, onChange, error }) => (
     <div className="flex items-center gap-2">

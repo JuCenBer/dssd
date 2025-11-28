@@ -81,7 +81,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     {isAuth ? (
                         <button
                             onClick={() => { logout(); onClose(); }}
-                            className="w-full text-center text-lg font-semibold bg-error-primary text-text-inverse hover:bg-error-primary-hover p-3 rounded-md transition-colors duration-200"
+                            className="w-full text-center text-lg font-semibold bg-error-primary text-text-inverse hover:bg-error-primary-hover p-3 rounded-md transition-colors duration-200 text-white hover:text-gray-500"
                         >
                             Cerrar Sesión
                         </button>

@@ -102,14 +102,14 @@ const ProjectDetailPage = () => {
     );
 
     if (response.ok) {
-      notificationService.success("Has enviado la colaboracion!");
-	  setLoading(true)
-	  setTimeout(() => {
-		  fetchProject();
-	  }, 3000);
-	  setMostrarInput(false);
+      setLoading(true)
+      notificationService.success("La colaboracion ha sido aceptada!");
+      setTimeout(() => {
+        fetchProject();
+      }, 3000);
+      setMostrarInput(false);
     }
-    };
+  };
 
   const enviarObservacion = async () => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/proyectos/${id}/observacion`, {
@@ -130,9 +130,42 @@ const ProjectDetailPage = () => {
     }
   };
 
-  /* ***************************************************************** */
+  const getRecursoLabel = (v) => {
+    switch (v) {
+      case "DINERO": return "Dinero";
+      case "MANO_DE_OBRA": return "Mano de obra";
+      case "MATERIAL": return "Material";
+      case "OTRO": return "Otro";
+      default: return "N/A";
+    }
+  };
 
-  const puedeFinalizar = isOwner && project.estado === "EN_EJECUCION";
+  const aceptarObservacion = async (idObs) => {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/v1/proyectos/${id}/observacion/${idObs}/resolver`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+      }
+    );
+
+    if (response.ok) {
+      notificationService.success("Observación marcada como resuelta");
+      setLoading(true);
+      setTimeout(() => {
+        fetchProject();
+      }, 2000);
+    }
+  };
+
+  /* ***************************************************************** */
+  const tieneObsPendientes = project.observaciones?.some(o => !o.resuelto);
+  const puedeFinalizar =
+  isOwner &&
+  project.estado === "EN_EJECUCION" &&
+  !tieneObsPendientes;
+
 
   return (
     <div className="container mx-auto p-4 sm:p-6">
@@ -218,7 +251,7 @@ const ProjectDetailPage = () => {
                         <div className='flex flex-col gap-2 w-2/4'>
 							<p className=' text-text-secondary'>
 								Tipo de recurso:{" "}
-								{act.recurso}
+								{getRecursoLabel(act.recurso)}
 							</p>
 
                         
@@ -311,7 +344,7 @@ const ProjectDetailPage = () => {
 
         {/* Columna lateral: Observaciones Directivo */}
         <div className="space-y-6">
-          {isDirectivo && (
+          {isDirectivo && project.estado === "EN_EJECUCION" ? (
             <div className="p-4 bg-surface-primary border border-border-primary rounded-lg">
               <h3 className="font-semibold text-text-primary mb-2">
                 Añadir Observación
@@ -334,7 +367,53 @@ const ProjectDetailPage = () => {
                 </button>
               </div>
             </div>
-          )}
+          ) : null}
+
+          {/* Lista de Observaciones */}
+          
+          
+        {(project.estado == 'EN_EJECUCION' || project.estado == 'FINALIZADO') ? (
+          <div className="p-4 bg-surface-secondary border border-border-primary rounded-lg space-y-4">
+            <h3 className="font-semibold text-text-primary mb-2">
+              Observaciones
+            </h3>
+            {project.observaciones?.length > 0 ? (
+                project.observaciones.map((obsItem) => (
+                  <div
+                    key={obsItem.id}
+                    className="p-3 bg-background-primary border border-border-secondary rounded-md"
+                  >
+                    <p className="text-sm text-text-primary">
+                      <span className="font-semibold">Comentario:</span> {obsItem.comentario}
+                    </p>
+
+                    <p className="text-xs text-text-secondary mt-1">
+                      Hecho por: {/* {obsItem.hechoPor.nombreOng} -  */}{obsItem.hechoPor.username}
+                    </p>
+
+                    {!obsItem.resuelto && isOwner && (
+                      <button
+                        onClick={() => aceptarObservacion(obsItem.id)}
+                        className="mt-2 px-3 py-1 text-xs bg-green-600 hover:bg-green-700 text-white rounded"
+                      >
+                        Aceptar
+                      </button>
+                    )}
+
+                    {obsItem.resuelto && (
+                      <p className="text-xs mt-2 text-green-500 font-medium">
+                        ✔ Resuelto
+                      </p>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-text-secondary">
+                  No hay observaciones.
+                </p>
+              )}
+          </div>
+          ) : null}
         </div>
       </div>
 

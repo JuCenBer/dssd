@@ -126,13 +126,13 @@ const AdminSidebar = ({ isOpen, onClose, links = [], isMobile, onToggle }) => {
             onClick={logout}
             className={`
               flex items-center w-full gap-x-4 p-3 rounded-md transition-colors group
-              text-[var(--admin-nav-link-inactive-text)] hover:bg-red-900/40 hover:text-red-400
+               hover:bg-red-900/40 hover:text-red-400
             `}
             title={isOpen ? '' : 'Cerrar Sesión'}
           >
             <ArrowRightStartOnRectangleIcon className="h-6 w-6 flex-shrink-0" />
             {isOpen && (
-              <span className="font-medium whitespace-nowrap">Cerrar Sesión</span>
+              <span className="font-medium whitespace-nowrap ">Cerrar Sesión</span>
             )}
           </button>
         </div>
